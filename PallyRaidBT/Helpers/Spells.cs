@@ -2,7 +2,7 @@
 //               Helpers/Spells.cs              //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from MutaRaidBT by fiftypence.  //
+//   Originally from PallyRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -80,6 +80,26 @@ namespace PallyRaidBT.Helpers
         static public Composite CastCooldown(string spellName, CanRunDecoratorDelegate cond)
         {
             return Cast(spellName, cond, Color.Red, ret => StyxWoW.Me.CurrentTarget);
+        }
+
+        static public Composite CastSelf(int spellId)
+        {
+            return Cast(spellId, ret => true, Color.DarkSalmon, ret => StyxWoW.Me);
+        }
+
+        static public Composite CastSelf(int spellId, CanRunDecoratorDelegate cond)
+        {
+            return Cast(spellId, cond, Color.DarkSalmon, ret => StyxWoW.Me);
+        }
+
+        static public Composite CastSelf(string spellName)
+        {
+            return Cast(spellName, ret => true, Color.DarkSalmon, ret => StyxWoW.Me);
+        }
+
+        static public Composite CastSelf(string spellName, CanRunDecoratorDelegate cond)
+        {
+            return Cast(spellName, cond, Color.DarkSalmon, ret => StyxWoW.Me);
         }
 
         static public Composite ToggleAutoAttack()

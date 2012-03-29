@@ -21,12 +21,6 @@ namespace PallyRaidBT.UI
             labelCdStatus.Text = "CDs: " + Settings.Mode.mUseCooldowns;
         }
 
-        private void buttonToggleAoe_Click(object sender, EventArgs e)
-        {
-            Settings.Mode.mUseAoe = !Settings.Mode.mUseAoe;
-            labelAoeStatus.Text = "AoE: " + Settings.Mode.mUseAoe;
-        }
-
         private void buttonToggleCombat_Click(object sender, EventArgs e)
         {
             Settings.Mode.mUseCombat = !Settings.Mode.mUseCombat;
@@ -38,7 +32,6 @@ namespace PallyRaidBT.UI
             TopMost = true;
 
             labelCdStatus.Text = "CDs: " + Settings.Mode.mUseCooldowns;
-            labelAoeStatus.Text = "AoE: " + Settings.Mode.mUseAoe;
             labelCombatStatus.Text = "Combat: " + Settings.Mode.mUseCombat;
             labelBehindTarStatus.Text = "Behind: " + Settings.Mode.mForceBehind;
         }
@@ -47,11 +40,6 @@ namespace PallyRaidBT.UI
         {
             Settings.Mode.mForceBehind = !Settings.Mode.mForceBehind;
             labelBehindTarStatus.Text = "Behind: " + Settings.Mode.mForceBehind;
-        }
-
-        private void labelAoeStatus_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

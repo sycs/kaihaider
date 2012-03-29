@@ -17,52 +17,79 @@ namespace PallyRaidBT.UI
 
         private void Config_Load(object sender, EventArgs e)
         {
-            switch (Settings.Mode.mCurMode)
+          
+     
+            if (!Settings.Mode.mOverrideContext)
             {
-                case Settings.Mode.Modes.Raid:
+                radioButtonAuto.Checked = true;
+            }
+            else
+            {
+                switch (Settings.Mode.mLocationSettings)
+                {
+                    case Helpers.Enumeration.LocationContext.Raid:
 
-                    radioButtonRaid.Checked = true;
-                    break;
+                        radioButtonRaid.Checked = true;
+                        break;
 
-                case Settings.Mode.Modes.Dungeon:
+                    case Helpers.Enumeration.LocationContext.HeroicDungeon:
 
-                    radioButtonDungeon.Checked = true;
-                    break;
+                        radioButtonHeroicDungeon.Checked = true;
+                        break;
 
-                case Settings.Mode.Modes.PvPMoveOff:
+                    case Helpers.Enumeration.LocationContext.Dungeon:
 
-                    radioButtonPvpMoveOff.Checked = true;
-                    break;
+                        radioButtonDungeon.Checked = true;
+                        break;
 
-                case Settings.Mode.Modes.PvPMoveOn:
+                    case Helpers.Enumeration.LocationContext.Battleground:
 
-                    radioButtonPvpMoveOn.Checked = true;
-                    break;
+                        radioButtonBattleground.Checked = true;
+                        break;
 
-                case Settings.Mode.Modes.Level:
+                    case Helpers.Enumeration.LocationContext.World:
 
-                    radioButtonLevel.Checked = true;
-                    break;
+                        radioButtonLevel.Checked = true;
+                        break;
+                }
             }
 
-            switch(Settings.Mode.mCooldownUse)
+            if (Settings.Mode.mUseMovement)
             {
-                case Settings.Mode.CooldownUse.Always:
+                radioButtonMoveOn.Checked = true;
+            }
+            else
+            {
+                radioButtonMoveOff.Checked = true;
+            }
+
+            if (Settings.Mode.mUseAoe)
+            {
+                radioButtonAoeOn.Checked = true;
+            }
+            else
+            {
+                radioButtonAoeOff.Checked = true;
+            }
+
+            switch (Settings.Mode.mCooldownUse)
+            {
+                case Helpers.Enumeration.CooldownUse.Always:
 
                     radioCooldownAlways.Checked = true;
                     break;
 
-                case Settings.Mode.CooldownUse.ByFocus:
+                case Helpers.Enumeration.CooldownUse.ByFocus:
 
                     radioCooldownByFocus.Checked = true;
                     break;
 
-                case Settings.Mode.CooldownUse.OnlyOnBosses:
+                case Helpers.Enumeration.CooldownUse.OnlyOnBosses:
 
                     radioCooldownByBoss.Checked = true;
                     break;
 
-                case Settings.Mode.CooldownUse.Never:
+                case Helpers.Enumeration.CooldownUse.Never:
 
                     radioCooldownNever.Checked = true;
                     break;
@@ -71,42 +98,47 @@ namespace PallyRaidBT.UI
 
         private void buttonApply_Click(object sender, EventArgs e)
         {
+            
+            Settings.Mode.mOverrideContext = !radioButtonAuto.Checked;
+            Settings.Mode.mUseMovement = radioButtonMoveOn.Checked;
+            Settings.Mode.mUseAoe = radioButtonAoeOn.Checked;
+
             if (radioButtonRaid.Checked)
             {
-                Settings.Mode.mCurMode = Settings.Mode.Modes.Raid;
+                Settings.Mode.mLocationSettings = Helpers.Enumeration.LocationContext.Raid;
+            }
+            else if (radioButtonHeroicDungeon.Checked)
+            {
+                Settings.Mode.mLocationSettings = Helpers.Enumeration.LocationContext.HeroicDungeon;
             }
             else if (radioButtonDungeon.Checked)
             {
-                Settings.Mode.mCurMode = Settings.Mode.Modes.Dungeon;
+                Settings.Mode.mLocationSettings = Helpers.Enumeration.LocationContext.Dungeon;
             }
-            else if (radioButtonPvpMoveOff.Checked)
+            else if (radioButtonBattleground.Checked)
             {
-                Settings.Mode.mCurMode = Settings.Mode.Modes.PvPMoveOff;
+                Settings.Mode.mLocationSettings = Helpers.Enumeration.LocationContext.Battleground;
             }
-            else if (radioButtonPvpMoveOn.Checked)
+            else if (radioButtonLevel.Checked)
             {
-                Settings.Mode.mCurMode = Settings.Mode.Modes.PvPMoveOn;
-            }
-            else
-            {
-                Settings.Mode.mCurMode = Settings.Mode.Modes.Level;
+                Settings.Mode.mLocationSettings = Helpers.Enumeration.LocationContext.World;
             }
 
             if (radioCooldownAlways.Checked)
             {
-                Settings.Mode.mCooldownUse = Settings.Mode.CooldownUse.Always;
+                Settings.Mode.mCooldownUse = Helpers.Enumeration.CooldownUse.Always;
             }
             else if (radioCooldownByFocus.Checked)
             {
-                Settings.Mode.mCooldownUse = Settings.Mode.CooldownUse.ByFocus;
+                Settings.Mode.mCooldownUse = Helpers.Enumeration.CooldownUse.ByFocus;
             }
             else if (radioCooldownByBoss.Checked)
             {
-                Settings.Mode.mCooldownUse = Settings.Mode.CooldownUse.OnlyOnBosses;  
+                Settings.Mode.mCooldownUse = Helpers.Enumeration.CooldownUse.OnlyOnBosses;  
             }
             else
             {
-                Settings.Mode.mCooldownUse = Settings.Mode.CooldownUse.Never;
+                Settings.Mode.mCooldownUse = Helpers.Enumeration.CooldownUse.Never;
             }
 
             Close();
@@ -122,5 +154,6 @@ namespace PallyRaidBT.UI
             var combatControl = new CombatControl();
             combatControl.Show();
         }
+
     }
 }

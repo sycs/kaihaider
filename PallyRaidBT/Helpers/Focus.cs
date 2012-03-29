@@ -2,7 +2,7 @@
 //               Helpers/Focus.cs               //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from MutaRaidBT by fiftypence.  //
+//   Originally from PallyRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -24,7 +24,7 @@ namespace PallyRaidBT.Helpers
         {
             WoWUnit curFocus = StyxWoW.Me.FocusedUnit;
 
-            if (curFocus != null && curFocus.InLineOfSpellSight && curFocus.IsAlive)
+            if (curFocus != null && curFocus.InLineOfSpellSight && curFocus.IsAlive && curFocus.Guid != StyxWoW.Me.Guid && curFocus.ToPlayer().IsInMyPartyOrRaid)
             {
                 return curFocus;
             }

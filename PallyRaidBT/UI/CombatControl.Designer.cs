@@ -34,10 +34,8 @@ namespace PallyRaidBT.UI
         private void InitializeComponent()
         {
             this.buttonToggleCd = new System.Windows.Forms.Button();
-            this.buttonToggleAoe = new System.Windows.Forms.Button();
             this.buttonToggleCombat = new System.Windows.Forms.Button();
             this.labelCdStatus = new System.Windows.Forms.Label();
-            this.labelAoeStatus = new System.Windows.Forms.Label();
             this.labelCombatStatus = new System.Windows.Forms.Label();
             this.labelBehindTarStatus = new System.Windows.Forms.Label();
             this.buttonToggleBehindTar = new System.Windows.Forms.Button();
@@ -53,19 +51,9 @@ namespace PallyRaidBT.UI
             this.buttonToggleCd.UseVisualStyleBackColor = true;
             this.buttonToggleCd.Click += new System.EventHandler(this.buttonToggleCd_Click);
             // 
-            // buttonToggleAoe
-            // 
-            this.buttonToggleAoe.Location = new System.Drawing.Point(132, 36);
-            this.buttonToggleAoe.Name = "buttonToggleAoe";
-            this.buttonToggleAoe.Size = new System.Drawing.Size(114, 20);
-            this.buttonToggleAoe.TabIndex = 1;
-            this.buttonToggleAoe.Text = "Toggle AoE Usage";
-            this.buttonToggleAoe.UseVisualStyleBackColor = true;
-            this.buttonToggleAoe.Click += new System.EventHandler(this.buttonToggleAoe_Click);
-            // 
             // buttonToggleCombat
             // 
-            this.buttonToggleCombat.Location = new System.Drawing.Point(252, 36);
+            this.buttonToggleCombat.Location = new System.Drawing.Point(135, 36);
             this.buttonToggleCombat.Name = "buttonToggleCombat";
             this.buttonToggleCombat.Size = new System.Drawing.Size(113, 20);
             this.buttonToggleCombat.TabIndex = 2;
@@ -83,22 +71,11 @@ namespace PallyRaidBT.UI
             this.labelCdStatus.TabIndex = 3;
             this.labelCdStatus.Text = "CDs";
             // 
-            // labelAoeStatus
-            // 
-            this.labelAoeStatus.AutoSize = true;
-            this.labelAoeStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAoeStatus.Location = new System.Drawing.Point(132, 9);
-            this.labelAoeStatus.Name = "labelAoeStatus";
-            this.labelAoeStatus.Size = new System.Drawing.Size(47, 24);
-            this.labelAoeStatus.TabIndex = 4;
-            this.labelAoeStatus.Text = "AoE";
-            this.labelAoeStatus.Click += new System.EventHandler(this.labelAoeStatus_Click);
-            // 
             // labelCombatStatus
             // 
             this.labelCombatStatus.AutoSize = true;
             this.labelCombatStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCombatStatus.Location = new System.Drawing.Point(252, 9);
+            this.labelCombatStatus.Location = new System.Drawing.Point(131, 9);
             this.labelCombatStatus.Name = "labelCombatStatus";
             this.labelCombatStatus.Size = new System.Drawing.Size(75, 24);
             this.labelCombatStatus.TabIndex = 5;
@@ -108,7 +85,7 @@ namespace PallyRaidBT.UI
             // 
             this.labelBehindTarStatus.AutoSize = true;
             this.labelBehindTarStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelBehindTarStatus.Location = new System.Drawing.Point(393, 9);
+            this.labelBehindTarStatus.Location = new System.Drawing.Point(300, 9);
             this.labelBehindTarStatus.Name = "labelBehindTarStatus";
             this.labelBehindTarStatus.Size = new System.Drawing.Size(70, 24);
             this.labelBehindTarStatus.TabIndex = 7;
@@ -116,7 +93,7 @@ namespace PallyRaidBT.UI
             // 
             // buttonToggleBehindTar
             // 
-            this.buttonToggleBehindTar.Location = new System.Drawing.Point(397, 36);
+            this.buttonToggleBehindTar.Location = new System.Drawing.Point(304, 36);
             this.buttonToggleBehindTar.Name = "buttonToggleBehindTar";
             this.buttonToggleBehindTar.Size = new System.Drawing.Size(113, 20);
             this.buttonToggleBehindTar.TabIndex = 6;
@@ -128,14 +105,12 @@ namespace PallyRaidBT.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(517, 61);
+            this.ClientSize = new System.Drawing.Size(429, 61);
             this.Controls.Add(this.labelBehindTarStatus);
             this.Controls.Add(this.buttonToggleBehindTar);
             this.Controls.Add(this.labelCombatStatus);
-            this.Controls.Add(this.labelAoeStatus);
             this.Controls.Add(this.labelCdStatus);
             this.Controls.Add(this.buttonToggleCombat);
-            this.Controls.Add(this.buttonToggleAoe);
             this.Controls.Add(this.buttonToggleCd);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -150,10 +125,8 @@ namespace PallyRaidBT.UI
         #endregion
 
         private System.Windows.Forms.Button buttonToggleCd;
-        private System.Windows.Forms.Button buttonToggleAoe;
         private System.Windows.Forms.Button buttonToggleCombat;
         private System.Windows.Forms.Label labelCdStatus;
-        private System.Windows.Forms.Label labelAoeStatus;
         private System.Windows.Forms.Label labelCombatStatus;
         private System.Windows.Forms.Label labelBehindTarStatus;
         private System.Windows.Forms.Button buttonToggleBehindTar;

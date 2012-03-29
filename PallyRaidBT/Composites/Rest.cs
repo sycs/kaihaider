@@ -2,7 +2,7 @@
 //                  Rest.cs                     //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from MutaRaidBT by fiftypence.  //
+//   Originally from PallyRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -20,7 +20,10 @@ namespace PallyRaidBT.Composites
     {
         static public Composite CreateRestBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.IsGhost && StyxWoW.Me.IsAlive,
+            return new Decorator(ret => !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsGhost &&
+                                        StyxWoW.Me.IsAlive && !StyxWoW.Me.Mounted &&
+                                        Helpers.Area.mLocation != Helpers.Enumeration.LocationContext.Raid &&
+                                        Helpers.Area.mLocation != Helpers.Enumeration.LocationContext.HeroicDungeon,
                 new PrioritySelector(
                     new Decorator(ret => Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && StyxWoW.Me.HealthPercent <= 90,
                         new ActionAlwaysSucceed()),

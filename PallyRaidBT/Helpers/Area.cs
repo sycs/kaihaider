@@ -2,7 +2,7 @@
 //                 Area.cs                      //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from MutaRaidBT by fiftypence.  //
+//   Originally from PallyRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -15,83 +15,77 @@ namespace PallyRaidBT.Helpers
 {
     class Area
     {
-        public enum LocationContext
-        {
-            Undefined = 0,
-            Raid,
-            HeroicDungeon,
-            Dungeon,
-            Battleground,
-            Arena,
-            World
-        }
+        static public Enumeration.LocationContext mLocation { get; private set; }
 
-        static public LocationContext mLocation { get; private set; }
 
         static public void Pulse()
         {
-            if (mLocation == GetCurrentLocation()) return;
+            Enumeration.LocationContext curLocation = !Settings.Mode.mOverrideContext ? GetCurrentLocation() : Settings.Mode.mLocationSettings;
 
-            if (Settings.Mode.mCurMode != Settings.Mode.Modes.Auto)
+            if (mLocation != curLocation)
             {
-                switch (Settings.Mode.mCurMode)
-                {
-                    case Settings.Mode.Modes.Raid:
+                mLocation = curLocation;
 
-                        mLocation = LocationContext.Raid;
-                        break;
-
-                    default:
-
-                        mLocation = LocationContext.World;
-                        break;
-                }
+                Logging.Write(Color.Orange, "");
+                Logging.Write(Color.Orange, "Your current context is {0}.", mLocation);
+                Logging.Write(Color.Orange, "");
             }
-            else
-            {
-                mLocation = GetCurrentLocation();
-            }
-
-            Logging.Write(Color.Orange, "");
-            Logging.Write(Color.Orange, "Your current context is {0}.", mLocation);
-            Logging.Write(Color.Orange, "");
         }
 
-        static private LocationContext GetCurrentLocation()
+        static public bool IsCurTargetSpecial()
         {
-	    if ((Battlegrounds.IsInsideBattleground || BotManager.Current.Name == "BGBuddy") && !(Battlegrounds.GetCurrentBattleground()==BattlegroundType.None))
+            switch (mLocation)
             {
-                return LocationContext.Battleground;
+                case Enumeration.LocationContext.Raid:
+
+                    return StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss ||
+                           (StyxWoW.Me.CurrentTarget.Level == 88 &&
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite);
+
+                case Enumeration.LocationContext.HeroicDungeon:
+
+                    return StyxWoW.Me.CurrentTarget.Level >= 87 &&
+                           (StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite ||
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Rare ||
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.RareElite ||
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss);
+
+                case Enumeration.LocationContext.Battleground:
+
+                    return StyxWoW.Me.CurrentTarget.IsPlayer;
+
+                default:
+
+                    return StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite ||
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Rare ||
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.RareElite ||
+                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss;
+            }
+        }
+
+        static private Enumeration.LocationContext GetCurrentLocation()
+        {
+            if (Battlegrounds.IsInsideBattleground)
+            {
+                return Enumeration.LocationContext.Battleground;
             }
 
-            if (Battlegrounds.IsInsideBattleground || BotManager.Current.Name == "BGBuddy" && (Battlegrounds.GetCurrentBattleground()==BattlegroundType.None))
+            if (StyxWoW.Me.IsInRaid)
             {
-                return LocationContext.Arena;
+                return Enumeration.LocationContext.Raid;
             }
 
-            if (StyxWoW.Me.IsInParty && StyxWoW.Me.IsInInstance &&
-                (BotManager.Current.Name == "Raid Bot" || BotManager.Current.Name == "LazyRaider"))
+            if (StyxWoW.Me.IsInInstance && StyxWoW.Me.Level == 85)
             {
-                return LocationContext.HeroicDungeon;
+                return Enumeration.LocationContext.HeroicDungeon;
             }
 
-            if (StyxWoW.Me.IsInParty && StyxWoW.Me.IsInInstance &&
-                BotManager.Current.Name != "Raid Bot" && BotManager.Current.Name != "LazyRaider")
+            if (StyxWoW.Me.IsInInstance)
             {
-                return LocationContext.Dungeon;
+                return Enumeration.LocationContext.Dungeon;
             }
 
-            if (StyxWoW.Me.IsInRaid || BotManager.Current.Name == "Raid Bot" || BotManager.Current.Name == "LazyRaider")
-            {
-                return LocationContext.Raid;
-            }
-
-            if (BotManager.Current.Name == "Questing" || BotManager.Current.Name == "Grind Bot")
-            {
-                return LocationContext.World;
-            }
-
-            return LocationContext.Undefined;
+            return Enumeration.LocationContext.World;
         }
     }
 }

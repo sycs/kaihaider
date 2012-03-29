@@ -2,7 +2,7 @@
 //               Helpers/Movement.cs            //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from MutaRaidBT by fiftypence.  //
+//   Originally from PallyRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -18,24 +18,24 @@ namespace PallyRaidBT.Helpers
     {
         static public Composite MoveToLoc(WoWPointDelegate loc)
         {
+            return MoveToLoc(loc, 2);
+        }
+
+        static public Composite MoveToLoc(WoWPointDelegate loc, float distance)
+        {
             return new PrioritySelector(
-                new Decorator(ret => loc(ret).Distance(StyxWoW.Me.Location) > 5,
+                new Decorator(ret => loc(ret).Distance(StyxWoW.Me.Location) > distance,
                     new Action(ret => Navigator.MoveTo(loc(ret)))),
 
-                new Decorator(ret => loc(ret).Distance(StyxWoW.Me.Location) <= 5 && StyxWoW.Me.IsMoving,
+                new Decorator(ret => loc(ret).Distance(StyxWoW.Me.Location) <= distance - 1 &&
+                                     StyxWoW.Me.IsMoving,
                     new Action(ret => Navigator.PlayerMover.MoveStop()))
             );
         }
 
         static public Composite MoveToUnit(WoWUnitDelegate unit)
         {
-            return new PrioritySelector(
-                new Decorator(ret => !unit(ret).IsWithinMeleeRange,
-                    new Action(ret => Navigator.MoveTo(unit(ret).Location))),
-
-                new Decorator(ret => unit(ret).IsWithinMeleeRange && StyxWoW.Me.IsMoving,
-                    new Action(ret => Navigator.PlayerMover.MoveStop()))
-            );
+            return MoveToLoc(ret => unit(ret).Location, 5);
         }
 
         static public Composite FaceUnit(WoWUnitDelegate unit)

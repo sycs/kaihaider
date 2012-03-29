@@ -2,7 +2,7 @@
 //                 Retribution.cs               //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from MutaRaidBT by fiftypence.  //
+//   Originally from PallyRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -11,24 +11,30 @@ using TreeSharp;
 
 namespace PallyRaidBT.Composites.Context
 {
-    class Retribution
+    static class Retribution
     {
         static public Composite BuildCombatBehavior()
         {
             return new Decorator(ret => Settings.Mode.mUseCombat,
-                new Switch<Helpers.Area.LocationContext>(ret => Helpers.Area.mLocation,
-                    Raid.Retribution.BuildCombatBehavior(),
+                new Switch<Helpers.Enumeration.LocationContext>(ret => Helpers.Area.mLocation,
 
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.Battleground,
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Raid,
+                        Raid.Retribution.BuildCombatBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.HeroicDungeon,
+                        Raid.Retribution.BuildCombatBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Dungeon,
+                        Level.Retribution.BuildCombatBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Battleground,
                         Battleground.Retribution.BuildCombatBehavior()
                     ),
 
-
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.Undefined,
-                        Battleground.Retribution.BuildCombatBehavior()
-                    ),
-
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.World,
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.World,
                         Level.Retribution.BuildCombatBehavior()
                     )
                 )
@@ -38,20 +44,25 @@ namespace PallyRaidBT.Composites.Context
         static public Composite BuildPullBehavior()
         {
             return new Decorator(ret => Settings.Mode.mUseCombat,
-                new Switch<Helpers.Area.LocationContext>(ret => Helpers.Area.mLocation,
-                    Raid.Retribution.BuildPullBehavior(),
+                new Switch<Helpers.Enumeration.LocationContext>(ret => Helpers.Area.mLocation,
 
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.Battleground,
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Raid,
+                        Raid.Retribution.BuildPullBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.HeroicDungeon,
+                        Raid.Retribution.BuildPullBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Dungeon,
+                        Level.Retribution.BuildPullBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Battleground,
                         Battleground.Retribution.BuildPullBehavior()
                     ),
 
-
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.Undefined,
-                        Battleground.Retribution.BuildPullBehavior()
-                    ),
-
-
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.World,
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.World,
                         Level.Retribution.BuildPullBehavior()
                     )
                 )
@@ -60,22 +71,27 @@ namespace PallyRaidBT.Composites.Context
 
         static public Composite BuildBuffBehavior()
         {
-            return new Switch<Helpers.Area.LocationContext>(ret => Helpers.Area.mLocation,
-                Raid.Retribution.BuildBuffBehavior(),
+            return new Switch<Helpers.Enumeration.LocationContext>(ret => Helpers.Area.mLocation,
 
-                new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.Battleground,
-                    Battleground.Retribution.BuildBuffBehavior()
-                ),
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Raid,
+                        Raid.Retribution.BuildBuffBehavior()
+                    ),
 
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.HeroicDungeon,
+                        Raid.Retribution.BuildBuffBehavior()
+                    ),
 
-                    new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.Undefined,
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Dungeon,
+                        Level.Retribution.BuildBuffBehavior()
+                    ),
+
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Battleground,
                         Battleground.Retribution.BuildBuffBehavior()
                     ),
 
-
-                new SwitchArgument<Helpers.Area.LocationContext>(Helpers.Area.LocationContext.World,
-                    Level.Retribution.BuildBuffBehavior()
-                )
+                    new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.World,
+                        Level.Retribution.BuildBuffBehavior()
+                    )
             );
         }
     }
