@@ -1,8 +1,8 @@
 ﻿//////////////////////////////////////////////////
-//              PallyRaidBT.cs                   //
+//              PallyRaidBT.cs                  //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 

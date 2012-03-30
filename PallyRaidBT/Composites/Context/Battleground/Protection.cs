@@ -2,7 +2,7 @@
 //           Battleground/Protection .cs        //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -13,17 +13,17 @@ namespace PallyRaidBT.Composites.Context.Battleground
     {
         static public Composite BuildCombatBehavior()
         {
-            return Raid.Retribution.BuildCombatBehavior();
+            return Raid.Protection.BuildCombatBehavior();
         }
 
         static public Composite BuildPullBehavior()
         {
-            return Raid.Retribution.BuildPullBehavior();
+            return Raid.Protection.BuildPullBehavior();
         }
 
         static public Composite BuildBuffBehavior()
         {
-            return Raid.Retribution.BuildBuffBehavior();
+            return Raid.Protection.BuildBuffBehavior();
         }
     }
 }

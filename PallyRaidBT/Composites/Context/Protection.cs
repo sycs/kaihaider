@@ -2,7 +2,7 @@
 //               Raid/Protection.cs             //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 using TreeSharp;
@@ -17,23 +17,23 @@ namespace PallyRaidBT.Composites.Context
                 new Switch<Helpers.Enumeration.LocationContext>(ret => Helpers.Area.mLocation,
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Raid,
-                        Raid.Retribution.BuildCombatBehavior()
+                        Raid.Protection.BuildCombatBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.HeroicDungeon,
-                        Raid.Retribution.BuildCombatBehavior()
+                        Raid.Protection.BuildCombatBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Dungeon,
-                        Level.Retribution.BuildCombatBehavior()
+                        Level.Protection.BuildCombatBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Battleground,
-                        Battleground.Retribution.BuildCombatBehavior()
+                        Battleground.Protection.BuildCombatBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.World,
-                        Level.Retribution.BuildCombatBehavior()
+                        Level.Protection.BuildCombatBehavior()
                     )
                 )
             );
@@ -45,23 +45,23 @@ namespace PallyRaidBT.Composites.Context
                 new Switch<Helpers.Enumeration.LocationContext>(ret => Helpers.Area.mLocation,
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Raid,
-                        Raid.Retribution.BuildPullBehavior()
+                        Raid.Protection.BuildPullBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.HeroicDungeon,
-                        Raid.Retribution.BuildPullBehavior()
+                        Raid.Protection.BuildPullBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Dungeon,
-                        Level.Retribution.BuildPullBehavior()
+                        Level.Protection.BuildPullBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Battleground,
-                        Battleground.Retribution.BuildPullBehavior()
+                        Battleground.Protection.BuildPullBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.World,
-                        Level.Retribution.BuildPullBehavior()
+                        Level.Protection.BuildPullBehavior()
                     )
                 )
             );
@@ -72,23 +72,23 @@ namespace PallyRaidBT.Composites.Context
             return new Switch<Helpers.Enumeration.LocationContext>(ret => Helpers.Area.mLocation,
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Raid,
-                        Raid.Retribution.BuildBuffBehavior()
+                        Raid.Protection.BuildBuffBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.HeroicDungeon,
-                        Raid.Retribution.BuildBuffBehavior()
+                        Raid.Protection.BuildBuffBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Dungeon,
-                        Level.Retribution.BuildBuffBehavior()
+                        Level.Protection.BuildBuffBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.Battleground,
-                        Battleground.Retribution.BuildBuffBehavior()
+                        Battleground.Protection.BuildBuffBehavior()
                     ),
 
                     new SwitchArgument<Helpers.Enumeration.LocationContext>(Helpers.Enumeration.LocationContext.World,
-                        Level.Retribution.BuildBuffBehavior()
+                        Level.Protection.BuildBuffBehavior()
                     )
             );
         }

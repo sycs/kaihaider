@@ -2,7 +2,7 @@
 //                Helpers/Target.cs             //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -49,6 +49,24 @@ namespace PallyRaidBT.Helpers
         static public Composite EnsureBestPvPTarget()
         {
             return new Action();
+        }
+
+        static public WoWUnit FindLowestThreat()
+        {
+            foreach (WoWPlayer d in StyxWoW.Me.PartyMembers)
+            {
+                if (d.Guid != StyxWoW.Me.Guid)
+                {
+                    if (d.CurrentTarget != null && d.CurrentTarget.IsAlive && !d.CurrentTarget.IsPlayer && (d.CurrentTarget.IsTargetingMyPartyMember || d.IsTargetingMyRaidMember || d.IsTargetingMeOrPet))
+                    {
+                        if (d.CurrentTarget.ThreatInfo.RawPercent > 85 && d.CurrentTarget.ThreatInfo.ThreatValue > 1000)
+                        {
+                            return d.CurrentTarget;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         static private Composite GetNewTarget()

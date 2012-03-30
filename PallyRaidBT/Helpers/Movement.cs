@@ -2,7 +2,7 @@
 //               Helpers/Movement.cs            //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -47,10 +47,14 @@ namespace PallyRaidBT.Helpers
 
         static public Composite MoveToAndFaceUnit(WoWUnitDelegate unit)
         {
+            //if(StyxWoW.Me.MovementInfo.IsMoving&&StyxWoW.Me.IsSafelyFacing(unit))
+           
             return new PrioritySelector(
                 MoveToUnit(unit),
                 FaceUnit(unit)
             );
         }
+
+        
     }
 }

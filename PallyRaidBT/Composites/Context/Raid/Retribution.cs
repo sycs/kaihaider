@@ -2,7 +2,7 @@
 //               Raid/Retribution.cs            //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -14,7 +14,7 @@ namespace PallyRaidBT.Composites.Context.Raid
 {
     internal class Retribution
     {
-        public static Composite BuildCombatBehavior()
+        static public Composite BuildCombatBehavior()
         {
             return new FlPrioritySelector(
                 Helpers.Spells.ToggleAutoAttack(),

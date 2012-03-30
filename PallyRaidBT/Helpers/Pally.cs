@@ -2,7 +2,7 @@
 //               Helpers/Pally.cs               //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 using System.Drawing;
@@ -50,6 +50,11 @@ namespace PallyRaidBT.Helpers
         static public void Pulse()
         {
             
+        }
+
+        static public bool IsInterruptUsable()
+        {
+            return StyxWoW.Me.CurrentTarget.IsCasting && StyxWoW.Me.CurrentTarget.CurrentCastTimeLeft.TotalSeconds <= 0.5;
         }
 
         static public bool IsCooldownsUsable()
@@ -117,6 +122,11 @@ namespace PallyRaidBT.Helpers
             }
 
             return Enumeration.TalentTrees.None;
+        }
+
+        static public bool IsAoeUsable()
+        {
+            return Settings.Mode.mUseAoe;
         }
 
         static public bool ShouldAoe(int num)

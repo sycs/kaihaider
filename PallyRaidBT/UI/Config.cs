@@ -1,8 +1,10 @@
 ﻿//////////////////////////////////////////////////
 //                Config.cs                     //
-//      Part of PallyRaidBT by fiftypence        //
+//        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-
+//   Originally from MutaRaidBT by fiftypence.  //
+//    Reused with permission from the author.   //
+//////////////////////////////////////////////////
 using System;
 using System.Windows.Forms;
 

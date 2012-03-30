@@ -2,7 +2,7 @@
 //               Helpers/Spells.cs              //
 //        Part of PallyRaidBT by kaihaider      //
 //////////////////////////////////////////////////
-//   Originally from PallyRaidBT by fiftypence.  //
+//   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
@@ -118,6 +118,8 @@ namespace PallyRaidBT.Helpers
                 )
             );
         }
+
+        
 
         static public bool HasSeal()
         {
