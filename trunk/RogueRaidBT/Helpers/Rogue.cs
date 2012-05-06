@@ -58,6 +58,8 @@ namespace RogueRaidBT.Helpers
 
 
             mComboPoints = StyxWoW.Me.ComboPoints;
+
+            if(StyxWoW.Me.Combat)
             mRawComboPoints = StyxWoW.Me.RawComboPoints;
             mTarget = StyxWoW.Me.CurrentTarget;
             if (mTarget != null)
