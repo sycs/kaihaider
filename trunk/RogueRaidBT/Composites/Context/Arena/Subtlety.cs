@@ -38,7 +38,7 @@ namespace RogueRaidBT.Composites.Context.Arena
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && 
                     ((Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.1 )||
-                    (Helpers.Aura.IsTargetCasting == 740 || Helpers.Aura.IsTargetCasting == 47540 ||
+                    (Helpers.Aura.IsTargetCasting == 740 || 
                     Helpers.Aura.IsTargetCasting == 64843 || Helpers.Aura.IsTargetCasting == 12051 ||
                     Helpers.Aura.IsTargetCasting == 118
                     ))),
