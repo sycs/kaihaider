@@ -58,6 +58,7 @@ namespace RogueRaidBT.Helpers
             mComboPoints = StyxWoW.Me.ComboPoints;
             mRawComboPoints = StyxWoW.Me.RawComboPoints;
             mTarget = StyxWoW.Me.CurrentTarget;
+            if (mTarget != null)
             mTargetHP = StyxWoW.Me.CurrentTarget.HealthPercent;
             mHP = Helpers.Rogue.mHP;
         }
