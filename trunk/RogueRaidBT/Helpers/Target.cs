@@ -24,6 +24,7 @@ namespace RogueRaidBT.Helpers
 
         static public void Pulse()
         {
+            if (StyxWoW.IsInGame != false)
             mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                     .Where(unit =>
                                         !unit.IsFriendly

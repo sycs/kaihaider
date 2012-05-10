@@ -24,21 +24,23 @@ namespace RogueRaidBT.Composites
         {
             // Wraps the entire tree in a framelock and ticks the tree. 
             // Responsible for debug text.
+            
+                using (new FrameLock())
+                {
+                    //base.Start(context);
+                    Helpers.General.mTimer.Reset();
+                    Helpers.General.mTimer.Start();
 
-            using (new FrameLock())
-            {
-                Helpers.General.mTimer.Reset();
-                Helpers.General.mTimer.Start();
-
-                Logging.WriteDebug(Color.Orange, "START TICK");
+                    Logging.WriteDebug(Color.Orange, "START TICK");
 
 
-                RunStatus tick = base.Tick(context);
+                    RunStatus tick = base.Tick(context);
 
-                Logging.WriteDebug(Color.Orange, "END TICK -> {0} ms", Helpers.General.mTimer.ElapsedMilliseconds);
-
-                return tick;
-            }
+                    Logging.WriteDebug(Color.Orange, "END TICK -> {0} ms", Helpers.General.mTimer.ElapsedMilliseconds);
+                    //base.Stop(context);
+                    return tick;
+                }
+            
         }
     }
 }

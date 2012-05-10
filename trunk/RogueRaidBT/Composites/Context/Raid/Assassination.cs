@@ -38,7 +38,7 @@ namespace RogueRaidBT.Composites.Context.Raid
                                                                  Helpers.Rogue.mComboPoints >= 1),
 
                 Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
-                                                                       Helpers.Rogue.mCurrentEnergy < 90),
+                                                                       Helpers.Rogue.mCurrentEnergy > 50 && Helpers.Rogue.mComboPoints > 3),
 
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
@@ -57,7 +57,7 @@ namespace RogueRaidBT.Composites.Context.Raid
                                              Helpers.Rogue.mComboPoints != 5,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
-                                new WaitContinue(1, ret => false, new ActionAlwaysSucceed()),
+                                new WaitContinue(1, ret => false, new ActionAlwaysSucceed()),//!stealth
                                 Helpers.Spells.Cast("Garrote")
                                 )
                             ),

@@ -28,10 +28,11 @@ namespace RogueRaidBT.Composites
                     new Decorator(ret => Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90,
                         new ActionAlwaysSucceed()),
 
-                    Helpers.Spells.CastSelf("Recuperate", ret => StyxWoW.Me.RawComboPoints >= 1 && 
-                                                                 !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate")),
+                    Helpers.Spells.CastSelf("Recuperate", ret => StyxWoW.Me.RawComboPoints >= 1 &&
+                                                                 !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") && 
+                                                                 Helpers.Rogue.CheckSpamLock()),
 
-                    new Decorator(ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 75,
+                    new Decorator(ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 5,
                         new PrioritySelector(
 
                             new Decorator(ret => StyxWoW.Me.IsMoving,

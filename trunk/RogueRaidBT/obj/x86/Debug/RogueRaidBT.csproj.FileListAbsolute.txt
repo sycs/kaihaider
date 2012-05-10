@@ -1,8 +1,0 @@
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\PvP-RaidBT\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\PvP-RaidBT\obj\x86\Debug\PvP_RaidBT.Properties.Resources.resources
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\PvP-RaidBT\obj\x86\Debug\GenerateResource.read.1.tlog
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\PvP-RaidBT\obj\x86\Debug\GenerateResource.write.1.tlog
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\RogueRaidBT\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\RogueRaidBT\obj\x86\Debug\PvP_RaidBT.Properties.Resources.resources
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\RogueRaidBT\obj\x86\Debug\GenerateResource.read.1.tlog
-C:\Users\Cameron Haider\Desktop\Honorbuddy\CustomClasses\RogueRaidBT\obj\x86\Debug\GenerateResource.write.1.tlog

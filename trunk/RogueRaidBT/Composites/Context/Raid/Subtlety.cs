@@ -71,7 +71,7 @@ namespace RogueRaidBT.Composites.Context.Raid
                                 Helpers.Spells.CastSelf("Vanish"),
                                 new WaitContinue(TimeSpan.FromSeconds(1), ret => false, new ActionAlwaysSucceed()),
                                 Helpers.Spells.CastCooldown("Premeditation"),
-                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind)
+                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsSafelyBehind)
                             )
                         ),
 
@@ -86,12 +86,12 @@ namespace RogueRaidBT.Composites.Context.Raid
                                      Helpers.Aura.TimeRupture < 3 ||
                                      Helpers.Aura.ShadowDance))),
                     new PrioritySelector(
-                        Helpers.Spells.Cast("Ambush",     ret => Helpers.Aura.IsBehind && 
+                        Helpers.Spells.Cast("Ambush",     ret => Helpers.Aura.IsSafelyBehind && 
                                                                  (Helpers.Aura.Stealth || 
                                                                     Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)),
                         Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Aura.TimeRupture < 3),
-                        Helpers.Spells.Cast("Backstab",   ret => Helpers.Aura.IsBehind),
-                        Helpers.Spells.Cast("Hemorrhage", ret => !Helpers.Aura.IsBehind)
+                        Helpers.Spells.Cast("Backstab",   ret => Helpers.Aura.IsSafelyBehind),
+                        Helpers.Spells.Cast("Hemorrhage", ret => !Helpers.Aura.IsSafelyBehind)
                     )
                 )
             );

@@ -25,7 +25,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellId, ret => true, Color.LightBlue, ret => StyxWoW.Me.CurrentTarget);
         }
 
-        static public Composite Cast(int spellId, CanRunDecoratorDelegate cond) 
+        static public Composite Cast(int spellId, TreeSharp.CanRunDecoratorDelegate cond) 
         {
             return Cast(spellId, cond, Color.LightBlue, ret => StyxWoW.Me.CurrentTarget);
         }
@@ -35,7 +35,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellName, ret => true, Color.LightBlue, ret => StyxWoW.Me.CurrentTarget);
         }
 
-        static public Composite Cast(string spellName, CanRunDecoratorDelegate cond)
+        static public Composite Cast(string spellName, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellName, cond, Color.LightBlue, ret => StyxWoW.Me.CurrentTarget);
         }
@@ -45,7 +45,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellId, ret => true, Color.Yellow, ret => Focus.rawFocusTarget);
         }
 
-        static public Composite CastFocusRaw(int spellId, CanRunDecoratorDelegate cond)
+        static public Composite CastFocusRaw(int spellId, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellId, cond, Color.Yellow, ret => Focus.rawFocusTarget);
         }
@@ -55,7 +55,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellName, ret => true, Color.Yellow, ret => Focus.rawFocusTarget);
         }
 
-        static public Composite CastFocusRaw(string spellName, CanRunDecoratorDelegate cond)
+        static public Composite CastFocusRaw(string spellName, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellName, cond, Color.Yellow, ret => Focus.rawFocusTarget);
         }
@@ -65,7 +65,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellId, ret => true, Color.Yellow, ret => Focus.mFocusTarget);
         }
 
-        static public Composite CastFocus(int spellId, CanRunDecoratorDelegate cond)
+        static public Composite CastFocus(int spellId, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellId, cond, Color.Yellow, ret => Focus.mFocusTarget);
         }
@@ -75,7 +75,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellName, ret => true, Color.Yellow, ret => Focus.mFocusTarget);
         }
 
-        static public Composite CastFocus(string spellName, CanRunDecoratorDelegate cond)
+        static public Composite CastFocus(string spellName, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellName, cond, Color.Yellow, ret => Focus.mFocusTarget);
         }
@@ -85,7 +85,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellId, ret => true, Color.Red, ret => StyxWoW.Me.CurrentTarget);
         }
 
-        static public Composite CastCooldown(int spellId, CanRunDecoratorDelegate cond)
+        static public Composite CastCooldown(int spellId, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellId, cond, Color.Red, ret => StyxWoW.Me.CurrentTarget);
         }
@@ -95,7 +95,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellName, ret => true, Color.Red, ret => StyxWoW.Me.CurrentTarget);
         }
 
-        static public Composite CastCooldown(string spellName, CanRunDecoratorDelegate cond)
+        static public Composite CastCooldown(string spellName, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellName, cond, Color.Red, ret => StyxWoW.Me.CurrentTarget);
         }
@@ -105,7 +105,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellId, ret => true, Color.DarkSalmon, ret => StyxWoW.Me);
         }
 
-        static public Composite CastSelf(int spellId, CanRunDecoratorDelegate cond)
+        static public Composite CastSelf(int spellId, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellId, cond, Color.DarkSalmon, ret => StyxWoW.Me);
         }
@@ -115,7 +115,7 @@ namespace RogueRaidBT.Helpers
             return Cast(spellName, ret => true, Color.DarkSalmon, ret => StyxWoW.Me);
         }
 
-        static public Composite CastSelf(string spellName, CanRunDecoratorDelegate cond)
+        static public Composite CastSelf(string spellName, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return Cast(spellName, cond, Color.DarkSalmon, ret => StyxWoW.Me);
         }
@@ -125,7 +125,7 @@ namespace RogueRaidBT.Helpers
             return ToggleAutoAttack(ret => true);
         }
 
-        static public Composite ToggleAutoAttack(CanRunDecoratorDelegate cond)
+        static public Composite ToggleAutoAttack(TreeSharp.CanRunDecoratorDelegate cond)
         {
             return new Decorator(ret => cond(ret) && !StyxWoW.Me.HasAura("Stealth") && !StyxWoW.Me.IsAutoAttacking,
                 new Action(ret => 
@@ -203,7 +203,7 @@ namespace RogueRaidBT.Helpers
             return SpellManager.HasSpell(spellName) ? SpellManager.Spells[spellName].CooldownTimeLeft.TotalSeconds : 0;
         }
 
-        static private Composite Cast(int spellId, CanRunDecoratorDelegate cond, Color color, WoWUnitDelegate target) 
+        static private Composite Cast(int spellId, TreeSharp.CanRunDecoratorDelegate cond, Color color, WoWUnitDelegate target) 
         {
             return new Decorator(ret => target(ret) != null && cond(ret) && CanCast(spellId),
                 new Action(ret =>
@@ -220,11 +220,12 @@ namespace RogueRaidBT.Helpers
             );
         }
 
-        static private Composite Cast(string spellName, CanRunDecoratorDelegate cond, Color color, WoWUnitDelegate target)
+        static private Composite Cast(string spellName, TreeSharp.CanRunDecoratorDelegate cond, Color color, WoWUnitDelegate target)
         {
             return new Decorator(ret => target(ret) != null && cond(ret) && CanCast(spellName),
                 new Action(ret =>
-                    {
+                               {
+                        //Logging.Write(color, Helpers.Rogue.CheckSpamLock().ToString());
                         if (Helpers.Focus.mFocusTarget != null)
                             Logging.WriteDebug(Color.White, "" + Focus.mFocusTarget.Name);
                         SpellManager.Cast(spellName, target(ret));

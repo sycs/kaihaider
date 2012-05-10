@@ -21,7 +21,6 @@ namespace RogueRaidBT.Composites.Context.Level
         {
             return new PrioritySelector(
                 Helpers.Target.EnsureValidTarget(),
-                Helpers.Movement.MoveToAndFaceUnit(ret => Helpers.Rogue.mTarget),
 
                 new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
@@ -60,7 +59,7 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.Cast("Envenom",      ret => Helpers.Rogue.mComboPoints >= 4),
                 Helpers.Spells.Cast("Eviscerate",   ret => Helpers.Rogue.mComboPoints >= 4),
 
-                Helpers.Spells.Cast("Mutilate")
+                Helpers.Spells.Cast("Mutilate", ret => Helpers.Rogue.ReleaseSpamLock())
             );
         }
 
@@ -73,7 +72,6 @@ namespace RogueRaidBT.Composites.Context.Level
 
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth")),
 
-                Helpers.Movement.MoveToAndFaceUnit(ret => StyxWoW.Me.CurrentTarget),
                 Helpers.Spells.Cast("Cheap Shot",  ret => StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Mutilate")
             );
@@ -84,9 +82,9 @@ namespace RogueRaidBT.Composites.Context.Level
             return new Decorator(ret => !StyxWoW.Me.Mounted,
                 new PrioritySelector(
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") &&
-                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.ResetRawComboPoints()),
+                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
                     Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
-                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.ResetRawComboPoints())
+                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock())
                 )
             );
         }

@@ -20,6 +20,7 @@ namespace RogueRaidBT.Helpers
         static public bool SliceandDice { get; private set; }
         static public double TimeSliceandDice { get; private set; }
         static public bool Tricks { get; private set; }
+        static public bool DeadlyThrow { get; private set; }
         static public bool ShouldShiv { get; private set; }
 
         //Legendary
@@ -55,8 +56,10 @@ namespace RogueRaidBT.Helpers
         static public bool IsTargetImmuneSilence { get; private set; }
         static public int IsTargetCasting { get; private set; }
 
-        static public bool IsBehind { get; private set; }
-
+        static public bool IsSafelyBehind { get; private set; }
+        static public bool LastDirection { get;  set; }
+        static public bool FaerieFire { get; private set; }
+        static public bool HealingGhost { get; private set; }
         
 
         static public void Pulse() 
@@ -65,18 +68,21 @@ namespace RogueRaidBT.Helpers
             FuryoftheDestroyer = false; ColdBlood = false; Envenom = false; Tricks = false;
             ShadowDance = false; FindWeakness = false; Rupture = false; ShouldShiv = false;
             IsTargetDisoriented = false; IsTargetInvulnerable = false; IsTargetSapped = false;
-            IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsBehind = false;
+            IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsSafelyBehind = false;
             DeadlyPoison = false; Vendetta = false; Overkill = false; RevealingStrike = false;
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false;
             CripplingPoison = false;
-            
-            if(StyxWoW.Me.CurrentTarget!=null) IsBehind = Rogue.IsBehindUnit(StyxWoW.Me.CurrentTarget);
+            DeadlyThrow = false;
+            FaerieFire = false;
+
+            HealingGhost = false;
+
             TimeRecuperate = 0; TimeSliceandDice = 0; TimeRupture = 0; TimeHemorrhage = 0; IsTargetCasting = 0;
             TimeVendetta = 0;
 
             foreach (WoWAura aura in StyxWoW.Me.GetAllAuras())
                 {
-                    if (aura.SpellId == 89775) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
+                    
                     switch (aura.Name) //goto case ; 
                     {
                         case "Stealth":
@@ -158,15 +164,26 @@ namespace RogueRaidBT.Helpers
                                 break;
                             }
 
+                        case "Faerie Fire":
+                            {
+                                FaerieFire = true;
+                                break;
+                            }
+
                     }
                 }
 
             if (Rogue.mTarget != null)
             {
+
+                IsSafelyBehind = Rogue.IsBehindUnit(StyxWoW.Me.CurrentTarget) || StyxWoW.Me.CurrentTarget.MeIsBehind;
+                //if (IsSafelyBehind) Logging.Write(Color.White, "Behind");
+
                 if (Rogue.mTarget.IsCasting)
                     IsTargetCasting = Rogue.mTarget.CastingSpellId;
                 foreach (WoWAura aura in StyxWoW.Me.CurrentTarget.GetAllAuras())
                 {
+                    if (aura.SpellId == 89775 && aura.CreatorGuid == StyxWoW.Me.Guid) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
                     if(aura.Spell.Mechanic == WoWSpellMechanic.Disoriented ||
                         aura.Spell.Mechanic == WoWSpellMechanic.Incapacitated)
                     {
@@ -181,6 +198,8 @@ namespace RogueRaidBT.Helpers
                     }*/
                     else if (aura.Spell.Mechanic == WoWSpellMechanic.Sapped)
                     {
+
+                        Logging.WriteDebug(Color.White, "Sapped!!!!");
                         IsTargetSapped = true;
                     }
                     else if (aura.Spell.Mechanic == WoWSpellMechanic.Interrupted)
@@ -203,6 +222,7 @@ namespace RogueRaidBT.Helpers
                                 }
                             case "Find Weakness":
                                 {
+                                    if(aura.CreatorGuid == StyxWoW.Me.Guid)
                                     FindWeakness = true;
                                     break;
                                 }
@@ -290,14 +310,29 @@ namespace RogueRaidBT.Helpers
                                 }
                             case "Revealing Strike":
                                 {
+                                    if(aura.CreatorGuid == StyxWoW.Me.Guid)
                                     RevealingStrike = true;
                                     break;
                                 }
+                            case "Spirit of Redemption":
+                                {
+                                    HealingGhost = true;
+                                    break;
+                                }
+                            case "Deadly Throw":
+                                {
+                                    DeadlyThrow = true;
+                                    break;
+                                }
+
                         }
+
+
                     }
                     
                     
                 }
+                if(IsTargetInvulnerable) Logging.WriteDebug(Color.White, "Interrupted!!!");
             }
 
             

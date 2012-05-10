@@ -21,8 +21,6 @@ namespace RogueRaidBT.Composites.Context.Level
         public static Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-                Helpers.Target.EnsureValidTarget(),
-                Helpers.Movement.MoveToAndFaceUnit(ret => Helpers.Rogue.mTarget),
 
                 new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
@@ -30,6 +28,8 @@ namespace RogueRaidBT.Composites.Context.Level
                         new WaitContinue(2, ret => false, new ActionAlwaysSucceed())
                     )
                 ),
+
+                Helpers.Target.EnsureValidTarget(),
 
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
@@ -67,7 +67,7 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.Cast("Eviscerate",       ret => Helpers.Rogue.mComboPoints >= 4),
                 Helpers.Spells.Cast("Revealing Strike", ret => Helpers.Rogue.mComboPoints == 4 &&
                                                                !Helpers.Aura.RevealingStrike),
-                Helpers.Spells.Cast("Sinister Strike")
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Rogue.ReleaseSpamLock())
             );
         }
 
@@ -80,7 +80,6 @@ namespace RogueRaidBT.Composites.Context.Level
 
                 Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Aura.Stealth),
 
-                Helpers.Movement.MoveToAndFaceUnit(ret => Helpers.Rogue.mTarget),
                 Helpers.Spells.Cast("Cheap Shot",  ret => Helpers.Aura.Stealth),
                 Helpers.Spells.Cast("Sinister Strike")
             );
@@ -91,9 +90,9 @@ namespace RogueRaidBT.Composites.Context.Level
             return new Decorator(ret => !StyxWoW.Me.Mounted,
                 new PrioritySelector(
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") &&
-                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.ResetRawComboPoints()),
+                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
                     Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
-                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.ResetRawComboPoints())
+                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock())
                 )
             );
         }

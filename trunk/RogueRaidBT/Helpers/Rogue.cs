@@ -27,14 +27,17 @@ namespace RogueRaidBT.Helpers
         static public int mCurrentEnergy { get; private set; }
         static public int mComboPoints { get; private set; }
         static public int mRawComboPoints { get; private set; }
-        static public WoWUnit mTarget { get; private set; }
+        static public WoWUnit mTarget { get; set; }
         static public double mTargetHP { get; private set; }
         static public double mHP { get; private set; }
+
+        static public bool spamming { get; private set; }
 
         static public Enum.TalentTrees mCurrentSpec { get; private set; }
 
         static Rogue()
         {
+            
             Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", delegate
                 {
                     Logging.Write(Color.Orange, "Your spec has been updated. Rebuilding behaviors...");
@@ -58,7 +61,6 @@ namespace RogueRaidBT.Helpers
 
 
             mComboPoints = StyxWoW.Me.ComboPoints;
-
             if(StyxWoW.Me.Combat)
             mRawComboPoints = StyxWoW.Me.RawComboPoints;
             mTarget = StyxWoW.Me.CurrentTarget;
@@ -66,10 +68,21 @@ namespace RogueRaidBT.Helpers
                 mTargetHP = mTarget.HealthPercent;
             mHP = StyxWoW.Me.HealthPercent;
         }
-
-        static public bool ResetRawComboPoints()
+        
+        static public bool CheckSpamLock()
         {
-            mRawComboPoints = 0;
+            if(!spamming)
+            {
+                spamming = true;
+                return true;
+            }
+            return false;
+            
+        }
+
+        static public bool ReleaseSpamLock()
+        {
+            spamming = false;
             return true;
         }
 
@@ -87,11 +100,11 @@ namespace RogueRaidBT.Helpers
             return false;
         }
 
-        static public Composite TryToInterrupt(CanRunDecoratorDelegate cond)
+        static public Composite TryToInterrupt(TreeSharp.CanRunDecoratorDelegate cond)
         {
             return new Decorator(cond,
                 new PrioritySelector(
-                    new Decorator(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast,
+                    new Decorator(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast ,
                         new PrioritySelector(
                             Helpers.Spells.CastCooldown("Kick", ret => true)
 
@@ -126,14 +139,15 @@ namespace RogueRaidBT.Helpers
         }
         static public bool IsHolyOrNat()
         {
-            return (StyxWoW.Me.CurrentTarget.CastingSpell.School == WoWSpellSchool.Holy ||
-                    StyxWoW.Me.CurrentTarget.CastingSpell.School == WoWSpellSchool.Nature);
+            return (Aura.IsTargetCasting != 0 &&
+                    (WoWSpell.FromId(Aura.IsTargetCasting).School == WoWSpellSchool.Holy) ||
+                    WoWSpell.FromId(Aura.IsTargetCasting).School == WoWSpellSchool.Nature);
         }
 
 
         static public bool IsBehindUnit(WoWUnit unit)
         {
-            return Settings.Mode.mForceBehind || unit.MeIsBehind;
+            return Settings.Mode.mForceBehind || unit.MeIsSafelyBehind;
         }
 
         static public bool IsAoeUsable()
@@ -178,7 +192,7 @@ namespace RogueRaidBT.Helpers
 
         static public Composite ApplyPosions()
         {
-            return new Decorator(ret => Settings.Mode.mUsePoisons[(int) Area.mLocation],
+            return new Decorator(ret => Settings.Mode.mUsePoisons[(int)Area.mLocation] && StyxWoW.Me != null && StyxWoW.Me.Inventory != null && StyxWoW.Me.Inventory.Equipped.MainHand !=null,
                 new PrioritySelector(
                     ApplyPoisonToItem(StyxWoW.Me.Inventory.Equipped.MainHand, ret => (uint) Settings.Mode.mPoisonsMain[(int) Area.mLocation]),
                     ApplyPoisonToItem(StyxWoW.Me.Inventory.Equipped.OffHand,  ret => (uint) Settings.Mode.mPoisonsOff[(int) Area.mLocation])

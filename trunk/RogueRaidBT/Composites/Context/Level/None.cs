@@ -17,7 +17,6 @@ namespace RogueRaidBT.Composites.Context.Level
         {
             return new PrioritySelector(
                 Helpers.Target.EnsureValidTarget(),
-                Helpers.Movement.MoveToAndFaceUnit(ret => Helpers.Rogue.mTarget),
 
                 Helpers.Spells.CastSelf("Evasion", ret => Helpers.Rogue.mHP <= 35),
 
@@ -29,7 +28,6 @@ namespace RogueRaidBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
-                Helpers.Movement.MoveToAndFaceUnit(ret => Helpers.Rogue.mTarget),
                 Helpers.Spells.Cast("Sinister Strike")
             );
         }

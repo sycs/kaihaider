@@ -63,6 +63,12 @@ namespace RogueRaidBT.Helpers
                 mTrinket1 = trinket1;
                 mTrinket1Usable = ItemHasUseEffectLua(mTrinket1);
 
+                foreach (WoWItem.WoWItemSpell itemSpell in mTrinket1.ItemSpells)
+                {
+                    if (itemSpell.ActualSpell.Id == 42292) mTrinket1Usable = false;
+                }
+                
+
                 Logging.Write(Color.Orange, "");
                 Logging.Write(Color.Orange, "" + mTrinket1.Name + " detected in Trinket Slot 1.");
                 Logging.Write(Color.Orange, " Usable spell: " + mTrinket1Usable);
@@ -74,6 +80,11 @@ namespace RogueRaidBT.Helpers
             {
                 mTrinket2 = trinket2;
                 mTrinket2Usable = ItemHasUseEffectLua(mTrinket2);
+                foreach (WoWItem.WoWItemSpell itemSpell in mTrinket2.ItemSpells)
+                {
+                    if (itemSpell.ActualSpell.Id == 42292) mTrinket2Usable = false;
+                }
+                
 
                 Logging.Write(Color.Orange, "" + mTrinket2.Name + " detected in Trinket Slot 2.");
                 Logging.Write(Color.Orange, " Usable spell: " + mTrinket2Usable);
@@ -92,7 +103,7 @@ namespace RogueRaidBT.Helpers
             }
         }
 
-        static public Composite UseSpecialAbilities(CanRunDecoratorDelegate cond)
+        static public Composite UseSpecialAbilities(TreeSharp.CanRunDecoratorDelegate cond)
         {
             return new PrioritySelector(
                 UseItem(ret => mTrinket1, ret => cond(ret) && mTrinket1Usable),
@@ -109,7 +120,7 @@ namespace RogueRaidBT.Helpers
             return UseSpecialAbilities(ret => true);
         }
 
-        static public Composite UseItem(WoWItemDelegate item, CanRunDecoratorDelegate cond)
+        static public Composite UseItem(WoWItemDelegate item, TreeSharp.CanRunDecoratorDelegate cond)
         {
             return new Decorator(ret => item(ret) != null && cond(ret) && ItemUsable(item(ret)),
                 new Action(ret =>

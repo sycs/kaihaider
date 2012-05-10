@@ -34,7 +34,7 @@ namespace RogueRaidBT
             Logging.Write(Color.Orange, "RogueRaidBT v" + mCurVersion + " is now operational.");
             Logging.Write(Color.Orange, "");
             Logging.Write(Color.Orange, "Your feedback is appreciated. Please leave some in the forum thread at:");
-            Logging.Write(Color.Orange, "http://www.thebuddyforum.com/honorbuddy-forum/classes/rogue/32282-release-mutaraid-cc.html");
+            Logging.Write(Color.Orange, "http://www.thebuddyforum.com/honorbuddy-forum/classes/rogue/51976-rogueraidbt.html");
             Logging.Write(Color.Orange, "");
             Logging.Write(Color.Orange, "Enjoy topping the DPS meters!");
             Logging.Write(Color.Orange, "");
@@ -48,7 +48,9 @@ namespace RogueRaidBT
 
         public override void Pulse()
         {
-            Helpers.General.UpdateHelpers();
+            
+                Helpers.General.UpdateHelpers();
+            
         }
     }
 }

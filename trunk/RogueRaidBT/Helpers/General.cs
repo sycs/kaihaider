@@ -8,6 +8,8 @@
 
 using System.Diagnostics;
 using Styx;
+using Styx.Helpers;
+using Styx.Logic.Pathing;
 
 namespace RogueRaidBT.Helpers
 {
@@ -24,15 +26,21 @@ namespace RogueRaidBT.Helpers
         {
             using (new FrameLock())
             {
-                Target.Pulse();
-                Area.Pulse();
-                Rogue.Pulse();
-                Focus.Pulse();
-                Specials.Pulse();
-                Aura.Pulse();
+               
 
-                Target.EnsureValidTarget();
+                    
+                    Target.Pulse();
+                    Area.Pulse();
+                    Rogue.Pulse();
+                    Focus.Pulse();
+                    Specials.Pulse();
+                    Aura.Pulse();
+
+                    Movement.Pulse();
+                    //Target.EnsureValidTarget();
+                
             }
         }
+        
     }
 }
