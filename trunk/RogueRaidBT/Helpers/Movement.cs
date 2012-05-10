@@ -18,10 +18,27 @@ namespace RogueRaidBT.Helpers
 {
     static class Movement
     {
+        public static bool IsGlueEnabled
+        {
+            get
+            {
+                int PluginCount = (from MyPlugin in Styx.Plugins.PluginManager.Plugins
+                                   where MyPlugin.Name == "Glue" && MyPlugin.Enabled == true
+                                   select MyPlugin).Count();
+
+                if (PluginCount >= 1)
+                    return true;
+
+                return false;
+            }
+        }
+
         static bool directionChange;
+
         static public void Pulse()
         {
             Rogue.mTarget = StyxWoW.Me.CurrentTarget;
+            
             if (Helpers.Rogue.mTarget != null && Settings.Mode.mUseMovement && !Rogue.mTarget.IsFriendly && Rogue.mTarget.IsAlive &&
                 !Aura.HealingGhost &&
                 !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetInvulnerable //&& (!Rogue.mTarget.IsPlayer || Rogue.mTarget.PvpFlagged)
@@ -69,9 +86,7 @@ namespace RogueRaidBT.Helpers
             if (StyxWoW.Me.MovementInfo.Heading - Rogue.mTarget.MovementInfo.Heading>0)
             {
                 if (!Aura.LastDirection)
-                {
-                    //Logging.Write(Color.White, "change");
-            
+                { //Logging.Write(Color.White, "change");
                     directionChange = true;
                     Aura.LastDirection = true;
                 }
@@ -80,56 +95,33 @@ namespace RogueRaidBT.Helpers
             {
                 if (Aura.LastDirection)
                 {
-                    //Logging.Write(Color.White, "change");
-            
                     directionChange = true;
                     Aura.LastDirection = false;
                 }
             }
 
-            if (!StyxWoW.Me.Mounted && (!Aura.IsBehind || !Rogue.mTarget.IsWithinMeleeRange))
+            if (!StyxWoW.Me.Mounted &&
+                        (!Aura.IsBehind || Rogue.mTarget.IsPlayer && Rogue.mTarget.Distance > 1.4 ||
+                        !Rogue.mTarget.IsPlayer && Rogue.mTarget.IsWithinMeleeRange))
                 Navigator.MoveTo(Styx.Helpers.WoWMathHelper.CalculatePointBehind(
-                    Helpers.Rogue.mTarget.Location, Helpers.Rogue.mTarget.Rotation, 1.0f));
+                    Helpers.Rogue.mTarget.Location, Helpers.Rogue.mTarget.Rotation, 1.7f));
 
-            if (Rogue.mTarget.IsWithinMeleeRange && Aura.IsBehind && directionChange)
+            if (Aura.IsBehind && directionChange &&
+                (Rogue.mTarget.IsPlayer && Rogue.mTarget.Distance <= 1.4 ||
+                 !Rogue.mTarget.IsWithinMeleeRange && !Rogue.mTarget.IsPlayer ))
             {
-                //Logging.Write(Color.White, "stopping");
-            
                 directionChange = false;
                 Styx.WoWInternals.WoWMovement.MoveStop();
-
             }
                 
             if (Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
                 !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget))
             {
-
                 Rogue.mTarget.Face();
             }
-
-
-            
-            
-
-            
-          
         }
 
 
-        public static bool IsGlueEnabled
-        {
-            get
-            {
-                int PluginCount = (from MyPlugin in Styx.Plugins.PluginManager.Plugins
-                                   where MyPlugin.Name == "Glue" && MyPlugin.Enabled == true
-                                   select MyPlugin).Count();
-
-                if (PluginCount >= 1)
-                    return true;
-
-                return false;
-            }
-        }
 
         static public Composite MoveToAndFaceUnit(WoWUnitDelegate unit)
         {

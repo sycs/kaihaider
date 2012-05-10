@@ -37,10 +37,9 @@ namespace RogueRaidBT.Composites.Context.Raid
                                                                  !Helpers.Aura.Rupture) &&
                                                                  Helpers.Rogue.mComboPoints >= 1),
 
-Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
-                                                   Helpers.Rogue.mCurrentEnergy > 50 && Helpers.Rogue.mCurrentEnergy < 95 &&
+                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
+                                                                       Helpers.Rogue.mCurrentEnergy > 50 && Helpers.Rogue.mCurrentEnergy < 95 &&
 Helpers.Rogue.mComboPoints > 1),
-
 
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),

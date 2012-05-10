@@ -75,8 +75,9 @@ namespace RogueRaidBT.Composites.Context.Level
                 new Decorator(ret => StyxWoW.Me.Mounted, 
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
-
-                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth")),
+                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
+                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell &&
+                    !StyxWoW.Me.Combat),
 
                 Helpers.Spells.Cast("Cheap Shot",  ret => StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Mutilate")

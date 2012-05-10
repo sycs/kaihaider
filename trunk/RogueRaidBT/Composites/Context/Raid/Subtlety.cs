@@ -42,8 +42,10 @@ namespace RogueRaidBT.Composites.Context.Raid
                     )
                 ),
 
-                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks && 
-                                                                       Helpers.Rogue.mCurrentEnergy < 60),
+                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
+                                                                       Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.mCurrentEnergy < 75 &&
+Helpers.Rogue.mComboPoints > 1),
+
 
                 Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Rogue.mComboPoints <= 3 && (Helpers.Aura.Stealth || 
                                                                     Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)),

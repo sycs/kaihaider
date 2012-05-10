@@ -147,7 +147,7 @@ namespace RogueRaidBT.Composites.Context.Arena
             return new PrioritySelector(
 
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive  && !Helpers.Aura.FaerieFire &&
+                    StyxWoW.Me.IsAlive  && StyxWoW.IsInGame &&!Helpers.Aura.FaerieFire &&
                 !StyxWoW.Me.Combat),
 
                     Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
@@ -182,19 +182,13 @@ namespace RogueRaidBT.Composites.Context.Arena
         {
             return new Decorator(ret => !StyxWoW.Me.Mounted,
                 new PrioritySelector(
-                new Decorator(ret => StyxWoW.Me.Mounted,
-                    new Action(ret => Lua.DoString("Dismount()"))
-                ),
+               
 
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell
                     &&
-                !StyxWoW.Me.Combat),
-                Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") &&
-                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
-                Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
-                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock())
-
+                !StyxWoW.Me.Combat)
+                
                 )
             );
         }

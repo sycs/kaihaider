@@ -44,8 +44,10 @@ namespace RogueRaidBT.Composites.Context.Raid
                                                                  Helpers.Aura.AdrenalineRush)) || 
                                                                  Helpers.Aura.FuryoftheDestroyer),
 
-                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks && 
-                                                                       Helpers.Rogue.mCurrentEnergy < 60),
+                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
+                                                                       Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.mCurrentEnergy < 75 &&
+Helpers.Rogue.mComboPoints > 1),
+
 
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice &&
                                      (Helpers.Aura.ModerateInsight ||

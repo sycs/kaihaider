@@ -332,7 +332,7 @@ namespace RogueRaidBT.Helpers
                     
                     
                 }
-                if(IsTargetInvulnerable) Logging.WriteDebug(Color.White, "Interrupted!!!");
+                if (IsTargetInvulnerable) Logging.WriteDebug(Color.White, "Invulnerable!!!");
             }
 
             
