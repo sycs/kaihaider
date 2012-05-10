@@ -32,7 +32,7 @@ namespace RogueRaidBT.Composites
                                                                  !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") && 
                                                                  Helpers.Rogue.CheckSpamLock()),
 
-                    new Decorator(ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 5,
+                    new Decorator(ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 50,
                         new PrioritySelector(
 
                             new Decorator(ret => StyxWoW.Me.IsMoving,

@@ -21,6 +21,16 @@ namespace RogueRaidBT.Composites.Context.Level
         public static Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+                Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
+
+                    ((
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.1) ||
+
+                    (Helpers.Aura.IsTargetCasting == 740 || Helpers.Aura.IsTargetCasting == 47540 ||
+                    Helpers.Aura.IsTargetCasting == 64843 || Helpers.Aura.IsTargetCasting == 12051 ||
+                    Helpers.Aura.IsTargetCasting == 118 || Helpers.Aura.IsTargetCasting == 5782
+                    ))),
 
                 new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
@@ -55,12 +65,7 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Aura.Recuperate && Helpers.Rogue.mComboPoints >= 3 && 
                                                              Helpers.Rogue.mHP <= 80),
 
-                new Decorator(ret => Helpers.Rogue.IsInterruptUsable(),
-                    new Sequence(
-                        Helpers.Spells.Cast("Kick"),
-                        new WaitContinue(TimeSpan.FromSeconds(0.5), ret => false, new ActionAlwaysSucceed())
-                    )
-                ),
+                
 
                 Helpers.Spells.Cast("Kidney Shot",      ret => Helpers.Rogue.mComboPoints >= 3 && (Helpers.Rogue.mHP <= 75 || 
                                                                (Helpers.Rogue.IsInterruptUsable() && Helpers.Spells.GetSpellCooldown("Kick") > 0))),

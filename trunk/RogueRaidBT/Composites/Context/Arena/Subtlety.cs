@@ -116,20 +116,20 @@ namespace RogueRaidBT.Composites.Context.Arena
 
                         Helpers.Spells.Cast("Garrote",     ret =>  (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                             Helpers.Focus.rawFocusTarget != null && Helpers.Focus.rawFocusTarget == Helpers.Rogue.mTarget && 
-                                !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned && Helpers.Aura.IsSafelyBehind 
+                                !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned && Helpers.Aura.IsBehind 
                                ),
 
                         Helpers.Spells.Cast("Ambush",     ret =>  (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                            Helpers.Aura.IsSafelyBehind ),
+                            Helpers.Aura.IsBehind ),
                         Helpers.Spells.CastCooldown("Cheap Shot", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                                              !Helpers.Rogue.mTarget.Stunned  && !Helpers.Rogue.mTarget.Silenced ),
                         Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
                                                     && Helpers.Aura.TimeHemorrhage < 3),
                         Helpers.Spells.Cast("Backstab",   ret => ! (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsSafelyBehind),
+                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mCurrentEnergy > 70 &&
                         !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                                                                 && !Helpers.Aura.IsSafelyBehind)
+                                                                 && !Helpers.Aura.IsBehind)
                     )
                 ),
 
@@ -158,20 +158,20 @@ namespace RogueRaidBT.Composites.Context.Arena
 
                         Helpers.Spells.Cast("Garrote", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                             Helpers.Focus.rawFocusTarget != null && Helpers.Focus.rawFocusTarget == Helpers.Rogue.mTarget &&
-                                !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned && Helpers.Aura.IsSafelyBehind
+                                !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned && Helpers.Aura.IsBehind
                                ),
 
                         Helpers.Spells.Cast("Ambush", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                            Helpers.Aura.IsSafelyBehind),
+                            Helpers.Aura.IsBehind),
                         Helpers.Spells.CastCooldown("Cheap Shot", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                                              !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.Silenced),
                         Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                     && Helpers.Aura.TimeHemorrhage < 3),
                         Helpers.Spells.Cast("Backstab", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsSafelyBehind),
+                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mCurrentEnergy > 70 &&
                         !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                                                                 && !Helpers.Aura.IsSafelyBehind)
+                                                                 && !Helpers.Aura.IsBehind)
                     )
                 )
 

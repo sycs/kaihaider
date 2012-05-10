@@ -117,7 +117,7 @@ namespace RogueRaidBT.Composites.Context.Battleground
                                 Helpers.Spells.CastSelf("Vanish"),
                                 new WaitContinue(TimeSpan.FromSeconds(1), ret => false, new ActionAlwaysSucceed()),
                                 Helpers.Spells.CastCooldown("Premeditation"),
-                                Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsSafelyBehind)
+                                Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsBehind)
                             )
                         ),
 
@@ -142,11 +142,11 @@ namespace RogueRaidBT.Composites.Context.Battleground
                         Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsTargetCasting != 0 &&
                             (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                             Helpers.Focus.rawFocusTarget != null && Helpers.Focus.rawFocusTarget == Helpers.Rogue.mTarget && 
-                                !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned && Helpers.Aura.IsSafelyBehind 
+                                !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned && Helpers.Aura.IsBehind 
                                ),
 
                         Helpers.Spells.Cast("Ambush",     ret =>  (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                            Helpers.Aura.IsSafelyBehind ),
+                            Helpers.Aura.IsBehind ),
                         Helpers.Spells.CastCooldown("Cheap Shot", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                                              !Helpers.Rogue.mTarget.Stunned  && !Helpers.Rogue.mTarget.Silenced ),
                         Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
@@ -154,10 +154,10 @@ namespace RogueRaidBT.Composites.Context.Battleground
 			            Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && 
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 6),
                         Helpers.Spells.Cast("Backstab",   ret => ! (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsSafelyBehind),
+                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mCurrentEnergy > 70 &&
                         !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                                                                 && !Helpers.Aura.IsSafelyBehind)
+                                                                 && !Helpers.Aura.IsBehind)
                     )
                 ),
 
@@ -175,9 +175,7 @@ namespace RogueRaidBT.Composites.Context.Battleground
                 ),
 
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth")),
-
-                Helpers.Movement.MoveToAndFaceUnit(ret => StyxWoW.Me.CurrentTarget),
-                Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsSafelyBehind),
+                Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
                 Helpers.Spells.Cast("Cheap Shot", ret => StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Hemorrhage"),
                 Helpers.Spells.Cast("Sinister Strike")

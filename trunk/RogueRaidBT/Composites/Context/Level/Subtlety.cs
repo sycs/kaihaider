@@ -20,10 +20,20 @@ namespace RogueRaidBT.Composites.Context.Level
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+                Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
+
+                    ((
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.1) ||
+
+                    (Helpers.Aura.IsTargetCasting == 740 || Helpers.Aura.IsTargetCasting == 47540 ||
+                    Helpers.Aura.IsTargetCasting == 64843 || Helpers.Aura.IsTargetCasting == 12051 ||
+                    Helpers.Aura.IsTargetCasting == 118 || Helpers.Aura.IsTargetCasting == 5782
+                    ))),
 
                 Helpers.Target.EnsureValidTarget(),
 
-                Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish),
+                Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
 		        Helpers.Spells.Cast("Recuperate",     ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 &&
                                 Helpers.Aura.TimeRecuperate< 3), // Helpers.Spells.GetAuraTimeLeft(StyxWoW.Me, "Recuperate") 
@@ -69,16 +79,16 @@ namespace RogueRaidBT.Composites.Context.Level
                                      Helpers.Aura.ShadowDance))) && !Helpers.Aura.IsTargetSapped &&
                                      Helpers.Rogue.ReleaseSpamLock(),
                     new PrioritySelector(
-                        Helpers.Spells.Cast("Ambush",     ret => Helpers.Aura.IsSafelyBehind &&
+                        Helpers.Spells.Cast("Ambush",     ret => Helpers.Aura.IsBehind &&
                                                                  (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)),
                         Helpers.Spells.CastCooldown("Cheap Shot", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)),
                         Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
                                                     && Helpers.Aura.TimeHemorrhage < 3),
                         Helpers.Spells.Cast("Backstab",   ret => ! (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
-                                                    && Helpers.Aura.IsSafelyBehind),
+                                                    && Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mCurrentEnergy > 60 && 
 						!(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                                                                 && !Helpers.Aura.IsSafelyBehind)
+                                                                 && !Helpers.Aura.IsBehind)
                     )
                 )
             );
@@ -94,7 +104,7 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth")),
 
                 
-                Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsSafelyBehind),
+                Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
                 Helpers.Spells.Cast("Cheap Shot", ret => StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Hemorrhage"),
                 Helpers.Spells.Cast("Sinister Strike")

@@ -19,7 +19,7 @@ namespace RogueRaidBT.Composites.Context.Raid
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-                Helpers.Spells.ToggleAutoAttack(),
+                Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
 
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.mRawComboPoints),

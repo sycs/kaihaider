@@ -87,11 +87,11 @@ namespace RogueRaidBT.Helpers
                 }
             }
 
-            if (!StyxWoW.Me.Mounted && (!Aura.IsSafelyBehind || !Rogue.mTarget.IsWithinMeleeRange))
+            if (!StyxWoW.Me.Mounted && (!Aura.IsBehind || !Rogue.mTarget.IsWithinMeleeRange))
                 Navigator.MoveTo(Styx.Helpers.WoWMathHelper.CalculatePointBehind(
                     Helpers.Rogue.mTarget.Location, Helpers.Rogue.mTarget.Rotation, 1.0f));
 
-            if (Rogue.mTarget.IsWithinMeleeRange && Aura.IsSafelyBehind && directionChange)
+            if (Rogue.mTarget.IsWithinMeleeRange && Aura.IsBehind && directionChange)
             {
                 //Logging.Write(Color.White, "stopping");
             

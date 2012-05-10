@@ -56,7 +56,7 @@ namespace RogueRaidBT.Helpers
         static public bool IsTargetImmuneSilence { get; private set; }
         static public int IsTargetCasting { get; private set; }
 
-        static public bool IsSafelyBehind { get; private set; }
+        static public bool IsBehind { get; private set; }
         static public bool LastDirection { get;  set; }
         static public bool FaerieFire { get; private set; }
         static public bool HealingGhost { get; private set; }
@@ -68,7 +68,7 @@ namespace RogueRaidBT.Helpers
             FuryoftheDestroyer = false; ColdBlood = false; Envenom = false; Tricks = false;
             ShadowDance = false; FindWeakness = false; Rupture = false; ShouldShiv = false;
             IsTargetDisoriented = false; IsTargetInvulnerable = false; IsTargetSapped = false;
-            IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsSafelyBehind = false;
+            IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsBehind = false;
             DeadlyPoison = false; Vendetta = false; Overkill = false; RevealingStrike = false;
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false;
             CripplingPoison = false;
@@ -176,7 +176,7 @@ namespace RogueRaidBT.Helpers
             if (Rogue.mTarget != null)
             {
 
-                IsSafelyBehind = Rogue.IsBehindUnit(StyxWoW.Me.CurrentTarget) || StyxWoW.Me.CurrentTarget.MeIsBehind;
+                IsBehind = Rogue.IsBehindUnit(StyxWoW.Me.CurrentTarget) || StyxWoW.Me.CurrentTarget.MeIsBehind;
                 //if (IsSafelyBehind) Logging.Write(Color.White, "Behind");
 
                 if (Rogue.mTarget.IsCasting)
