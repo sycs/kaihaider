@@ -41,7 +41,7 @@ namespace RogueRaidBT.Helpers
             
             if (Helpers.Rogue.mTarget != null && Settings.Mode.mUseMovement && !Rogue.mTarget.IsFriendly && Rogue.mTarget.IsAlive &&
                 !Aura.HealingGhost &&
-                !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetInvulnerable //&& (!Rogue.mTarget.IsPlayer || Rogue.mTarget.PvpFlagged)
+                !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped //&& !Helpers.Aura.IsTargetInvulnerable //&& (!Rogue.mTarget.IsPlayer || Rogue.mTarget.PvpFlagged)
                 ) MoveBehind();
             
 
