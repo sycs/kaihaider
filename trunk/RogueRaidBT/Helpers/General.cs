@@ -36,7 +36,6 @@ namespace RogueRaidBT.Helpers
                     Specials.Pulse();
                     Aura.Pulse();
 
-                    Movement.Pulse();
                     //Target.EnsureValidTarget();
                 
             }

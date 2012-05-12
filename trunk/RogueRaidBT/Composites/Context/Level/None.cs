@@ -6,7 +6,7 @@
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
-using Styx;
+
 using TreeSharp;
 
 namespace RogueRaidBT.Composites.Context.Level
@@ -17,6 +17,7 @@ namespace RogueRaidBT.Composites.Context.Level
         {
             return new PrioritySelector(
                 Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.MoveToTarget(),
 
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
@@ -30,6 +31,8 @@ namespace RogueRaidBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
+                Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Sinister Strike")
             );
         }

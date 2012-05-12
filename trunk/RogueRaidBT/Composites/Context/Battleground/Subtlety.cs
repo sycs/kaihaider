@@ -10,7 +10,6 @@ using System;
 using System.Linq;
 using CommonBehaviors.Actions;
 using Styx;
-using Styx.Combat.CombatRoutine;
 using TreeSharp;
 using Action = TreeSharp.Action;
 using Styx.WoWInternals;
@@ -25,6 +24,8 @@ namespace RogueRaidBT.Composites.Context.Battleground
 
 
                 Helpers.Target.EnsureValidTarget(),
+
+                Helpers.Movement.MoveToTarget(),
 
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
@@ -83,8 +84,9 @@ namespace RogueRaidBT.Composites.Context.Battleground
                             && Helpers.Rogue.mComboPoints > 0 && Helpers.Rogue.mComboPoints < 3 &&
                                                     Helpers.Rogue.mCurrentEnergy >= 70 && !Helpers.Aura.CripplingPoison),
 
-                        Helpers.Spells.Cast("Shadow Step", ret => !Helpers.Rogue.mTarget.IsWithinMeleeRange
-                            && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow),
+                        Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Rogue.mTarget.IsWithinMeleeRange
+                            && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
+                            Helpers.Rogue.mTarget.InLineOfSpellSight),
 
                          Helpers.Spells.CastCooldown("Shiv", ret => Helpers.Aura.ShouldShiv &&
                                         !(Helpers.Aura.ShadowDance) && Helpers.Rogue.mCurrentEnergy < 100),
@@ -177,6 +179,9 @@ namespace RogueRaidBT.Composites.Context.Battleground
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell && 
                     !StyxWoW.Me.Combat),
+
+
+                Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
                 Helpers.Spells.Cast("Cheap Shot", ret => StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Hemorrhage"),

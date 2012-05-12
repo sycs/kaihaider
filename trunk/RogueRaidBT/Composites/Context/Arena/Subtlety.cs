@@ -6,14 +6,11 @@
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
-using System;
+
 using System.Linq;
-using CommonBehaviors.Actions;
 using Styx;
-using Styx.Combat.CombatRoutine;
 using TreeSharp;
 using Action = TreeSharp.Action;
-using Styx.WoWInternals;
 
 namespace RogueRaidBT.Composites.Context.Arena
 {
@@ -26,6 +23,12 @@ namespace RogueRaidBT.Composites.Context.Arena
                  * unit.face()
                  * 
                  */
+
+                
+                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
+                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell
+                    &&
+                !StyxWoW.Me.Combat),
 
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
@@ -164,7 +167,7 @@ namespace RogueRaidBT.Composites.Context.Arena
                         Helpers.Spells.Cast("Ambush", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                             Helpers.Aura.IsBehind),
                         Helpers.Spells.CastCooldown("Cheap Shot", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                                             !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.Silenced),
+                                                             !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Disarmed),
                         Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                     && Helpers.Aura.TimeHemorrhage < 3),
                         Helpers.Spells.Cast("Backstab", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
@@ -180,17 +183,7 @@ namespace RogueRaidBT.Composites.Context.Arena
 
         static public Composite BuildBuffBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.Mounted,
-                new PrioritySelector(
-               
-
-                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell
-                    &&
-                !StyxWoW.Me.Combat)
-                
-                )
-            );
+            return new Action(ret => RunStatus.Failure);
         }
     }
 }

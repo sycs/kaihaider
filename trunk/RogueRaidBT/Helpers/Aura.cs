@@ -1,12 +1,9 @@
-﻿using System;
+﻿
+
 using System.Drawing;
-using System.Linq;
 using Styx;
 using Styx.Helpers;
-using Styx.Logic.Combat;
-using Styx.WoWInternals.WoWObjects;
-using TreeSharp;
-using Action = TreeSharp.Action;
+using Styx.Logic.Combat;=
 
 namespace RogueRaidBT.Helpers
 {

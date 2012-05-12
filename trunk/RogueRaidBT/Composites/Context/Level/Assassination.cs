@@ -6,7 +6,6 @@
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
-using System;
 using CommonBehaviors.Actions;
 using Styx;
 using Styx.WoWInternals;
@@ -20,6 +19,10 @@ namespace RogueRaidBT.Composites.Context.Level
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+
+
+                Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.MoveToTarget(),
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
 
                     ((
@@ -31,7 +34,6 @@ namespace RogueRaidBT.Composites.Context.Level
                     Helpers.Aura.IsTargetCasting == 118 || Helpers.Aura.IsTargetCasting == 5782
                     ))),
 
-                Helpers.Target.EnsureValidTarget(),
 
                 new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
@@ -78,6 +80,8 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell &&
                     !StyxWoW.Me.Combat),
+
+                Helpers.Movement.MoveToTarget(),
 
                 Helpers.Spells.Cast("Cheap Shot",  ret => StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Mutilate")

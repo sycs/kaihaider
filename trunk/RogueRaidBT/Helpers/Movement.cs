@@ -7,16 +7,18 @@
 //////////////////////////////////////////////////
 
 using System.Drawing;
-using CommonBehaviors.Actions;
+using System.Globalization;
 using Styx;
 using Styx.Helpers;
 using Styx.Logic.Pathing;
 using TreeSharp;
 using System.Linq;
+using Action = TreeSharp.Action;
+using Styx.WoWInternals;
 
 namespace RogueRaidBT.Helpers
 {
-    static class Movement
+    internal static class Movement
     {
         public static bool IsGlueEnabled
         {
@@ -33,60 +35,38 @@ namespace RogueRaidBT.Helpers
             }
         }
 
-        static bool directionChange;
-
-        static public void Pulse()
+        private static float MeleeRange
         {
-            Rogue.mTarget = StyxWoW.Me.CurrentTarget;
-            
-            if (Helpers.Rogue.mTarget != null && Settings.Mode.mUseMovement && !Rogue.mTarget.IsFriendly && Rogue.mTarget.IsAlive &&
-                !Aura.HealingGhost &&
-                !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped //&& !Helpers.Aura.IsTargetInvulnerable //&& (!Rogue.mTarget.IsPlayer || Rogue.mTarget.PvpFlagged)
-                ) MoveBehind();
-            
+            get
+            {
+                if (Rogue.mTarget == null)
+                    return 0f;
 
+                if (Rogue.mTarget.IsPlayer)
+                    return 3.5f;
+
+                return System.Math.Max(5f, StyxWoW.Me.CombatReach + 1.3333334f + Rogue.mTarget.CombatReach);
+            }
         }
 
-        static public Composite MoveToLoc(WoWPointDelegate loc)
+        public static float SafeMeleeRange
         {
-            return MoveToLoc(loc, 2);
+            get { return System.Math.Max(MeleeRange - 1f, 5f); }
         }
 
-        static public Composite MoveToLoc(WoWPointDelegate loc, float distance)
-        {
-            return new PrioritySelector(
-                new Decorator(ret => loc(ret).Distance(StyxWoW.Me.Location) > distance,
-                    new Action(ret => Navigator.MoveTo(loc(ret)))),
+        private static bool directionChange;
 
-                new Decorator(ret => loc(ret).Distance(StyxWoW.Me.Location) <= distance - 1 &&
-                                     StyxWoW.Me.IsMoving,
-                    new Action(ret => Navigator.PlayerMover.MoveStop()))
-            );
+        public static void Pulse()
+        {
         }
 
-        static public Composite MoveToUnit(WoWUnitDelegate unit)
+        public static bool StopRunning()
         {
-            return MoveToLoc(ret => unit(ret).Location, 5);
-        }
-
-        static public Composite FaceUnit(WoWUnitDelegate unit)
-        {
-            return new Decorator(ret => !StyxWoW.Me.IsSafelyFacing(unit(ret)),
-                new Action(ret => unit(ret).Face())
-            );
-        }
-
-        //Glue Friendly!!!
-        static public void MoveBehind()
-        {
-            if (Rogue.mTarget.Distance < 10 && IsGlueEnabled ||
-                StyxWoW.Me.Stunned || StyxWoW.Me.Rooted)
-                return;
-            
-            if (StyxWoW.Me.MovementInfo.Heading - Rogue.mTarget.MovementInfo.Heading>0)
+            if (StyxWoW.Me.MovementInfo.Heading - Rogue.mTarget.MovementInfo.Heading > 0)
             {
                 if (!Aura.LastDirection)
-                { //Logging.Write(Color.White, "change");
+                {
+                    //Logging.Write(Color.White, "change");
                     directionChange = true;
                     Aura.LastDirection = true;
                 }
@@ -100,38 +80,121 @@ namespace RogueRaidBT.Helpers
                 }
             }
 
-            if (!StyxWoW.Me.Mounted &&
-                        (!Aura.IsBehind || Rogue.mTarget.IsPlayer && Rogue.mTarget.Distance > 1.4 ||
-                        !Rogue.mTarget.IsPlayer && Rogue.mTarget.IsWithinMeleeRange))
-                Navigator.MoveTo(Styx.Helpers.WoWMathHelper.CalculatePointBehind(
-                    Helpers.Rogue.mTarget.Location, Helpers.Rogue.mTarget.Rotation, 1.7f));
+            return true;
+        }
 
-            if (Aura.IsBehind && directionChange &&
-                (Rogue.mTarget.IsPlayer && Rogue.mTarget.Distance <= 1.4 ||
-                 !Rogue.mTarget.IsWithinMeleeRange && !Rogue.mTarget.IsPlayer ))
+        public static Composite MoveToTarget()
+        {
+            //change dec continue
+            return new Decorator(
+                ret => StopRunning()
+                /* && Rogue.mTarget != null && Settings.Mode.mUseMovement && Rogue.mTarget.IsAlive &&
+                                        !Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile &&
+                                        !Rogue.mTarget.IsFriendly && !Aura.IsTargetDisoriented && !Aura.IsTargetSapped &&
+                                        
+                                        !(Rogue.mTarget.Distance < 10 && IsGlueEnabled || StyxWoW.Me.Stunned || StyxWoW.Me.Rooted)
+                                 //&& !Helpers.Aura.IsTargetInvulnerable //&& (!Rogue.mTarget.IsPlayer || Rogue.mTarget.PvpFlagged)**/
+                ,
+                new PrioritySelector(
+                    new Decorator(ret => Rogue.mTarget.CurrentTarget != StyxWoW.Me || Rogue.mTarget.IsPlayer,
+                                  new Sequence(
+                                      new DecoratorContinue(
+                                          ret =>
+                                          !StyxWoW.Me.Mounted &&
+                                          (!Aura.IsBehind || Rogue.mTarget.Distance > MeleeRange - 2f) && !StyxWoW.Me.IsCasting,
+                                          new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
+                                                                 Rogue.mTarget.Rotation +
+                                                                 WoWMathHelper.DegreesToRadians(150),
+                                                                 MeleeRange - 2f)))),
+                                      new DecoratorContinue(
+                                          ret =>
+                                          Aura.IsBehind && directionChange && Rogue.mTarget.Distance < MeleeRange - 2f &&
+                                          StyxWoW.Me.MovementInfo.MovingForward,
+                                          new Action(ret =>
+                                                         {
+                                                             directionChange = false;
+                                                             Navigator.PlayerMover.MoveStop();
+                                                         })),
+                                      new DecoratorContinue(
+                                          ret =>
+                                          Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
+                                          !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget),
+                                          new Action(ret => Rogue.mTarget.Face())),
+                                      new Action(ret => RunStatus.Failure)
+                                      )
+                        ),
+                    new Decorator(ret => Rogue.mTarget.CurrentTarget == StyxWoW.Me && !Rogue.mTarget.IsPlayer, 
+                                  new Sequence(
+                                      new DecoratorContinue(
+                                          ret => !StyxWoW.Me.Mounted && Rogue.mTarget.Distance > MeleeRange - 2f && !StyxWoW.Me.IsCasting,
+                                          new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location))),
+                                      new DecoratorContinue(ret => directionChange && Rogue.mTarget.Distance < MeleeRange &&
+                                          StyxWoW.Me.MovementInfo.MovingForward,
+                                                            new Action(ret =>
+                                                            {
+                                                                directionChange = false;
+                                                                Navigator.PlayerMover.MoveStop();
+                                                            })),
+                                      new DecoratorContinue(
+                                          ret =>
+                                          Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
+                                          !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget),
+                                          new Action(ret => Rogue.mTarget.Face())),
+                                      new Action(ret => RunStatus.Failure)
+                                      )
+                        ))
+                );
+        }
+
+
+        //Glue Friendly!!!
+        public static void MoveBehind()
+        {
+            if (Rogue.mTarget.Distance < 10 && IsGlueEnabled ||
+                StyxWoW.Me.Stunned || StyxWoW.Me.Rooted)
+                return;
+
+
+            if (StyxWoW.Me.MovementInfo.Heading - Rogue.mTarget.MovementInfo.Heading > 0)
+            {
+                if (!Aura.LastDirection)
+                {
+                    //Logging.Write(Color.White, "change");
+                    directionChange = true;
+                    Aura.LastDirection = true;
+                }
+            }
+            else
+            {
+                if (Aura.LastDirection)
+                {
+                    directionChange = true;
+                    Aura.LastDirection = false;
+                }
+            }
+
+
+            if (!StyxWoW.Me.Mounted &&
+                (!Aura.IsBehind || Rogue.mTarget.IsPlayer && Rogue.mTarget.Distance > MeleeRange - 2f))
+            {
+                Logging.Write(Color.White, Rogue.mTarget.Distance.ToString(CultureInfo.InvariantCulture));
+                Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
+                    Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), MeleeRange - 2f));
+            }
+
+            //dec continue
+            if (Aura.IsBehind && directionChange && Rogue.mTarget.Distance < MeleeRange - 2f)
             {
                 directionChange = false;
-                Styx.WoWInternals.WoWMovement.MoveStop();
+                WoWMovement.MoveStop();
             }
-                
+
+            //dec continue
             if (Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
                 !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget))
             {
                 Rogue.mTarget.Face();
             }
-        }
-
-
-
-        static public Composite MoveToAndFaceUnit(WoWUnitDelegate unit)
-        {
-            return new Decorator(ret => Settings.Mode.mUseMovement && StyxWoW.Me.CurrentTarget != null &&
-                            !StyxWoW.Me.CurrentTarget.IsWithinMeleeRange, 
-                new PrioritySelector(
-                    MoveToUnit(unit),
-                    FaceUnit(unit)
-                )
-            );
         }
     }
 }

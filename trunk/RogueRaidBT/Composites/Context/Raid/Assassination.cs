@@ -10,6 +10,7 @@ using System.Linq;
 using CommonBehaviors.Actions;
 using Styx;
 using TreeSharp;
+using Action = TreeSharp.Action;
 
 namespace RogueRaidBT.Composites.Context.Raid
 {

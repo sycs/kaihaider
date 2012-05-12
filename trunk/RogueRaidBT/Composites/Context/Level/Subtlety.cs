@@ -6,8 +6,7 @@
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
-using System;
-using CommonBehaviors.Actions;
+
 using Styx;
 using TreeSharp;
 using Action = TreeSharp.Action;
@@ -20,6 +19,11 @@ namespace RogueRaidBT.Composites.Context.Level
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+
+                Helpers.Target.EnsureValidTarget(),
+
+                Helpers.Movement.MoveToTarget(),
+
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
 
                     ((
@@ -31,8 +35,7 @@ namespace RogueRaidBT.Composites.Context.Level
                     Helpers.Aura.IsTargetCasting == 118 || Helpers.Aura.IsTargetCasting == 5782
                     ))),
 
-                Helpers.Target.EnsureValidTarget(),
-
+               
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
 		        Helpers.Spells.Cast("Recuperate",     ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 &&
@@ -105,6 +108,7 @@ namespace RogueRaidBT.Composites.Context.Level
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell &&
                     !StyxWoW.Me.Combat),
 
+                Helpers.Movement.MoveToTarget(),
                 
                 Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
                 Helpers.Spells.Cast("Cheap Shot", ret => StyxWoW.Me.HasAura("Stealth")),

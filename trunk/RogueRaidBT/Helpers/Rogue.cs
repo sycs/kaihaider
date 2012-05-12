@@ -100,7 +100,7 @@ namespace RogueRaidBT.Helpers
             return false;
         }
 
-        static public Composite TryToInterrupt(TreeSharp.CanRunDecoratorDelegate cond)
+        static public Composite TryToInterrupt(CanRunDecoratorDelegate cond)
         {
             return new Decorator(cond,
                 new PrioritySelector(

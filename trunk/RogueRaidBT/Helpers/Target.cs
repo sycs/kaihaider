@@ -15,6 +15,7 @@ using Styx.Logic;
 using Styx.WoWInternals;
 using Styx.WoWInternals.WoWObjects;
 using TreeSharp;
+using Action = TreeSharp.Action;
 
 namespace RogueRaidBT.Helpers
 {
@@ -27,15 +28,15 @@ namespace RogueRaidBT.Helpers
             if (StyxWoW.IsInGame != false)
             mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                     .Where(unit =>
-                                        !unit.IsFriendly
-                                        && unit.IsAlive
+                                        unit.IsAlive
+                                        && !unit.IsNonCombatPet
+                                        && !unit.IsCritter
                                         && (unit.IsTargetingMeOrPet
                                            || unit.IsTargetingMyPartyMember
                                            || unit.IsTargetingMyRaidMember
                                            || unit.IsPlayer)
-                                        && !unit.IsNonCombatPet
-                                        && !unit.IsCritter
-                                        && unit.Distance <= 40)
+                                        && unit.Distance <= 40
+                                        && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
         }
 

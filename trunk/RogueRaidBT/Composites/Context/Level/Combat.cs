@@ -6,7 +6,7 @@
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
-using System;
+
 using System.Linq;
 using TreeSharp;
 using Action = TreeSharp.Action;
@@ -21,6 +21,10 @@ namespace RogueRaidBT.Composites.Context.Level
         public static Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+
+
+                Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.MoveToTarget(),
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
 
                     ((
@@ -39,7 +43,6 @@ namespace RogueRaidBT.Composites.Context.Level
                     )
                 ),
 
-                Helpers.Target.EnsureValidTarget(),
 
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
 
@@ -85,6 +88,8 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell &&
                     !StyxWoW.Me.Combat),
+
+                Helpers.Movement.MoveToTarget(),
 
                 Helpers.Spells.Cast("Cheap Shot",  ret => Helpers.Aura.Stealth),
                 Helpers.Spells.Cast("Sinister Strike")

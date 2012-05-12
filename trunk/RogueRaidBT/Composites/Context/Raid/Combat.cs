@@ -7,7 +7,6 @@
 //////////////////////////////////////////////////
 
 using System.Linq;
-using Styx;
 using Styx.WoWInternals;
 using TreeSharp;
 using Action = TreeSharp.Action;
@@ -39,6 +38,10 @@ namespace RogueRaidBT.Composites.Context.Raid
                 Helpers.Spells.CastSelf("Slice and Dice", ret => (Helpers.Rogue.mComboPoints >= 1 || 
                                                                  Helpers.Aura.FuryoftheDestroyer) && 
                                                                  Helpers.Aura.TimeSliceandDice < 1),
+
+		Helpers.Spells.Cast("Rupture",         ret => (Helpers.Rogue.mComboPoints > 3 && (Helpers.Rogue.mCurrentEnergy >= 65 ||
+                                                                 Helpers.Aura.AdrenalineRush)) &&
+								(Helpers.Aura.TimeRupture < 1|| !Helpers.Aura.Rupture)),
 
                 Helpers.Spells.Cast("Eviscerate",         ret => (Helpers.Rogue.mComboPoints == 5 && (Helpers.Rogue.mCurrentEnergy >= 65 ||
                                                                  Helpers.Aura.AdrenalineRush)) || 
