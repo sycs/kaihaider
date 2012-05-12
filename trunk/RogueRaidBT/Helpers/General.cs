@@ -28,13 +28,17 @@ namespace RogueRaidBT.Helpers
             {
                
 
+                    if(StyxWoW.Me != null)
+                    {
+                        Target.Pulse();
+                        Area.Pulse();
+                        Rogue.Pulse();
+                        Focus.Pulse();
+                        Specials.Pulse();
+                        Aura.Pulse();
+
+                    }
                     
-                    Target.Pulse();
-                    Area.Pulse();
-                    Rogue.Pulse();
-                    Focus.Pulse();
-                    Specials.Pulse();
-                    Aura.Pulse();
 
                     //Target.EnsureValidTarget();
                 

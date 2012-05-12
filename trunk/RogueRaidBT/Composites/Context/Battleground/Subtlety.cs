@@ -22,9 +22,6 @@ namespace RogueRaidBT.Composites.Context.Battleground
         {
             return new PrioritySelector(
 
-
-                Helpers.Target.EnsureValidTarget(),
-
                 Helpers.Movement.MoveToTarget(),
 
                 Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
@@ -179,7 +176,6 @@ namespace RogueRaidBT.Composites.Context.Battleground
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell && 
                     !StyxWoW.Me.Combat),
-
 
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Ambush", ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),

@@ -17,7 +17,6 @@ namespace RogueRaidBT.Composites.Context.Battleground
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-                Helpers.Target.EnsureBestPvPTarget(),
                 Level.Combat.BuildCombatBehavior()
             );
         }

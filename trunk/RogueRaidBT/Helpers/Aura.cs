@@ -3,7 +3,7 @@
 using System.Drawing;
 using Styx;
 using Styx.Helpers;
-using Styx.Logic.Combat;=
+using Styx.Logic.Combat;
 
 namespace RogueRaidBT.Helpers
 {

@@ -23,9 +23,14 @@ namespace RogueRaidBT.Helpers
     {
         static public IEnumerable<WoWUnit> mNearbyEnemyUnits { get; private set; }
 
+
+        static public WoWUnit botBaseUnit { get; private set; }
+
         static public void Pulse()
         {
-            if (StyxWoW.IsInGame != false)
+            botBaseUnit = Targeting.Instance.FirstUnit;
+
+            if (StyxWoW.IsInGame)
             mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                     .Where(unit =>
                                         unit.IsAlive
@@ -34,7 +39,8 @@ namespace RogueRaidBT.Helpers
                                         && (unit.IsTargetingMeOrPet
                                            || unit.IsTargetingMyPartyMember
                                            || unit.IsTargetingMyRaidMember
-                                           || unit.IsPlayer)
+                                           || unit.IsPlayer
+                                           || unit == botBaseUnit)
                                         && unit.Distance <= 40
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
@@ -42,8 +48,8 @@ namespace RogueRaidBT.Helpers
 
         static public Composite EnsureValidTarget()
         {
-            return new Decorator(ret => StyxWoW.Me.CurrentTarget == null || !StyxWoW.Me.CurrentTarget.IsAlive //||
-                                        ,
+            return new Decorator(ret => !mNearbyEnemyUnits.Contains(Rogue.mTarget),//StyxWoW.Me.CurrentTarget == null || !StyxWoW.Me.CurrentTarget.IsAlive
+                                        
                 GetNewTarget()
             );
         }
@@ -57,24 +63,24 @@ namespace RogueRaidBT.Helpers
         {
             return new Action(ret =>
                 {
-                    var botBaseUnit = Targeting.Instance.FirstUnit;
+                    //var botBaseUnit = Targeting.Instance.FirstUnit;
 
-                    if (botBaseUnit != null && botBaseUnit.IsAlive &&
-                        !botBaseUnit.IsFriendly)
+                    /*if (botBaseUnit != null && botBaseUnit.IsAlive && !botBaseUnit.IsFriendly)
                     {
                         Logging.Write(Color.Orange, "Changing target to " + botBaseUnit.Name);
                         botBaseUnit.Target();
                     }
-                    else
-                    {
-                        var nextUnit = mNearbyEnemyUnits.FirstOrDefault();
+                    else **/
 
-                        if (nextUnit != null)
-                        {
-                            Logging.Write(Color.Orange, "Changing target to " + nextUnit.Name);
-                            nextUnit.Target();
-                        }
+                    var nextUnit = mNearbyEnemyUnits.FirstOrDefault();
+
+                    if (nextUnit != null)
+                    {
+                        Logging.Write(Color.Orange, "Changing target to " + nextUnit.Name);
+                        nextUnit.Target();
                     }
+                    else StyxWoW.Me.ClearTarget();
+                    
                 }
             );
         }

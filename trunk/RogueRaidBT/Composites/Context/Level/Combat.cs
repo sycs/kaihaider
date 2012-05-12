@@ -23,7 +23,6 @@ namespace RogueRaidBT.Composites.Context.Level
             return new PrioritySelector(
 
 
-                Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
 

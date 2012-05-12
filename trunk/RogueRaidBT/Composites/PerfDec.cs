@@ -36,7 +36,7 @@ namespace RogueRaidBT.Composites
 
                     RunStatus tick = base.Tick(context);
 
-                    Logging.WriteDebug(Color.Orange, "END TICK -> {0} ms", Helpers.General.mTimer.ElapsedMilliseconds);
+                    if (Helpers.General.mTimer.ElapsedMilliseconds!=0) Logging.WriteDebug(Color.Orange, "END TICK -> {0} ms", Helpers.General.mTimer.ElapsedMilliseconds);
                     //base.Stop(context);
                     return tick;
                 }
