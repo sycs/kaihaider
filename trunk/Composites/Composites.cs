@@ -21,15 +21,15 @@ namespace RogueRaidBT.Composites
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
-                  Context.Subtlety.BuildCombatBehavior()  //    Context.Assassination.BuildCombatBehavior()
+                  Context.Assassination.BuildCombatBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueCombat,
-                  Context.Subtlety.BuildCombatBehavior()  //    Context.Combat.BuildCombatBehavior()
+                  Context.Combat.BuildCombatBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueSubtlety,
-                    Context.Subtlety.BuildCombatBehavior()  //  
+                    Context.Subtlety.BuildCombatBehavior()  
                 )
 
             );
@@ -46,15 +46,15 @@ namespace RogueRaidBT.Composites
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
-                    Context.Subtlety.BuildPullBehavior() //Context.Assassination.BuildPullBehavior()
+                    Context.Assassination.BuildPullBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueCombat,
-                    Context.Subtlety.BuildPullBehavior() //Context.Combat.BuildPullBehavior()
+                    Context.Combat.BuildPullBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueSubtlety,
-                    Context.Subtlety.BuildPullBehavior() //
+                    Context.Subtlety.BuildPullBehavior() 
                 )
 
             );
@@ -71,21 +71,21 @@ namespace RogueRaidBT.Composites
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
                     new PrioritySelector(
                         Helpers.Rogue.ApplyPosions,
-                        Context.Subtlety.BuildBuffBehavior()  //Context.Assassination.BuildBuffBehavior()
+                        Context.Assassination.BuildBuffBehavior()
                     )
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueCombat,
                     new PrioritySelector(
                         Helpers.Rogue.ApplyPosions,
-                        Context.Subtlety.BuildBuffBehavior()  //Context.Combat.BuildBuffBehavior()
+                        Context.Combat.BuildBuffBehavior()
                     )
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueSubtlety,
                     new PrioritySelector(
                         Helpers.Rogue.ApplyPosions,
-                        Context.Subtlety.BuildBuffBehavior()  //
+                        Context.Subtlety.BuildBuffBehavior()  
                     )
                 )
 
