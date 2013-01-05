@@ -30,16 +30,8 @@ namespace RogueRaidBT.Composites.Context.Level
                 //Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
-                Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && !Helpers.Aura.IsTargetInvulnerable &&
-
-                    ((
-                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
-                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.1) ||
-
-                    (Helpers.Aura.IsTargetCasting == 740 || Helpers.Aura.IsTargetCasting == 47540 ||
-                    Helpers.Aura.IsTargetCasting == 64843 || Helpers.Aura.IsTargetCasting == 12051 ||
-                    Helpers.Aura.IsTargetCasting == 118 || Helpers.Aura.IsTargetCasting == 5782
-                    ))),
+                Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
 
 
                 new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
@@ -108,6 +100,7 @@ namespace RogueRaidBT.Composites.Context.Level
                 
                 Helpers.Spells.CastCooldown("Vendetta",     ret => Helpers.Rogue.IsCooldownsUsable()),
 
+                Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Rogue.IsCooldownsUsable()),
 
 
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() &&
@@ -131,15 +124,19 @@ namespace RogueRaidBT.Composites.Context.Level
                 new Decorator(ret => StyxWoW.Me.Mounted, 
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
+
+
+                //Helpers.Movement.PleaseStopPull(),
+                //Helpers.Target.EnsureValidTarget(),
+                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.MoveToLos(),
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell &&
+                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
-
-
-                Helpers.Movement.MoveToTarget(),
-
+                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
                 Helpers.Spells.Cast("Cheap Shot",  ret => StyxWoW.Me.HasAura("Stealth")),
-                Helpers.Spells.Cast("Mutilate")
+                Helpers.Spells.Cast("Mutilate"),
+                Helpers.Spells.Cast("Sinister Strike")
             );
         }
 
