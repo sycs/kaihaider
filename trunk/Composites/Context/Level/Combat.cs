@@ -83,9 +83,9 @@ namespace RogueRaidBT.Composites.Context.Level
 
                 Helpers.Specials.UseSpecialAbilities(),
 
-                Helpers.Spells.CastSelf("Adrenaline Rush",   ret => Helpers.Rogue.IsCooldownsUsable()),
-                Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Rogue.IsCooldownsUsable()),
-                Helpers.Spells.CastCooldown("Killing Spree", ret => Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush),
+                Helpers.Spells.CastSelf("Adrenaline Rush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
+                Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
+                Helpers.Spells.CastCooldown("Killing Spree", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush),
 
 
                 Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry &&
@@ -100,8 +100,8 @@ namespace RogueRaidBT.Composites.Context.Level
 
 
 
-                Helpers.Spells.Cast("Revealing Strike", ret => !Helpers.Aura.RevealingStrike && Helpers.Rogue.ReleaseSpamLock()),
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Rogue.ReleaseSpamLock()),
+                Helpers.Spells.Cast("Revealing Strike", ret => Helpers.Movement.IsInSafeMeleeRange && !Helpers.Aura.RevealingStrike && Helpers.Rogue.ReleaseSpamLock()),
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
 
                 
                 Helpers.Movement.MoveToTarget(),
@@ -126,8 +126,8 @@ namespace RogueRaidBT.Composites.Context.Level
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
                 Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
-                Helpers.Spells.Cast("Cheap Shot", ret => StyxWoW.Me.HasAura("Stealth")),
-                Helpers.Spells.Cast("Sinister Strike")
+                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth")),
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange)
             );
         }
 

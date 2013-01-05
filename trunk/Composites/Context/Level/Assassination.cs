@@ -82,12 +82,7 @@ namespace RogueRaidBT.Composites.Context.Level
                         Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
 
-                        Helpers.Spells.Cast("Envenom", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)),
-
-
-                        Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && !Helpers.Aura.IsTargetSapped &&
-                                (Helpers.Aura.FindWeakness || Helpers.Aura.FuryoftheDestroyer || Helpers.Aura.ShadowDance) && Helpers.Movement.IsInSafeMeleeRange),
-
+                        Helpers.Spells.Cast("Envenom", ret => Helpers.Movement.IsInSafeMeleeRange && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)),
 
                         Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Movement.IsInSafeMeleeRange)
 
@@ -97,19 +92,19 @@ namespace RogueRaidBT.Composites.Context.Level
 
                 Helpers.Specials.UseSpecialAbilities(),
 
-                
-                Helpers.Spells.CastCooldown("Vendetta",     ret => Helpers.Rogue.IsCooldownsUsable()),
 
-                Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Rogue.IsCooldownsUsable()),
+                Helpers.Spells.CastCooldown("Vendetta", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
+
+                Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
 
 
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 6),
 
 
-                Helpers.Spells.Cast("Dispatch", ret => Helpers.Rogue.ReleaseSpamLock() && Helpers.Rogue.mTargetHP < 35 || StyxWoW.Me.HasAura("Blindside")),
+                Helpers.Spells.Cast("Dispatch", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock() && Helpers.Rogue.mTargetHP < 35 || StyxWoW.Me.HasAura("Blindside")),
 
-                Helpers.Spells.Cast("Mutilate", ret => Helpers.Rogue.ReleaseSpamLock()),
+                Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
 
 
                 Helpers.Movement.MoveToTarget(),
