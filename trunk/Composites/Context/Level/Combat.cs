@@ -22,7 +22,7 @@ namespace RogueRaidBT.Composites.Context.Level
         {
             return new PrioritySelector(
 
-                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly) && Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
+                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly) && !StyxWoW.Me.HasAura("Stealth")),
 
                   Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
@@ -61,6 +61,16 @@ namespace RogueRaidBT.Composites.Context.Level
 
                 ),
 
+
+                new Decorator(ret => !Helpers.Rogue.IsAoeUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1 &&
+                                        Helpers.Rogue.mHP < 75 && Helpers.Target.GetCCTarget(),
+                    new PrioritySelector(
+                        Helpers.Spells.Cast("Blind", ret => Helpers.Target.BlindCCUnit!=null, ret => Helpers.Target.BlindCCUnit),
+                        
+                        Helpers.Spells.Cast("Gouge", ret => Helpers.Target.GougeCCUnit!=null, ret => Helpers.Target.GougeCCUnit)
+                    )
+                ),
+
                  new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented &&
                                         (Helpers.Rogue.mComboPoints > 3 || Helpers.Aura.FuryoftheDestroyer),
                     new PrioritySelector(
@@ -71,8 +81,6 @@ namespace RogueRaidBT.Composites.Context.Level
 
                         Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
-
-
 
                         Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Movement.IsInSafeMeleeRange)
 

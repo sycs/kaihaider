@@ -142,7 +142,7 @@ namespace RogueRaidBT.Helpers
 
         static public bool IsAoeUsable()
         {
-            return Settings.Mode.mUseAoe && IsThrowingItemEquipped();
+            return Settings.Mode.mUseAoe;
         }
 
         static public bool IsCloakUsable()
@@ -227,11 +227,6 @@ namespace RogueRaidBT.Helpers
             }
         }
 
-
-        static private bool IsThrowingItemEquipped()
-        {
-            return true; //StyxWoW.Me.Inventory.Equipped.Ranged.IsThrownWeapon;
-        }
         
         // Used the fix the slow resource updating in Honorbuddy.
         // Still required as of HB build 5842

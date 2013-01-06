@@ -26,6 +26,8 @@ namespace RogueRaidBT.Helpers
 
 
         static public WoWUnit botBaseUnit { get; private set; }
+        static public WoWUnit BlindCCUnit { get; private set; }
+        static public WoWUnit GougeCCUnit { get; private set; }
 
         static public void Pulse()
         {
@@ -50,6 +52,43 @@ namespace RogueRaidBT.Helpers
                                                 System.Math.Abs(StyxWoW.Me.Z - unit.Z) >= 5)
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
+        }
+
+        static public bool GetCCTarget()
+        {
+            GougeCCUnit = null;
+            BlindCCUnit = null;
+
+            if(Helpers.Spells.CanCast("Blind"))
+                {
+                var AddsOnMe = mNearbyEnemyUnits.Where(unit => 
+                                    unit!= Helpers.Rogue.mTarget
+                                    && unit.IsTargetingMeOrPet
+                                    && unit.Distance <= 15);
+
+                BlindCCUnit = AddsOnMe.FirstOrDefault();
+           
+                }
+
+            if(Helpers.Spells.CanCast("Gouge"))
+                {
+                var AddsOnMe = mNearbyEnemyUnits.Where(unit => 
+                                    unit!= Helpers.Rogue.mTarget
+                                    && unit.IsTargetingMeOrPet
+                                    && unit.IsWithinMeleeRange
+                                    && StyxWoW.Me.IsFacing(unit.Location));
+
+                GougeCCUnit = AddsOnMe.FirstOrDefault();
+
+
+                }
+
+
+
+            if (GougeCCUnit == null && BlindCCUnit == null)
+                return false;
+            return true;
+               
         }
 
         static public Composite EnsureValidTarget()

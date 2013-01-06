@@ -239,7 +239,7 @@ namespace RogueRaidBT.Helpers
         }
         
 
-        static private Composite Cast(int spellId, CanRunDecoratorDelegate cond, WoWUnitDelegate target) 
+        static public Composite Cast(int spellId, CanRunDecoratorDelegate cond, WoWUnitDelegate target) 
         {
             return new Decorator(ret => target != null && cond(ret) && CanCast(spellId),
                 new Action(ret =>
@@ -257,7 +257,7 @@ namespace RogueRaidBT.Helpers
             );
         }
 
-        static private Composite Cast(string spellName, CanRunDecoratorDelegate cond,  WoWUnitDelegate target)
+        static public Composite Cast(string spellName, CanRunDecoratorDelegate cond,  WoWUnitDelegate target)
         {
             return new Decorator(ret => target(ret) != null && cond(ret) && CanCast(spellName),
                 new Action(ret =>
