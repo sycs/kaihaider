@@ -133,7 +133,7 @@ namespace RogueBT.Composites.Context.Level
                                              Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mTarget.Stunned,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish", ret => true), ///Helpers.Rogue.mTarget.Stunned
-                                new WaitContinue(TimeSpan.FromSeconds(1), ret => false, new ActionAlwaysSucceed()),
+                                Helpers.Rogue.CreateWaitForLagDuration(),
                                 Helpers.Spells.CastCooldown("Premeditation"),
                                 Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsBehind)
                             )
@@ -203,10 +203,23 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
+
+
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
-                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth")),
+
+                new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Movement.IsInSafeMeleeRange,
+                    new Sequence(
+                        Helpers.Movement.MoveToTarget(),
+                        Helpers.Spells.Cast("Sap", ret => true),
+                        Helpers.Movement.MoveToTarget(),
+                        Helpers.Spells.Cast("Pick Pocket", ret => true),
+                        Helpers.Rogue.CreateWaitForLagDuration(),
+                        Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind),
+                        Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind)
+                    )
+                ),
+
                 Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mTarget.IsWithinMeleeRange),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
 
