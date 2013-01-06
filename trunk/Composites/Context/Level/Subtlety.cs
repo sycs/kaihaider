@@ -33,8 +33,8 @@ namespace RogueRaidBT.Composites.Context.Level
 
              
                     //kick on  tranquility, penance(needs testing), divine hymn, evocation, polymorph, fear
-               Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
-                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
+               Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
 
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && !Helpers.Aura.IsTargetInvulnerable &&
 
@@ -203,8 +203,7 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
-                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
-                            && !Helpers.Aura.CripplingPoison &&
+                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
                 Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth")),

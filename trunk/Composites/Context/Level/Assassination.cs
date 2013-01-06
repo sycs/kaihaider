@@ -30,8 +30,8 @@ namespace RogueRaidBT.Composites.Context.Level
                 //Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
-                Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
-                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
+                Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
+                    Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
 
 
                 new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
@@ -99,7 +99,7 @@ namespace RogueRaidBT.Composites.Context.Level
 
 
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 6),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
 
 
                 Helpers.Spells.Cast("Dispatch", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock() && Helpers.Rogue.mTargetHP < 35 || StyxWoW.Me.HasAura("Blindside")),
@@ -128,10 +128,24 @@ namespace RogueRaidBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
-                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
-                Helpers.Spells.Cast("Cheap Shot",  ret => StyxWoW.Me.HasAura("Stealth")),
+
+
+                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
+                            Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
+
+                new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Movement.IsInSafeMeleeRange,
+                    new Sequence(
+                        Helpers.Spells.Cast("Pick Pocket", ret => true),
+                        Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind),
+                        Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind)
+                    )
+                ),
+                
                 Helpers.Spells.Cast("Mutilate"),
-                Helpers.Spells.Cast("Sinister Strike")
+                Helpers.Spells.Cast("Sinister Strike"),
+
+                Helpers.Movement.PullMoveToTarget()
+
             );
         }
 
