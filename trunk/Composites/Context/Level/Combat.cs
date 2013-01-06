@@ -63,9 +63,9 @@ namespace RogueRaidBT.Composites.Context.Level
 
 
                 new Decorator(ret => !Helpers.Rogue.IsAoeUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1 &&
-                                        Helpers.Rogue.mHP < 75 && Helpers.Target.GetCCTarget(),
+                                        Helpers.Rogue.mHP < 85 && Helpers.Target.GetCCTarget(),
                     new PrioritySelector(
-                        Helpers.Spells.Cast("Blind", ret => Helpers.Target.BlindCCUnit!=null, ret => Helpers.Target.BlindCCUnit),
+                        Helpers.Spells.Cast("Blind", ret => Helpers.Rogue.mHP < 65 && Helpers.Target.BlindCCUnit != null, ret => Helpers.Target.BlindCCUnit),
                         
                         Helpers.Spells.Cast("Gouge", ret => Helpers.Target.GougeCCUnit!=null, ret => Helpers.Target.GougeCCUnit)
                     )

@@ -64,7 +64,8 @@ namespace RogueRaidBT.Helpers
                 var AddsOnMe = mNearbyEnemyUnits.Where(unit => 
                                     unit!= Helpers.Rogue.mTarget
                                     && unit.IsTargetingMeOrPet
-                                    && unit.Distance <= 15);
+                                    && unit.Distance <= 15
+                                    && !unit.HasAura("Gouge"));
 
                 BlindCCUnit = AddsOnMe.FirstOrDefault();
            
@@ -76,7 +77,8 @@ namespace RogueRaidBT.Helpers
                                     unit!= Helpers.Rogue.mTarget
                                     && unit.IsTargetingMeOrPet
                                     && unit.IsWithinMeleeRange
-                                    && StyxWoW.Me.IsFacing(unit.Location));
+                                    && StyxWoW.Me.IsFacing(unit.Location)
+                                    && !unit.HasAura("Blind"));
 
                 GougeCCUnit = AddsOnMe.FirstOrDefault();
 

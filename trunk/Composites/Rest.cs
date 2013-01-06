@@ -37,7 +37,7 @@ namespace RogueRaidBT.Composites
                                                                                       StyxWoW.Me, "Recuperate") &&
                                                                                   Helpers.Rogue.CheckSpamLock()),
                                      new Decorator(
-                                         ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 50,
+                                         ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 70,
                                          new PrioritySelector(
                                              new Decorator(ret => StyxWoW.Me.IsMoving,
                                                            new Action(ret => Navigator.PlayerMover.MoveStop())
