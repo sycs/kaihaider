@@ -49,7 +49,7 @@ namespace RogueRaidBT.Composites.Context.Level
                             !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned &&
                             !Helpers.Aura.IsTargetImmuneStun && Helpers.Movement.IsInSafeMeleeRange),
 
-                        Helpers.Spells.CastSelf("Evasion", ret => !Helpers.Rogue.mTarget.Stunned),
+                        Helpers.Spells.CastSelf("Evasion", ret => Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned),
 
                         Helpers.Spells.Cast("Combat Readiness", ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
 
