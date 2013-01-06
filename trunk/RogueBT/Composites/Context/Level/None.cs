@@ -30,8 +30,10 @@ namespace RogueBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
-                Helpers.Movement.MoveToTarget(),
-                Helpers.Spells.Cast("Sinister Strike")
+
+                Helpers.Movement.MoveToLos(),
+                Helpers.Spells.Cast("Sinister Strike"),
+                Helpers.Movement.MoveToTarget()
             );
         }
     }

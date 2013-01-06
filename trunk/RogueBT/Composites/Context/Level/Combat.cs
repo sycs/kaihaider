@@ -138,18 +138,25 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Target.EnsureValidTarget(),
                 //Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
+
+                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
+
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
 
+
+
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
 
-                new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Movement.IsInSafeMeleeRange,
+                new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying && Helpers.Movement.IsInSafeMeleeRange,
                     new Sequence(
                         Helpers.Movement.MoveToTarget(),
                         Helpers.Spells.Cast("Sap", ret => true),
+                        Helpers.Movement.MoveToTarget(),
                         Helpers.Spells.Cast("Pick Pocket", ret => true),
+                        Helpers.Rogue.CreateWaitForLagDuration(),
                         Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind)
                     )

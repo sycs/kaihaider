@@ -162,7 +162,9 @@ namespace RogueBT.Helpers
         public static Composite PullMoveToTarget()
         {
            return  new PrioritySelector(
-            new Decorator(ret => StyxWoW.Me.IsMoving && StyxWoW.Me.Mounted && Rogue.mTarget != null && !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget) && !BotManager.Current.Name.Equals("BGBuddy"), 
+            new Decorator(ret => StyxWoW.Me.IsMoving && StyxWoW.Me.Mounted && Rogue.mTarget != null && !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget) && !BotManager.Current.Name.Equals("BGBuddy")
+                || !Rogue.mTarget.Attackable //|| Rogue.mTarget.CreatedByUnitGuid != StyxWoW.Me.Guid
+                , 
                 new Action(ret => StyxWoW.Me.ClearTarget())),
             new Decorator(ret => true, new Action(ret =>  MoveToTarget())));
         }

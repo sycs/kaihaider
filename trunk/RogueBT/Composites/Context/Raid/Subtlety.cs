@@ -63,11 +63,11 @@ namespace RogueBT.Composites.Context.Raid
                                                             Helpers.Spells.GetSpellCooldown("Shadow Dance") >= 10),
 
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && 
-                                     Helpers.Rogue.mComboPoints == 0 &&
+                                     Helpers.Rogue.mComboPoints < 3 &&
                                      Helpers.Rogue.mCurrentEnergy >= 50 &&
                                      !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
                     new PrioritySelector(
-                        new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance"),
+                        new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance") && Helpers.Spells.GetSpellCooldown("Vanish") > 60,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Shadow Dance"),
                                 new WaitContinue(TimeSpan.FromSeconds(0.5), ret => false, new ActionAlwaysSucceed())
@@ -77,7 +77,7 @@ namespace RogueBT.Composites.Context.Raid
                         new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
                                              !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Shadow Dance") &&
                                              Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
-                                             Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mTarget.Stunned,
+                                             Helpers.Spells.CanCast("Vanish"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 new WaitContinue(TimeSpan.FromSeconds(1), ret => false, new ActionAlwaysSucceed()),
