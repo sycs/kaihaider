@@ -20,16 +20,16 @@ namespace RogueBT.UI
 
         private void Config_Load(object sender, EventArgs e)
         {
-            comboBoxRaidPoison1.DataSource      = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxRaidPoison2.DataSource      = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxArenaPoison1.DataSource    = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxArenaPoison2.DataSource    = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxDungeonPoison1.DataSource   = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxDungeonPoison2.DataSource   = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxBgPoison1.DataSource        = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxBgPoison2.DataSource        = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxLevelPoison1.DataSource     = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
-            comboBoxLevelPoison2.DataSource     = Enum.GetValues(typeof(Helpers.Enum.PoisonSpellId));
+            comboBoxRaidPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
+            comboBoxRaidPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
+            comboBoxArenaPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
+            comboBoxArenaPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
+            comboBoxDungeonPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
+            comboBoxDungeonPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
+            comboBoxBgPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
+            comboBoxBgPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
+            comboBoxLevelPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
+            comboBoxLevelPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
 
             checkBoxRaidPoison.Checked    = Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Raid];
             checkBoxArenaPoison.Checked  = Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Arena];
@@ -155,16 +155,16 @@ namespace RogueBT.UI
             Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Battleground]  = checkBoxBgPoison.Checked;
             Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.World]         = checkBoxLevelPoison.Checked;
 
-            Settings.Mode.mPoisonsMain[(int) Helpers.Enum.LocationContext.Raid]          = (Helpers.Enum.PoisonSpellId) comboBoxRaidPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int) Helpers.Enum.LocationContext.Raid]           = (Helpers.Enum.PoisonSpellId) comboBoxRaidPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int) Helpers.Enum.LocationContext.Arena]         = (Helpers.Enum.PoisonSpellId) comboBoxArenaPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int) Helpers.Enum.LocationContext.Arena]          = (Helpers.Enum.PoisonSpellId) comboBoxArenaPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int) Helpers.Enum.LocationContext.Dungeon]       = (Helpers.Enum.PoisonSpellId) comboBoxDungeonPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int) Helpers.Enum.LocationContext.Dungeon]        = (Helpers.Enum.PoisonSpellId) comboBoxDungeonPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int) Helpers.Enum.LocationContext.Battleground]  = (Helpers.Enum.PoisonSpellId) comboBoxBgPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int) Helpers.Enum.LocationContext.Battleground]   = (Helpers.Enum.PoisonSpellId) comboBoxBgPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int) Helpers.Enum.LocationContext.World]         = (Helpers.Enum.PoisonSpellId) comboBoxLevelPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int) Helpers.Enum.LocationContext.World]          = (Helpers.Enum.PoisonSpellId) comboBoxLevelPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Raid]          = (Helpers.Enum.LeathalPoisonSpellId)comboBoxRaidPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Raid]           = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxRaidPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Arena]         = (Helpers.Enum.LeathalPoisonSpellId)comboBoxArenaPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Arena]          = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxArenaPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Dungeon]       = (Helpers.Enum.LeathalPoisonSpellId)comboBoxDungeonPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Dungeon]        = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxDungeonPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Battleground]  = (Helpers.Enum.LeathalPoisonSpellId)comboBoxBgPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Battleground]   = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxBgPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.World]         = (Helpers.Enum.LeathalPoisonSpellId)comboBoxLevelPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.World]          = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxLevelPoison2.SelectedItem;
 
             Settings.Mode.mOverrideContext = !radioButtonAuto.Checked;
             Settings.Mode.mUseMovement = radioButtonMoveOn.Checked;
