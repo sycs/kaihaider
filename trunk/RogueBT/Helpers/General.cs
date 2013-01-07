@@ -36,7 +36,7 @@ namespace RogueBT.Helpers
                         Focus.Pulse();
                         Specials.Pulse();
                         Aura.Pulse();
-                        if (Movement.IsPVPSuiteEnabled) Settings.Mode.mUseMovement = false;
+                        //if (Movement.IsPVPSuiteEnabled) Settings.Mode.mUseMovement = false;
 
                     }
                     

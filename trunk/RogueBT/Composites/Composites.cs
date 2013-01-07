@@ -17,7 +17,7 @@ namespace RogueBT.Composites
             return new Switch<Styx.WoWSpec>(ret => Helpers.Rogue.mCurrentSpec,
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.None,
-                 Context.Subtlety.BuildCombatBehavior()  //     Context.None.BuildCombatBehavior()
+                 Context.None.BuildCombatBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
@@ -42,7 +42,7 @@ namespace RogueBT.Composites
             return new Switch<Styx.WoWSpec>(ret => Helpers.Rogue.mCurrentSpec,
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.None,
-                    Context.Subtlety.BuildPullBehavior() //Context.None.BuildPullBehavior()
+                    Context.None.BuildPullBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,

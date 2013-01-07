@@ -31,7 +31,6 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 46924 || Helpers.Aura.IsTargetCasting == 1680) &&
                     Helpers.Movement.IsInSafeMeleeRange),
 
-             
                     //kick on  tranquility, penance(needs testing), divine hymn, evocation, polymorph, fear
                Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
@@ -113,6 +112,13 @@ namespace RogueBT.Composites.Context.Level
                    ),
 
 
+
+                Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Rogue.mComboPoints <= 3 && !Helpers.Aura.IsTargetSapped && (Helpers.Aura.Stealth ||
+                                                                    Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)), // set range 30
+
+                Helpers.Specials.UseSpecialAbilities(ret => Helpers.Aura.ShadowDance ||
+                                                            Helpers.Spells.GetSpellCooldown("Shadow Dance") >= 10),
+
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
                     Helpers.Rogue.mTarget != null && Helpers.Movement.IsInSafeMeleeRange &&
                     !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetInvulnerable &&
@@ -123,19 +129,18 @@ namespace RogueBT.Composites.Context.Level
                         new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Shadow Dance"),
-                                new WaitContinue(TimeSpan.FromSeconds(0.5), ret => false, new ActionAlwaysSucceed())
+                                Helpers.Rogue.CreateWaitForLagDuration()
                             )
                         ),
 
-                        new Decorator(ret => Helpers.Aura.IsTargetCasting != 0 &&
-                                             !Helpers.Aura.ShadowDance &&
+                        new Decorator(ret => !Helpers.Aura.ShadowDance &&
                                              Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
                                              Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mTarget.Stunned,
                             new Sequence(
-                                Helpers.Spells.CastSelf("Vanish", ret => true), ///Helpers.Rogue.mTarget.Stunned
+                                Helpers.Spells.CastSelf("Vanish", ret => true),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
                                 Helpers.Spells.CastCooldown("Premeditation"),
-                                Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsBehind)
+                                Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange)
                             )
                         ),
 
@@ -145,9 +150,6 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-
-                Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Rogue.mComboPoints <= 3 && !Helpers.Aura.IsTargetSapped && (Helpers.Aura.Stealth ||
-                                                                    Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)), // set range 30
 
                 // CP Builders
                 new Decorator(ret => Helpers.Rogue.mTarget != null && !Helpers.Aura.IsTargetDisoriented &&

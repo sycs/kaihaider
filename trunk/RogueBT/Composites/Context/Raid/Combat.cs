@@ -18,30 +18,38 @@ namespace RogueBT.Composites.Context.Raid
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+                Helpers.Rogue.ApplyPosions,
+                Helpers.Movement.PleaseStop(),
+                //Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.MoveToLos(),
+                //Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033) &&
                     Helpers.Rogue.mTarget.IsWithinMeleeRange),
 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.mRawComboPoints),
 
+                Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry
+                                                                && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) > 1
+                                                               && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 3)),
 
-                Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry &&
-                                                               Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) >= 2),
-
-                new Decorator(ret => Helpers.Rogue.IsAoeUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 && 
-                                     Helpers.Aura.BladeFlurry,
+                new Decorator(ret => Helpers.Rogue.IsAoeUsable() &&  Helpers.Aura.BladeFlurry
+                    && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 || Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) > 3) 
+                    ,
                     // Ugly. Find a way to cancel auras without Lua.
                     new Action(ret => Lua.DoString("RunMacroText('/cancelaura Blade Flurry');"))
                 ),
+
+
+                Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
 
                 Helpers.Spells.CastSelf("Slice and Dice", ret => (Helpers.Rogue.mComboPoints >= 1 || 
                                                                  Helpers.Aura.FuryoftheDestroyer) && 
                                                                  Helpers.Aura.TimeSliceandDice < 1),
 
-		Helpers.Spells.Cast("Rupture",         ret => (Helpers.Rogue.mComboPoints > 3 && (Helpers.Rogue.mCurrentEnergy >= 65 ||
-                                                                 Helpers.Aura.AdrenalineRush)) &&
-								(Helpers.Aura.TimeRupture < 1|| !Helpers.Aura.Rupture)),
+		        Helpers.Spells.Cast("Rupture",         ret => Helpers.Rogue.mComboPoints > 4 && 
+								(Helpers.Aura.TimeRupture < 3|| !Helpers.Aura.Rupture)),
 
                 Helpers.Spells.Cast("Eviscerate",         ret => (Helpers.Rogue.mComboPoints == 5 && (Helpers.Rogue.mCurrentEnergy >= 65 ||
                                                                  Helpers.Aura.AdrenalineRush)) || 
@@ -63,10 +71,18 @@ Helpers.Rogue.mComboPoints > 1),
                     )
                 ),
 
-                Helpers.Spells.Cast("Revealing Strike", ret => Helpers.Rogue.mComboPoints == 4 &&
-                                                               !Helpers.Aura.RevealingStrike),
+                Helpers.Spells.Cast("Revealing Strike", ret => !Helpers.Aura.RevealingStrike && Helpers.Movement.IsInSafeMeleeRange),
 
-                Helpers.Spells.Cast("Sinister Strike",  ret => Helpers.Rogue.mComboPoints < 5)
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Rogue.mComboPoints < 5 && Helpers.Movement.IsInSafeMeleeRange),
+
+                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks && Helpers.Focus.mFocusTarget != null &&
+                                                                       Helpers.Rogue.mCurrentEnergy > 50 && Helpers.Rogue.mCurrentEnergy < 95
+                                                                       && Helpers.Rogue.mComboPoints > 1),
+
+
+                Helpers.Movement.MoveToTarget(),
+
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Styx.StyxWoW.Me.RawComboPoints)
             );
         }
 

@@ -30,13 +30,15 @@ namespace RogueBT.Helpers
         //Legendary
         static public bool FuryoftheDestroyer { get; private set; }
 
-        //Sub
+        //Ass
         static public bool Vendetta { get; private set; }
         static public double TimeVendetta { get; private set; }
         static public bool ColdBlood { get; private set; }
         static public bool Envenom { get; private set; }
+        static public bool Blindside { get; private set; }
+
+        static public bool MasterOfSubtlety { get; private set; }
         static public bool ShadowDance { get; private set; }
-        static public bool Overkill { get; private set; }
         static public double TimeHemorrhage { get; private set; }
         static public bool FindWeakness { get; private set; }
         static public bool Rupture { get; private set; }
@@ -87,7 +89,7 @@ namespace RogueBT.Helpers
             ShadowDance = false; FindWeakness = false; Rupture = false; ShouldShiv = false;
             IsTargetDisoriented = false; IsTargetInvulnerable = false; IsTargetSapped = false;
             IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsBehind = false;
-            DeadlyPoison = false; Vendetta = false; Overkill = false; RevealingStrike = false;
+            DeadlyPoison = false; MasterOfSubtlety = false;  Vendetta = false; Blindside = false; RevealingStrike = false;
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false;
             CripplingPoison = false;
             DeadlyThrow = false;
@@ -187,15 +189,20 @@ namespace RogueBT.Helpers
                                 ShadowDance = true;
                                 break;
                             }
+                        case "Master Of Subtlety":
+                            {
+                                MasterOfSubtlety = true;
+                                break;
+                            }
                         case "Vendetta":
                             {
                                 Vendetta = true;
                                 TimeVendetta = aura.TimeLeft.TotalSeconds;
                                 break;
                             }
-                        case "Overkill":
+                        case "Blindside":
                             {
-                                Overkill = true;
+                                Blindside = true;
                                 break;
                             }
                         case "Adrenaline Rush":
@@ -396,7 +403,6 @@ namespace RogueBT.Helpers
             ShouldShiv = false;
             Helpers.Target.EnsureValidTarget();
             Helpers.Movement.ChkFace();
-                    
 
         }
     }
