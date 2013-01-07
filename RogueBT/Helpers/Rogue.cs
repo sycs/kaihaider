@@ -40,8 +40,34 @@ namespace RogueBT.Helpers
 
         static Rogue()
         {
+
+            Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", delegate
+            {
+                Logging.Write(LogLevel.Normal, "Your spec has been updated. Rebuilding behaviors...");
+                Helpers.Rogue.CreateWaitForLagDuration();
+                Helpers.Rogue.CreateWaitForLagDuration();
+                Helpers.Rogue.CreateWaitForLagDuration();
+                Helpers.Rogue.CreateWaitForLagDuration();
+                mCurrentSpec = StyxWoW.Me.Specialization;
+            }
+            );
+
+            Lua.Events.AttachEvent("ACTIVE_TALENT_GROUP_CHANGED", delegate
+            {
+                Logging.Write(LogLevel.Normal, "Your spec has changed. Rebuilding behaviors...");
+                Helpers.Rogue.CreateWaitForLagDuration();
+                Helpers.Rogue.CreateWaitForLagDuration();
+                Helpers.Rogue.CreateWaitForLagDuration();
+                Helpers.Rogue.CreateWaitForLagDuration();
+                mCurrentSpec = StyxWoW.Me.Specialization;
+
+                if (!StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
+            }
+            );
+
             mCurrentSpec = StyxWoW.Me.Specialization;
 
+            if (!StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
         }
 
         static public void Pulse()

@@ -20,30 +20,30 @@ namespace RogueBT.Composites.Context.Raid
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+                Helpers.Rogue.ApplyPosions,
+                Helpers.Movement.PleaseStop(),
+                //Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.MoveToLos(),
+                //Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
+                Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033) 
+                    && Helpers.Movement.IsInSafeMeleeRange),
 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.mRawComboPoints),
 
-                Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033 )&& 
-                    Helpers.Rogue.mTarget.IsWithinMeleeRange),
+                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer && Helpers.Movement.IsInSafeMeleeRange),
 
-                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer),
-
-                Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Aura.SliceandDice &&
+                Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Aura.TimeSliceandDice < 3 &&
                                                                  Helpers.Rogue.mComboPoints >= 1),
 
                 Helpers.Spells.Cast("Rupture", ret => ((Helpers.Aura.TimeRupture < 1 &&
                                                                  Helpers.Rogue.mCurrentEnergy <= 100) ||
                                                                  !Helpers.Aura.Rupture) &&
-                                                                 Helpers.Rogue.mComboPoints >= 1),
+                                                                 Helpers.Rogue.mComboPoints >= 1 && Helpers.Movement.IsInSafeMeleeRange),
 
-                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
-                                                                       Helpers.Rogue.mCurrentEnergy > 50 && Helpers.Rogue.mCurrentEnergy < 95 &&
-Helpers.Rogue.mComboPoints > 1),
-
-                Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
+                
+                Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
 
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
                                      Helpers.Aura.SliceandDice &&
@@ -54,18 +54,15 @@ Helpers.Rogue.mComboPoints > 1),
                                                                     Helpers.Aura.TimeVendetta > 0),
                         Helpers.Spells.CastCooldown("Vendetta"),
 
-                        new Decorator(ret => Helpers.Spells.CanCast("Vanish") && !Helpers.Aura.Overkill &&
+                        new Decorator(ret => Helpers.Spells.CanCast("Vanish")  &&
                                              Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 && 
                                              Helpers.Rogue.mComboPoints != 5,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
-                                new WaitContinue(1, ret => false, new ActionAlwaysSucceed()),//!stealth
-                                Helpers.Spells.Cast("Garrote")
+                                Helpers.Rogue.CreateWaitForLagDuration(),
+                                Helpers.Spells.Cast("Garrote", ret => Helpers.Movement.IsInSafeMeleeRange)
                                 )
-                            ),
-
-                        Helpers.Spells.CastSelf("Cold Blood", ret => !Helpers.Aura.ColdBlood && Helpers.Rogue.mComboPoints == 5 &&
-                                                                     Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 80)
+                            )
                     )
                 ),
 
@@ -73,17 +70,30 @@ Helpers.Rogue.mComboPoints > 1),
                                 (((Helpers.Rogue.mCurrentEnergy >= 90 && Helpers.Rogue.mComboPoints >= 4 && Helpers.Rogue.mTargetHP >= 35) ||
                                                        (Helpers.Rogue.mCurrentEnergy >= 55 && Helpers.Rogue.mComboPoints == 5 && Helpers.Rogue.mTargetHP < 35) ||
                                                        (Helpers.Aura.TimeSliceandDice <= 3 && Helpers.Rogue.mComboPoints >= 1)) &&
-                                                       (!Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 100))),
+                                                       (!Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 100)) && Helpers.Movement.IsInSafeMeleeRange),
 
-                Helpers.Spells.Cast("Backstab", ret => Helpers.Rogue.IsBehindUnit(StyxWoW.Me.CurrentTarget) && Helpers.Rogue.mTargetHP < 35 &&
-                                                       ((!Helpers.Aura.Rupture ||
-                                                       (Helpers.Rogue.mComboPoints != 5 && Helpers.Rogue.mCurrentEnergy < 110 &&
-                                                       (Helpers.Rogue.mCurrentEnergy >= 80 || Helpers.Aura.Envenom))))),
+                
+                Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() 
+                                                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
+
+                Helpers.Spells.Cast("Dispatch", ret => (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside) 
+                                                        && ((!Helpers.Aura.Rupture || (Helpers.Rogue.mCurrentEnergy >= 80 || Helpers.Aura.Envenom))) 
+                                                       && Helpers.Movement.IsInSafeMeleeRange),
 
                 Helpers.Spells.Cast("Mutilate", ret => !Helpers.Aura.Rupture ||
                                                        (Helpers.Rogue.mComboPoints < 4 && (Helpers.Rogue.mCurrentEnergy >= 90 ||
-                                                       Helpers.Aura.Envenom)))
+                                                       Helpers.Aura.Envenom)) && Helpers.Movement.IsInSafeMeleeRange),
 
+                                                       
+
+                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
+                                                                       Helpers.Rogue.mCurrentEnergy > 50 && Helpers.Rogue.mCurrentEnergy < 95 
+                                                                       && Helpers.Rogue.mComboPoints > 1),
+
+
+                Helpers.Movement.MoveToTarget(),
+
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < StyxWoW.Me.RawComboPoints)
             );
         }
 

@@ -88,10 +88,20 @@ namespace RogueBT.Composites.Context.Level
 
                     )
 
-                ), //Dispatch if target below 35% or Blindside aura on rouge
+                ), 
 
                 Helpers.Specials.UseSpecialAbilities(),
 
+                new Decorator(ret => Helpers.Spells.CanCast("Vanish")  &&
+                                             Helpers.Rogue.mTarget.Stunned,
+                            new Sequence(
+                                Helpers.Spells.CastSelf("Vanish"),
+                                Helpers.Rogue.CreateWaitForLagDuration(),
+                                Helpers.Movement.MoveToTarget(),
+                                Helpers.Spells.Cast("Garrote"),
+                                Helpers.Spells.Cast("Cheap Shot")
+                                )
+                            ),
 
                 Helpers.Spells.CastCooldown("Vendetta", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
 
@@ -102,7 +112,7 @@ namespace RogueBT.Composites.Context.Level
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
 
 
-                Helpers.Spells.Cast("Dispatch", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock() && Helpers.Rogue.mTargetHP < 35 || StyxWoW.Me.HasAura("Blindside")),
+                Helpers.Spells.Cast("Dispatch", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock() && (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside)),
 
                 Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
 
@@ -133,6 +143,8 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
 
+                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 15),
+
                 new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && Helpers.Movement.IsInSafeMeleeRange,
                     new Sequence(
                         Helpers.Movement.MoveToTarget(),
@@ -144,9 +156,11 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind)
                     )
                 ),
-                
-                Helpers.Spells.Cast("Mutilate"),
-                Helpers.Spells.Cast("Sinister Strike"),
+
+                Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
+
+                Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly) && Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
 
                 Helpers.Movement.PullMoveToTarget()
 

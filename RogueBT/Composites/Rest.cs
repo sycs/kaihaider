@@ -23,10 +23,11 @@ namespace RogueBT.Composites
     {
         public static Composite BuildRestBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsGhost &&
-                                        StyxWoW.Me.IsAlive && !StyxWoW.Me.Mounted &&
-                                        Helpers.Area.mLocation != Helpers.Enum.LocationContext.Raid &&
-                                        Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
+            return new Decorator(ret => !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsGhost 
+                                        && StyxWoW.Me.IsAlive && !StyxWoW.Me.Mounted 
+                                        && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Loot
+                                        && Helpers.Area.mLocation != Helpers.Enum.LocationContext.Raid
+                                        && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
                                  new PrioritySelector(
                                      new Decorator(
                                          ret =>

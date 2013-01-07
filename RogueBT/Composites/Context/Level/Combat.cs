@@ -22,9 +22,10 @@ namespace RogueBT.Composites.Context.Level
         {
             return new PrioritySelector(
 
+
                  Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly) && !StyxWoW.Me.HasAura("Stealth")),
 
-                  Helpers.Movement.PleaseStop(),
+                Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
                 //Helpers.Movement.ChkFace(),

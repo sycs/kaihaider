@@ -20,6 +20,7 @@ namespace RogueBT.Composites.Context.Raid
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+                Helpers.Rogue.ApplyPosions,
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
@@ -67,27 +68,24 @@ namespace RogueBT.Composites.Context.Raid
                                      Helpers.Rogue.mCurrentEnergy >= 50 &&
                                      !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
                     new PrioritySelector(
-                        new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance") && Helpers.Spells.GetSpellCooldown("Vanish") > 60,
+                        new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Shadow Dance"),
-                                new WaitContinue(TimeSpan.FromSeconds(0.5), ret => false, new ActionAlwaysSucceed())
+                                Helpers.Rogue.CreateWaitForLagDuration()
                             )
                         ),
 
-                        new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
-                                             !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Shadow Dance") &&
+                        new Decorator(ret => !Helpers.Aura.ShadowDance &&
                                              Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
                                              Helpers.Spells.CanCast("Vanish"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
-                                new WaitContinue(TimeSpan.FromSeconds(1), ret => false, new ActionAlwaysSucceed()),
+                                Helpers.Rogue.CreateWaitForLagDuration(),
                                 Helpers.Spells.CastCooldown("Premeditation"),
-                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind)
+                                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.IsBehind)
                             )
                         ),
-
-                        Helpers.Spells.CastSelf("Preparation", ret => Helpers.Rogue.IsCooldownsUsable() &&
-                                                                      Helpers.Spells.GetSpellCooldown("Vanish") > 30)
+                        Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
                     )
                 ),
 
@@ -111,9 +109,13 @@ namespace RogueBT.Composites.Context.Raid
                     )
                 ),
 
+
+                Helpers.Movement.MoveToTarget(),
+
                 Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
-                                                                       Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.mCurrentEnergy < 75 &&
-Helpers.Rogue.mComboPoints > 1)
+                                                                       Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.mCurrentEnergy < 75 && Helpers.Rogue.mComboPoints > 1)
+
+
             );
         }
 
