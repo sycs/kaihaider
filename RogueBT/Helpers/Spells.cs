@@ -136,26 +136,6 @@ namespace RogueBT.Helpers
                  new Action(ret => RunStatus.Failure));
         }
 
-        static public Composite ToggleAutoAttack(CanRunDecoratorDelegate cond)
-        {
-            if (Helpers.Rogue.mTarget != null && !Helpers.Aura.Stealth && !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !StyxWoW.Me.IsAutoAttacking)
-            {
-                StyxWoW.Me.ToggleAttack();
-                Logging.Write(LogLevel.Normal, "Auto-attack");
-            }
-            
-            return new Decorator(ret => cond(ret) ,
-                new Action(ret => RunStatus.Failure)
-                //new Action(ret => 
-                //    {
-                        
-                //        StyxWoW.Me.ToggleAttack();
-                //        Logging.Write(LogLevel.Normal, "Auto-attack");
-                //    }
-                //)
-            );
-        }
-
         static public bool CanCast(int spellId)
         {
             return CanCast(WoWSpell.FromId(spellId).Name);
@@ -222,22 +202,6 @@ namespace RogueBT.Helpers
         {
             return SpellManager.HasSpell(spellName) ? SpellManager.Spells[spellName].CooldownTimeLeft.TotalSeconds : 0;
         }
-
-        //stole from CLU
-        /// <summary>
-        /// Gets the spell by name (string)
-        /// </summary>
-        /// <param name="spellName">the spell name to get</param>
-        /// <returns> Returns the spellname</returns>
-        private static WoWSpell GetSpellByName(string spellName)
-        {
-            WoWSpell spell;
-            if (!SpellManager.Spells.TryGetValue(spellName, out spell))
-                spell = SpellManager.Spells.FirstOrDefault(s => s.Key == spellName).Value;
-
-            return spell;
-        }
-        
 
         static public Composite Cast(int spellId, CanRunDecoratorDelegate cond, WoWUnitDelegate target) 
         {

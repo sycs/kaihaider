@@ -14,8 +14,8 @@ namespace RogueBT.Settings
         static public Helpers.Enum.CooldownUse mCooldownUse { get; set; }
         static public Helpers.Enum.LocationContext mLocationSettings { get; set; }
 
-        static public Helpers.Enum.PoisonSpellId[] mPoisonsMain { get; set; }
-        static public Helpers.Enum.PoisonSpellId[] mPoisonsOff { get; set; }
+        static public Helpers.Enum.LeathalPoisonSpellId[] mPoisonsMain { get; set; }
+        static public Helpers.Enum.NonLeathalPoisonSpellId[] mPoisonsOff { get; set; }
 
         static public bool[] mUsePoisons { get; set; }
 
@@ -30,8 +30,8 @@ namespace RogueBT.Settings
         static Mode()
         {
             mUsePoisons  = new bool[6];
-            mPoisonsMain = new Helpers.Enum.PoisonSpellId[6];
-            mPoisonsOff  = new Helpers.Enum.PoisonSpellId[6];
+            mPoisonsMain = new Helpers.Enum.LeathalPoisonSpellId[6];
+            mPoisonsOff = new Helpers.Enum.NonLeathalPoisonSpellId[6];
 
             mUsePoisons[(int)Helpers.Enum.LocationContext.Raid] = false;
             mUsePoisons[(int)Helpers.Enum.LocationContext.Arena] = false;
@@ -41,8 +41,8 @@ namespace RogueBT.Settings
 
             for (int i = 1; i < 6; i++)
             {
-                mPoisonsMain[i] = Helpers.Enum.PoisonSpellId.Deadly;
-                mPoisonsOff[i] = Helpers.Enum.PoisonSpellId.Leeching;
+                mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Leeching;
             }
 
             mCooldownUse = Helpers.Enum.CooldownUse.Always;

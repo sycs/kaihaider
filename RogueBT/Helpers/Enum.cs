@@ -10,10 +10,15 @@ namespace RogueBT.Helpers
 {
     class Enum
     {
-        public enum PoisonSpellId
+        public enum LeathalPoisonSpellId
         {
             Deadly = 2823,
-            Wound = 8679,
+            Wound = 8679
+        }
+
+        public enum NonLeathalPoisonSpellId
+        {
+            
             MindNumbing = 5761,
             Crippling = 3408,
             Paralytic = 108215,

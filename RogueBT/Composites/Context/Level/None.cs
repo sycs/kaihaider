@@ -18,7 +18,7 @@ namespace RogueBT.Composites.Context.Level
             return new PrioritySelector(
                 Helpers.Movement.MoveToTarget(),
 
-                Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
+                Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Spells.CastSelf("Evasion", ret => Helpers.Rogue.mHP <= 35),
 

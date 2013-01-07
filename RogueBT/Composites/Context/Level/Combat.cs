@@ -150,6 +150,8 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
 
+                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 15),
+
                 new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying && Helpers.Movement.IsInSafeMeleeRange,
                     new Sequence(
                         Helpers.Movement.MoveToTarget(),

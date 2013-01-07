@@ -30,7 +30,7 @@ namespace RogueBT.Composites.Context.Arena
                     &&
                 !StyxWoW.Me.Combat),
 
-                Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
+                Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Spells.CastCooldown("Feint", ret => 
                     (Helpers.Aura.IsTargetCasting == 46924 || Helpers.Aura.IsTargetCasting == 1680) && 
@@ -153,7 +153,7 @@ namespace RogueBT.Composites.Context.Arena
                     StyxWoW.Me.IsAlive  && StyxWoW.IsInGame &&!Helpers.Aura.FaerieFire &&
                 !StyxWoW.Me.Combat),
 
-                    Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
+                    Helpers.Spells.ToggleAutoAttack(),
 
                   new Decorator(ret => Helpers.Rogue.mTarget != null && !Helpers.Aura.IsTargetDisoriented &&
                                      !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped,

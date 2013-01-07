@@ -19,7 +19,7 @@ namespace RogueBT.Composites.Context.Arena
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-                Helpers.Spells.ToggleAutoAttack(ret => !Helpers.Aura.Vanish && !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped),
+                Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 46924 || Helpers.Aura.IsTargetCasting == 1680) && 
                     Helpers.Rogue.mTarget.IsWithinMeleeRange),
