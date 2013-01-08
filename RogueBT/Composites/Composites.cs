@@ -70,21 +70,21 @@ namespace RogueBT.Composites
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
                     new PrioritySelector(
-                        Helpers.Rogue.ApplyPosions,
+                        Helpers.Rogue.ApplyPoisons,
                         Context.Assassination.BuildBuffBehavior()
                     )
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueCombat,
                     new PrioritySelector(
-                        Helpers.Rogue.ApplyPosions,
+                        Helpers.Rogue.ApplyPoisons,
                         Context.Combat.BuildBuffBehavior()
                     )
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueSubtlety,
                     new PrioritySelector(
-                        Helpers.Rogue.ApplyPosions,
+                        Helpers.Rogue.ApplyPoisons,
                         Context.Subtlety.BuildBuffBehavior()  
                     )
                 )
