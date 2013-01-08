@@ -146,7 +146,7 @@ namespace RogueBT.Composites.Context.Level
                Helpers.Spells.Cast("Sap", ret => StyxWoW.Me.HasAura("Stealth") && StyxWoW.Me.IsSafelyFacing(Helpers.Rogue.mTarget)
                    && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Aura.IsTargetSapped),
 
-                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsTargetSapped && !Helpers.Rogue.mTarget.IsFlying,
+                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying,
                     new Sequence(
                         new Action(ret => {
                             Helpers.Spells.Cast("Pick Pocket", ret2 => Helpers.Movement.IsInSafeMeleeRange);
