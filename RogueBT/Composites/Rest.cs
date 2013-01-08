@@ -23,8 +23,8 @@ namespace RogueBT.Composites
     {
         public static Composite BuildRestBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsGhost 
-                                        && StyxWoW.Me.IsAlive && !StyxWoW.Me.Mounted 
+            return new Decorator(ret => !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsGhost
+                                        && StyxWoW.Me.IsAlive && !StyxWoW.Me.Mounted
                                         && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Loot
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.Raid
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
@@ -46,10 +46,15 @@ namespace RogueBT.Composites
                                                            new Action(ret => Navigator.PlayerMover.MoveStop())
                                                  ),
                                              Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth")),
-                                             new Action(ret => Styx.CommonBot.Rest.FeedImmediate())
+                                             new Action(ret =>
+                                             {
+                                                 Styx.CommonBot.Rest.FeedImmediate();
+                                Helpers.Rogue.CreateWaitForLagDuration();
+                                Helpers.Rogue.CreateWaitForLagDuration();
+                                             })
                                              )
                                          ),
-                                     
+
                                      new Decorator(ret => Helpers.Rogue.mHP <= 30,
                                                    new PrioritySelector(
                                                        Helpers.Spells.CastSelf("Stealth",
