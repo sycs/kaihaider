@@ -62,7 +62,7 @@ Helpers.Rogue.mComboPoints > 1),
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice &&
                                      (Helpers.Aura.ModerateInsight ||
                                      Helpers.Aura.DeepInsight) &&
-                                     Helpers.Rogue.mCurrentEnergy <= 20,
+                                     Helpers.Rogue.mCurrentEnergy <= 30,
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(),
                         Helpers.Spells.CastSelf("Adrenaline Rush"),
