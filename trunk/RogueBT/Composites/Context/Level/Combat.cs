@@ -138,13 +138,18 @@ namespace RogueBT.Composites.Context.Level
                 new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying,
                     new Sequence(
                         Helpers.Rogue.CreateWaitForLagDuration(),
-                        new Action(ret => {
+                        Helpers.Movement.MoveToTarget(),
+                        Helpers.Movement.ChkFace(),
+                        Helpers.Rogue.CreateWaitForLagDuration(),
+                        new Action(ret =>
+                        {
                             Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
                             Helpers.Rogue.CreateWaitForLagDuration();
                             return RunStatus.Success;
                         }),
                         Helpers.Rogue.CreateWaitForLagDuration(),
-                        Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange)
+                        Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange),
+                        Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange)
                     )
                 ),
 
