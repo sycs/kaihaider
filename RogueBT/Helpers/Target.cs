@@ -103,6 +103,16 @@ namespace RogueBT.Helpers
             );
         }
 
+        static public bool IsSappable()
+        {
+            // if (!StyxWoW.Me.Combat ) Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Targeting..");
+
+            return Helpers.Aura.Stealth && StyxWoW.Me.IsSafelyFacing(Helpers.Rogue.mTarget)
+                   && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.mTarget.Combat
+                   && (Helpers.Rogue.mTarget.IsBeast || Helpers.Rogue.mTarget.IsDemon || Helpers.Rogue.mTarget.IsDragon || Helpers.Rogue.mTarget.IsHumanoid);
+
+        }
+
         static public Composite EnsureBestPvPTarget()
         {
             return new Action();
