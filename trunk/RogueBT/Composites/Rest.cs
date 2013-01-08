@@ -49,7 +49,7 @@ namespace RogueBT.Composites
                                              new Action(ret =>
                                              {
                                                  Styx.CommonBot.Rest.FeedImmediate();
-                                new WaitContinue(System.TimeSpan.FromSeconds(1), ret2 => false, new ActionAlwaysSucceed());
+                                new WaitContinue(System.TimeSpan.FromSeconds(2), ret2 => false, new ActionAlwaysSucceed());
                                              })
                                              )
                                          ),
