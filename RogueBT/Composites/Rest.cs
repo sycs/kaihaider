@@ -30,7 +30,7 @@ namespace RogueBT.Composites
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
                                  new PrioritySelector(
                                              Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90
-                                                 && !StyxWoW.Me.HasAura("Stealth") && StyxWoW.Me.GetAuraByName("Food").Duration < 17 && !SpellManager.GlobalCooldown),
+                                                 && !StyxWoW.Me.HasAura("Stealth") && StyxWoW.Me.GetAuraByName("Food").TimeLeft.TotalSeconds < 17 && !SpellManager.GlobalCooldown),
                                      new Decorator(
                                          ret =>
                                          Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90,
@@ -45,7 +45,6 @@ namespace RogueBT.Composites
                                              new Decorator(ret => StyxWoW.Me.IsMoving,
                                                            new Action(ret => Navigator.PlayerMover.MoveStop())
                                                  ),
-                                             Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth")),
                                              new Action(ret =>
                                              {
                                                  Styx.CommonBot.Rest.FeedImmediate();

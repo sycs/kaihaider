@@ -148,6 +148,7 @@ namespace RogueBT.Composites.Context.Level
 
                 new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying,
                     new Sequence(
+                        Helpers.Rogue.CreateWaitForLagDuration(),
                         new Action(ret => {
                             Helpers.Spells.Cast("Pick Pocket", ret2 => Helpers.Movement.IsInSafeMeleeRange);
                             return RunStatus.Success;
