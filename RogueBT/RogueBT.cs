@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////
-//              RogueBT.cs                  //
-//      Part of RogueBT by kaihaider        //
+//                 RogueBT.cs                   //
+//         Part of RogueBT by kaihaider         //
 //////////////////////////////////////////////////
 //   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
@@ -39,9 +39,8 @@ namespace RogueBT
             Logging.Write(LogLevel.Normal, "RogueBT v" + mCurVersion + " is now operational.");
             Logging.Write(LogLevel.Normal, "");
             Logging.Write(LogLevel.Normal, "Your feedback is appreciated. Please leave some in the forum thread at:");
-            Logging.Write(LogLevel.Normal, "http://www.thebuddyforum.com/honorbuddy-forum/classes/rogue/51976-rogueraidbt.html");
+            Logging.Write(LogLevel.Normal, "http://www.thebuddyforum.com/honorbuddy-forum/classes/rogue/...");
             Logging.Write(LogLevel.Normal, "");
-            Logging.Write(LogLevel.Normal, "Enjoy topping the DPS meters!");
             Logging.Write(LogLevel.Normal, "");
         }
 
