@@ -126,15 +126,16 @@ namespace RogueBT.Composites.Context.Level
                     !StyxWoW.Me.Combat),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-
                Helpers.Spells.Cast("Sap", ret => StyxWoW.Me.HasAura("Stealth") && StyxWoW.Me.IsSafelyFacing(Helpers.Rogue.mTarget)
-                   && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Aura.IsTargetSapped),
+                   && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.mTarget.Combat),
 
                 new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying,
                     new Sequence(
+                        Helpers.Rogue.CreateWaitForLagDuration(),
                         new Action(ret =>
                         {
-                            Helpers.Spells.Cast("Pick Pocket", ret2 => Helpers.Movement.IsInSafeMeleeRange);
+                            Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
+                            Helpers.Rogue.CreateWaitForLagDuration();
                             return RunStatus.Success;
                         }),
                         Helpers.Rogue.CreateWaitForLagDuration(),
