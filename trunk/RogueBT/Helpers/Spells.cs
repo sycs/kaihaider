@@ -143,7 +143,8 @@ namespace RogueBT.Helpers
 
         static public bool CanCast(string spellName)
         {
-            if(spellName.Equals("Hemorrhage")) return SpellManager.GlobalCooldownLeft.TotalSeconds < 0.5 && Rogue.mCurrentEnergy >= 30 - 5;
+           // if (spellName.Equals("Hemorrhage")) return SpellManager.GlobalCooldownLeft.TotalSeconds < 0.5 && Rogue.mCurrentEnergy >= 30 - 5;
+          //  if (spellName.Equals("Envenom")) return SpellManager.GlobalCooldownLeft.TotalSeconds < 0.5 && Rogue.mCurrentEnergy >= 35 - 5;
             return SpellManager.HasSpell(spellName) && ((GetSpellCooldown(spellName) < 0.2) || (SpellManager.GlobalCooldown && GetSpellCooldown(spellName) < 0.5)) && Rogue.mCurrentEnergy >= SpellManager.Spells[spellName].PowerCost - 5;
         }
 
@@ -230,9 +231,14 @@ namespace RogueBT.Helpers
 
         static public Composite Cast(string spellName, CanRunDecoratorDelegate cond,  WoWUnitDelegate target)
         {
+                if (spellName.Equals("Hemorrhage")) spellName = "Sinister Strike";
+                if (spellName.Equals("Dispatch")) spellName = "Sinister Strike";
+                if (spellName.Equals("Envenom")) spellName = "Eviscerate"; 
             return new Decorator(ret => target(ret) != null && cond(ret) && CanCast(spellName),
                 new Action(ret =>
                                {
+
+                                   
                         //Logging.Write(color, Helpers.Rogue.CheckSpamLock().ToString());
                         if (Helpers.Focus.mFocusTarget != null)
                             Logging.Write(LogLevel.Diagnostic, Colors.White, "" + Focus.mFocusTarget.Name);

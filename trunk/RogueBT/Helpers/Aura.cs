@@ -137,11 +137,17 @@ namespace RogueBT.Helpers
                                 Leeching = true;
                                 break;
                             }
+                        
                     }
                     switch (aura.Name) //goto case ; 
                     {
 
-                       
+                        case "Blindside": //121152
+                            {
+                                if (aura.TimeLeft.TotalSeconds < 10 && aura.TimeLeft.TotalSeconds > 1)
+                                    Blindside = true;
+                                break;
+                            }
                         case "Stealth":
                             {
                                 Stealth = true;
@@ -198,11 +204,6 @@ namespace RogueBT.Helpers
                             {
                                 Vendetta = true;
                                 TimeVendetta = aura.TimeLeft.TotalSeconds;
-                                break;
-                            }
-                        case "Blindside":
-                            {
-                                Blindside = true;
                                 break;
                             }
                         case "Adrenaline Rush":

@@ -214,7 +214,7 @@ namespace RogueBT.Helpers
         }
 
         // stolen from clu
-        public static Composite ApplyPosions
+        public static Composite ApplyPoisons
         {
             get
             {
