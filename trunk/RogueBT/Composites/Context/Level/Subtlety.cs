@@ -199,7 +199,7 @@ namespace RogueBT.Composites.Context.Level
                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
                 new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth")
-                    && !Helpers.Rogue.mTarget.IsFlying && !Helpers.Rogue.mTarget.IsHumanoid,
+                    && !Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.IsHumanoid,
                     new Sequence(
                         Helpers.Rogue.CreateWaitForLagDuration(),
                         Helpers.Movement.MoveToTarget(),
