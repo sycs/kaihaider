@@ -212,9 +212,16 @@ namespace RogueBT.Helpers
                             Logging.Write(LogLevel.Diagnostic, Colors.White, "" + Focus.mFocusTarget.Name);
                         SpellManager.Cast(spellId, target(ret));
                         Logging.Write(LogLevel.Diagnostic, Colors.White, "" + WoWSpell.FromId(spellId).Name);
-                        string temp = "Casting " + WoWSpell.FromId(spellId).Name + " on " + target(ret).Name + " at " +  
+                        string temp;
+                        if (target(ret).IsPlayer)
+                            temp = "Casting " + WoWSpell.FromId(spellId).Name + " on Player at " +  
                                              Math.Round(target(ret).HealthPercent, 0) + " with " + StyxWoW.Me.ComboPoints + "CP and " + 
                                              Rogue.mCurrentEnergy + " energy";
+                        else
+                            temp = "Casting " + WoWSpell.FromId(spellId).Name + " on " + target(ret).Name + " at " +  
+                                             Math.Round(target(ret).HealthPercent, 0) + " with " + StyxWoW.Me.ComboPoints + "CP and " + 
+                                             Rogue.mCurrentEnergy + " energy";
+
                         Logging.Write(LogLevel.Normal, temp );
                     }
                 )
@@ -230,7 +237,12 @@ namespace RogueBT.Helpers
                         if (Helpers.Focus.mFocusTarget != null)
                             Logging.Write(LogLevel.Diagnostic, Colors.White, "" + Focus.mFocusTarget.Name);
                         SpellManager.Cast(spellName, target(ret));
-                        Logging.Write(LogLevel.Normal , "Casting " + spellName + " on " + target(ret).Name + " at " +
+                        if (target(ret).IsPlayer)
+                            Logging.Write(LogLevel.Normal, "Casting " + spellName + " on Player at " +
+                                                 Math.Round(target(ret).HealthPercent, 0) + "% with " + StyxWoW.Me.ComboPoints + "CP and " +
+                                                 Rogue.mCurrentEnergy + " energy");
+                        else 
+                            Logging.Write(LogLevel.Normal , "Casting " + spellName + " on " + target(ret).Name + " at " +
                                              Math.Round(target(ret).HealthPercent, 0) + "% with " + StyxWoW.Me.ComboPoints + "CP and " +
                                              Rogue.mCurrentEnergy + " energy");
                     }
