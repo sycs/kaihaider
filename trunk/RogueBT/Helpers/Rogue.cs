@@ -220,7 +220,7 @@ namespace RogueBT.Helpers
             {
                 return new PrioritySelector
                         (new Decorator
-                             (ret => !StyxWoW.Me.IsFlying
+                             (ret => !StyxWoW.Me.Mounted
                                  && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) 
                                      && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && StyxWoW.Me != null &&
                            SpellManager.HasSpell((int)Settings.Mode.mPoisonsMain[(int)Area.mLocation]),
