@@ -150,7 +150,7 @@ namespace RogueBT.Helpers
         }
 
         public static Composite ChkFace()
-        {
+        { //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
             return new Decorator(ret => Rogue.mTarget != null && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.IsWithinMeleeRange) && !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget),
                                           new Action(ret =>
                                           { if(StyxWoW.Me.IsActuallyInCombat)
@@ -174,7 +174,7 @@ namespace RogueBT.Helpers
             
             //change dec continue
             return new Decorator(
-                ret => Rogue.mTarget != null && Settings.Mode.mUseMovement &&
+                ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !StyxWoW.Me.Mounted &&
                                         //!Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile && 
                                         !(Rogue.mTarget.Distance < 10 && IsGlueEnabled || StyxWoW.Me.Stunned ||
                                         StyxWoW.Me.Rooted) // || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
@@ -186,7 +186,6 @@ namespace RogueBT.Helpers
 
                                       new DecoratorContinue(
                                           ret =>
-                                          !StyxWoW.Me.Mounted &&
                                           (!Aura.IsBehind || ((!Rogue.mTarget.IsPlayer && !IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance > 2.5f) ||  
                                                 Rogue.mTarget.IsMoving) && !StyxWoW.Me.IsCasting && 
                                           (!StyxWoW.Me.IsMoving || Rogue.mTarget.IsMoving), // (!Aura.IsBehind || Rogue.mTarget.Distance > MeleeRange - 3f) && !StyxWoW.Me.IsCasting,
@@ -194,16 +193,6 @@ namespace RogueBT.Helpers
                                                                  Rogue.mTarget.Rotation +
                                                                  WoWMathHelper.DegreesToRadians(150),
                                                                  MeleeRange - 1f)))),
-                                      //new DecoratorContinue(
-                                      //    ret =>
-                                      //    Aura.IsBehind && IsInSafeMeleeRange && !Rogue.mTarget.MovementInfo.IsMoving && // Rogue.mTarget.Distance < MeleeRange - 3f &&
-                                      //    StyxWoW.Me.MovementInfo.MovingForward,
-                                      //    new Action(ret =>
-                                      //                   {
-                                      //                       Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop!"); 
-                                      //                       directionChange = false;
-                                      //                       Navigator.PlayerMover.MoveStop();
-                                      //                   })),
                                       new DecoratorContinue(
                                           ret => IsInSafeMeleeRange &&
                                           //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
@@ -216,7 +205,7 @@ namespace RogueBT.Helpers
                                   new Sequence(
 
                                       new DecoratorContinue(
-                                          ret => !StyxWoW.Me.Mounted && !IsInSafeMeleeRange && !StyxWoW.Me.IsCasting,
+                                          ret => !IsInSafeMeleeRange && !StyxWoW.Me.IsCasting,
                                           new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location))),
                                       
                                       new DecoratorContinue(
