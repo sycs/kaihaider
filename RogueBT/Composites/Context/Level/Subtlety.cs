@@ -214,8 +214,7 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mTarget.IsWithinMeleeRange),
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Movement.PullMoveToTarget()
