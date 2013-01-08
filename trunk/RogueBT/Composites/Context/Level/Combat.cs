@@ -29,6 +29,9 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
                 //Helpers.Movement.ChkFace(),
+                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
+                            && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
+                            Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && 
@@ -41,20 +44,16 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-
                 new Decorator(ret => Helpers.Rogue.mHP < 75,
                     new PrioritySelector(
-
                         Helpers.Spells.CastCooldown("Kidney Shot", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) &&
                             Helpers.Rogue.mComboPoints > 3 &&
                             !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned &&
                             !Helpers.Aura.IsTargetImmuneStun && Helpers.Movement.IsInSafeMeleeRange),
-
                         Helpers.Spells.CastSelf("Evasion", ret => Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned),
-
                         Helpers.Spells.Cast("Combat Readiness", ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
-
-                        Helpers.Spells.CastSelf("Cloak of Shadows", ret => Helpers.Rogue.IsCloakUsable())
+                        Helpers.Spells.CastSelf("Cloak of Shadows", ret => Helpers.Rogue.IsCloakUsable()),
+                        Helpers.Spells.Cast("Shiv", ret => Helpers.Aura.Leeching && Helpers.Rogue.mHP < 25)
 
 
 
@@ -133,25 +132,16 @@ namespace RogueBT.Composites.Context.Level
                 new Decorator(ret => StyxWoW.Me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
-
-
                 //Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
                 //Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
-
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
-
                 Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
                     StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
                     !StyxWoW.Me.Combat),
-
-
-
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-
-                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 15),
 
                 new Decorator(ret => StyxWoW.Me.HasAura("Stealth") && !Helpers.Rogue.mTarget.IsFlying && Helpers.Movement.IsInSafeMeleeRange,
                     new Sequence(
@@ -166,9 +156,8 @@ namespace RogueBT.Composites.Context.Level
                 ),
 
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
-
-                Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly )&& Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
-
+                Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
+                    && Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Movement.PullMoveToTarget()
 
             );

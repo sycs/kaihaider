@@ -34,9 +34,8 @@ namespace RogueBT.Composites.Context.Raid
                                                                && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 3)),
 
                 new Decorator(ret => Helpers.Rogue.IsAoeUsable() &&  Helpers.Aura.BladeFlurry
-                    && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 || Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) > 3) 
-                    ,
-                    // Ugly. Find a way to cancel auras without Lua.
+                    && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 || Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) > 3)
+                    , // Ugly. Find a way to cancel auras without Lua.
                     new Action(ret => Lua.DoString("RunMacroText('/cancelaura Blade Flurry');"))
                 ),
 

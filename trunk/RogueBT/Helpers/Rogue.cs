@@ -128,15 +128,13 @@ namespace RogueBT.Helpers
 
                     new Decorator(ret => !Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast,
                             new PrioritySelector(
-                                Helpers.Spells.CastCooldown("Kidney Shot", ret => Helpers.Focus.rawFocusTarget != null &&
-                                Helpers.Focus.rawFocusTarget == Helpers.Rogue.mTarget && StyxWoW.Me.ComboPoints > 1 &&
+                                Helpers.Spells.CastCooldown("Kidney Shot", ret => StyxWoW.Me.ComboPoints > 1 &&
                                     !Helpers.Aura.IsTargetImmuneStun)
 
                                 )),
 
-                    Helpers.Spells.CastCooldown("Gouge", ret => Helpers.Focus.rawFocusTarget != null &&
-                                Helpers.Focus.rawFocusTarget == Helpers.Rogue.mTarget &&
-                                Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.IsHolyOrNat() &&
+                    Helpers.Spells.CastCooldown("Gouge", ret => 
+                                Helpers.Rogue.IsHolyOrNat() &&
                                 Helpers.Rogue.mTarget.IsSafelyFacing(StyxWoW.Me)))
             );
         }
@@ -163,7 +161,7 @@ namespace RogueBT.Helpers
 
         static public bool IsBehindUnit(WoWUnit unit)
         {
-            return Settings.Mode.mForceBehind || unit.MeIsSafelyBehind;
+            return Settings.Mode.mForceBehind || Helpers.Aura.IsBehind; //unit.MeIsSafelyBehind;
         }
 
         static public bool IsAoeUsable()
