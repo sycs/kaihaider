@@ -29,6 +29,8 @@ namespace RogueBT.Composites
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.Raid
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
                                  new PrioritySelector(
+                                             Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90
+                                                 && !StyxWoW.Me.HasAura("Stealth") && !SpellManager.GlobalCooldown),
                                      new Decorator(
                                          ret =>
                                          Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90,
