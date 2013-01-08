@@ -403,7 +403,8 @@ namespace RogueBT.Helpers
             ShouldShiv = false;
             Helpers.Target.EnsureValidTarget();
             Helpers.Movement.ChkFace();
-
+            Logging.Write(LogLevel.Normal, StyxWoW.Me.GetAuraByName("Food").Duration + " " + StyxWoW.Me.GetAuraByName("Food").EndTime);
+            
         }
     }
 }
