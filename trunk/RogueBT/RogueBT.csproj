@@ -89,9 +89,9 @@
     <Compile Include="Helpers\Specials.cs" />
     <Compile Include="Helpers\Spells.cs" />
     <Compile Include="Helpers\Target.cs" />
-    <Compile Include="RogueRaidBT.cs" />
     <Compile Include="RaidSpecific\Backstab.cs" />
     <Compile Include="RaidSpecific\Shadowstep.cs" />
+    <Compile Include="RogueBT.cs" />
     <Compile Include="Settings\Mode.cs" />
     <Compile Include="UI\CombatControl.cs">
       <SubType>Form</SubType>
