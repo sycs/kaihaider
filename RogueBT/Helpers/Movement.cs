@@ -171,13 +171,11 @@ namespace RogueBT.Helpers
         }
         public static Composite MoveToTarget()
         {
-            
             //change dec continue
             return new Decorator(
                 ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !StyxWoW.Me.Mounted &&
-                                        //!Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile && 
-                                        !(Rogue.mTarget.Distance < 10 && IsGlueEnabled || StyxWoW.Me.Stunned ||
-                                        StyxWoW.Me.Rooted) // || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
+                                        //!Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile &&  
+                                        !(Rogue.mTarget.Distance < 10 && IsGlueEnabled ) //|| StyxWoW.Me.Stunned || StyxWoW.Me.Rooted || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
