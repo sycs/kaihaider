@@ -34,6 +34,7 @@ namespace RogueBT.Helpers
         static public double mHP { get; private set; }
 
         static public bool spamming { get; private set; }
+        static public bool pullspamming { get; private set; }
 
         public static WoWSpec mCurrentSpec { get; private set; }
 
@@ -102,6 +103,23 @@ namespace RogueBT.Helpers
             return true;
         }
 
+        static public bool PullCheckSpamLock()
+        {
+            if (!pullspamming)
+            {
+                pullspamming = true;
+                return true;
+            }
+            return false;
+
+        }
+
+        static public bool PullReleaseSpamLock()
+        {
+            pullspamming = false;
+            return true;
+        }
+
         static public bool IsInterruptUsable()
         {
             if (StyxWoW.Me.CurrentTarget != null)
@@ -156,12 +174,6 @@ namespace RogueBT.Helpers
             return (Aura.IsTargetCasting != 0 &&
                     (WoWSpell.FromId(Aura.IsTargetCasting).School == WoWSpellSchool.Holy) ||
                     WoWSpell.FromId(Aura.IsTargetCasting).School == WoWSpellSchool.Nature);
-        }
-
-
-        static public bool IsBehindUnit(WoWUnit unit)
-        {
-            return Settings.Mode.mForceBehind || Helpers.Aura.IsBehind; //unit.MeIsSafelyBehind;
         }
 
         static public bool IsAoeUsable()

@@ -68,7 +68,6 @@ namespace RogueBT.Helpers
                                     && !unit.HasAura("Gouge"));
 
                 BlindCCUnit = AddsOnMe.FirstOrDefault();
-           
                 }
 
             if(Helpers.Spells.CanCast("Gouge"))
@@ -81,24 +80,15 @@ namespace RogueBT.Helpers
                                     && !unit.HasAura("Blind"));
 
                 GougeCCUnit = AddsOnMe.FirstOrDefault();
-
-
                 }
-
-
-
             if (GougeCCUnit == null && BlindCCUnit == null)
                 return false;
             return true;
-               
         }
 
         static public Composite EnsureValidTarget()
         {
-           // if (!StyxWoW.Me.Combat ) Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Targeting..");
-
-            return new Decorator(ret => !mNearbyEnemyUnits.Contains(Rogue.mTarget) && !BotManager.Current.Name.Equals("BGBuddy") ,//StyxWoW.Me.CurrentTarget == null || !StyxWoW.Me.CurrentTarget.IsAlive
-                                        
+            return new Decorator(ret => (!mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
                 GetNewTarget()
             );
         }
@@ -106,7 +96,6 @@ namespace RogueBT.Helpers
         static public bool IsSappable()
         {
             // if (!StyxWoW.Me.Combat ) Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Targeting..");
-
             return Helpers.Aura.Stealth && StyxWoW.Me.IsSafelyFacing(Helpers.Rogue.mTarget)
                    && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.mTarget.Combat
                    && (Helpers.Rogue.mTarget.IsBeast || Helpers.Rogue.mTarget.IsDemon || Helpers.Rogue.mTarget.IsDragon || Helpers.Rogue.mTarget.IsHumanoid);
@@ -122,15 +111,6 @@ namespace RogueBT.Helpers
         {
             return new Action(ret =>
                 {
-                    //var botBaseUnit = Targeting.Instance.FirstUnit;
-
-                    /*if (botBaseUnit != null && botBaseUnit.IsAlive && !botBaseUnit.IsFriendly)
-                    {
-                        Logging.Write(LogLevel.Normal, "Changing target to " + botBaseUnit.Name);
-                        botBaseUnit.Target();
-                    }
-                    else **/
-
                     var nextUnit = mNearbyEnemyUnits.FirstOrDefault();
 
                     if (nextUnit != null)
@@ -139,7 +119,6 @@ namespace RogueBT.Helpers
                         nextUnit.Target();
                     }
                     else StyxWoW.Me.ClearTarget();
-                    
                 }
             );
         }

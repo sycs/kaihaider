@@ -46,7 +46,15 @@ namespace RogueBT.Helpers
             
         }
 
-        
+        static public bool UpdateHelpersBool()
+        {
+
+
+            UpdateHelpers();
+
+            return true;
+
+        }
         
     }
 }
