@@ -161,7 +161,7 @@ namespace RogueBT.Helpers
         }
         public static Composite PullMoveToTarget()
         {
-            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");
+            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");
             return new PrioritySelector(
              new Decorator(ret => StyxWoW.Me.IsMoving && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill
                  && Rogue.mTarget != null && !StyxWoW.Me.IsSafelyFacing(Rogue.mTarget) && !BotManager.Current.Name.Equals("BGBuddy")
@@ -210,7 +210,7 @@ namespace RogueBT.Helpers
                                           ret => !IsInSafeMeleeRange && !StyxWoW.Me.IsCasting,
                                           new Action(ret =>
                                           {
-                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "move " + IsInSafeMeleeRange);
+                                              //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "move " + IsInSafeMeleeRange);
                                               Navigator.MoveTo(Rogue.mTarget.Location);
                                           })),
 
