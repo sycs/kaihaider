@@ -38,7 +38,20 @@ namespace RogueBT.Composites.Context.Level
             return new PrioritySelector(
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Movement.PullMoveToTarget()
+                Helpers.Movement.MoveToTarget()
+            );
+        }
+
+
+        static public Composite BuildBuffBehavior()
+        {
+            return new Decorator(ret => false,
+                new PrioritySelector(
+                    Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Styx.StyxWoW.Me, "Recuperate") &&
+                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
+                    Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(Styx.StyxWoW.Me, "Slice and Dice") &&
+                                                                     Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock())
+                )
             );
         }
     }

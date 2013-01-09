@@ -49,6 +49,38 @@ namespace RogueBT.Helpers
                 case WoWRace.BloodElf:
                     mRacialName = "Arcane Torrent";
                     break;
+
+                //case WoWRace.Pandaren:
+                //    mRacialName = "Quaking Palm";
+                //    break;
+
+                //case WoWRace.Goblin:
+                //    mRacialName = "";
+                //    break;
+
+                //case WoWRace.Undead:
+                //    mRacialName = "";
+                //    break;
+
+                //case WoWRace.Human:
+                //    mRacialName = "";
+                //    break;
+
+                //case WoWRace.Dwarf:
+                //    mRacialName = "";
+                //    break;
+
+                //case WoWRace.NightElf:
+                //    mRacialName = "";
+                //    break;
+
+                //case WoWRace.Gnome:
+                //    mRacialName = "";
+                //    break;
+
+                //case WoWRace.Worgen:
+                //    mRacialName = "";
+                //    break;
             }
         }
 
@@ -109,10 +141,10 @@ namespace RogueBT.Helpers
             return new PrioritySelector(
                 UseItem(ret => mTrinket1, ret => cond(ret) && mTrinket1Usable),
                 UseItem(ret => mTrinket2, ret => cond(ret) && mTrinket2Usable),
-                UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable),
+                UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable)//,
 
-                new Decorator(ret => mRacialName != null,
-                    Spells.Cast(mRacialName))
+                //new Decorator(ret => mRacialName != null,
+                //    Spells.Cast(mRacialName))
             );
         }
 

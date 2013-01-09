@@ -34,7 +34,6 @@ namespace RogueBT.Helpers
         static public double mHP { get; private set; }
 
         static public bool spamming { get; private set; }
-        static public bool pullspamming { get; private set; }
 
         public static WoWSpec mCurrentSpec { get; private set; }
 
@@ -62,26 +61,35 @@ namespace RogueBT.Helpers
                 Helpers.Rogue.CreateWaitForLagDuration();
                 mCurrentSpec = StyxWoW.Me.Specialization;
 
-                if (!StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
+                if (StyxWoW.Me.Inventory.Equipped.MainHand != null && !StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
             }
             );
 
             mCurrentSpec = StyxWoW.Me.Specialization;
 
-            if (!StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
+            if (StyxWoW.Me.Inventory.Equipped.MainHand != null && !StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
         }
 
         static public void Pulse()
         {
             mCurrentEnergy = GetCurrentEnergyLua();
+            if (StyxWoW.Me == null)
+            {
+                mRawComboPoints = 0;
+                mComboPoints = 0;
+            }
+            else
+            {
+                mComboPoints = StyxWoW.Me.ComboPoints;
 
-            mComboPoints = StyxWoW.Me.ComboPoints;
-            if(StyxWoW.Me.Combat)
-            mRawComboPoints = StyxWoW.Me.RawComboPoints;
-            mTarget = StyxWoW.Me.CurrentTarget;
+                if (StyxWoW.Me.Combat)
+                    mRawComboPoints = StyxWoW.Me.RawComboPoints;
+
+                mTarget = StyxWoW.Me.CurrentTarget;
+                mHP = StyxWoW.Me.HealthPercent;
+            }
             if (mTarget != null)
                 mTargetHP = mTarget.HealthPercent;
-            mHP = StyxWoW.Me.HealthPercent;
 
 
         }
@@ -103,22 +111,6 @@ namespace RogueBT.Helpers
             return true;
         }
 
-        static public bool PullCheckSpamLock()
-        {
-            if (!pullspamming)
-            {
-                pullspamming = true;
-                return true;
-            }
-            return false;
-
-        }
-
-        static public bool PullReleaseSpamLock()
-        {
-            pullspamming = false;
-            return true;
-        }
 
         static public bool IsInterruptUsable()
         {
