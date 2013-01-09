@@ -184,7 +184,7 @@ namespace RogueBT.Helpers
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
-                    new Decorator(ret => !Styx.CommonBot.BotManager.Current.Name.Equals("ProfessionBuddy") && Rogue.mTarget.CurrentTarget != StyxWoW.Me || Rogue.mTarget.IsPlayer,//&& StyxWoW.Me.GroupInfo.IsInParty
+                    new Decorator(ret => Rogue.mTarget.CurrentTarget != StyxWoW.Me || Rogue.mTarget.IsPlayer,//&& StyxWoW.Me.GroupInfo.IsInParty
                                   new Sequence(
 
                                       new DecoratorContinue(
