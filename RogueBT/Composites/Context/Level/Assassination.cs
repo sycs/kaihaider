@@ -113,7 +113,7 @@ namespace RogueBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret => StyxWoW.Me.Mounted, 
+                new Decorator(ret => Helpers.General.UpdateHelpersBool() && StyxWoW.Me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
                 //Helpers.Movement.PleaseStopPull(),
@@ -121,9 +121,8 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
-                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire &&
-                    !StyxWoW.Me.Combat),
+                Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
+                    && StyxWoW.Me.IsAlive && !StyxWoW.Me.Combat),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
@@ -148,7 +147,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly) 
+                Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
                 Helpers.Movement.PullMoveToTarget()
 

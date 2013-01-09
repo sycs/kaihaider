@@ -239,8 +239,8 @@ namespace RogueBT.Helpers
             if (Rogue.mTarget != null)
             {
 
-                IsBehind = Rogue.IsBehindUnit(StyxWoW.Me.CurrentTarget) || StyxWoW.Me.CurrentTarget.MeIsBehind;
-                //if (IsSafelyBehind) Logging.Write(Colors.White, "Behind");
+                IsBehind = Rogue.mTarget.IsPlayerBehind || Rogue.mTarget.MeIsSafelyBehind || Settings.Mode.mForceBehind;
+                //if (IsBehind) Logging.Write(Colors.White, "IsPlayerBehind:" +Rogue.mTarget.IsPlayerBehind + " MeIsSafelyBehind:"+ Rogue.mTarget.MeIsSafelyBehind);
 
                 if (Rogue.mTarget.IsCasting)
                     IsTargetCasting = Rogue.mTarget.CastingSpellId;
@@ -405,7 +405,6 @@ namespace RogueBT.Helpers
             Helpers.Target.EnsureValidTarget();
             Helpers.Movement.ChkFace();
             //if(Styx.CommonBot.SpellManager.HasSpell("Shadowstep"))
-           // Logging.Write(LogLevel.Normal, Styx.CommonBot.SpellManager.Spells["Shadowstep"].CooldownTimeLeft.TotalSeconds + "");
         }
     }
 }
