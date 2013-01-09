@@ -65,7 +65,7 @@ namespace RogueBT.Composites
             return new Switch<Styx.WoWSpec>(ret => Helpers.Rogue.mCurrentSpec,
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.None,
-                    new Action(ret => RunStatus.Failure)
+                    Context.None.BuildBuffBehavior()
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,

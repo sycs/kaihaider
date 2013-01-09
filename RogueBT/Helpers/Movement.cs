@@ -161,7 +161,6 @@ namespace RogueBT.Helpers
         }
         public static Composite PullMoveToTarget()
         {
-            Helpers.Rogue.PullReleaseSpamLock();
             Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");
             return new PrioritySelector(
              new Decorator(ret => StyxWoW.Me.IsMoving && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill

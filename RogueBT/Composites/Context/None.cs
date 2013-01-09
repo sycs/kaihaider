@@ -25,5 +25,12 @@ namespace RogueBT.Composites.Context
                 Level.None.BuildPullBehavior()
             );
         }
+
+        static public Composite BuildBuffBehavior()
+        {
+            return new Decorator(ret => Settings.Mode.mUseCombat,
+                Level.None.BuildBuffBehavior()
+            );
+        }
     }
 }
