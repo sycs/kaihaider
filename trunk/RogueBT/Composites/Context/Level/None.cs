@@ -37,7 +37,7 @@ namespace RogueBT.Composites.Context.Level
         {
             return new PrioritySelector(
                 Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.General.UpdateHelpersBool() && Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Movement.MoveToTarget()
             );
         }

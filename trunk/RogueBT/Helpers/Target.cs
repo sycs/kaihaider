@@ -48,8 +48,8 @@ namespace RogueBT.Helpers
                                            || unit == botBaseUnit
                                            || unit.TaggedByMe)
                                        && unit.Distance <= 40
-                                        &&  !(unit.IsFlying || unit.Distance2DSqr < 5 * 5 &&
-                                                System.Math.Abs(StyxWoW.Me.Z - unit.Z) >= 5)
+                                        &&  !(unit.IsFlying || unit.Distance2DSqr < 3 * 3 &&
+                                                System.Math.Abs(StyxWoW.Me.Z - unit.Z) >= 3)
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
         }
