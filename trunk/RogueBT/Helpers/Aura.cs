@@ -404,7 +404,8 @@ namespace RogueBT.Helpers
             ShouldShiv = false;
             Helpers.Target.EnsureValidTarget();
             Helpers.Movement.ChkFace();
-            
+            //if(Styx.CommonBot.SpellManager.HasSpell("Shadowstep"))
+           // Logging.Write(LogLevel.Normal, Styx.CommonBot.SpellManager.Spells["Shadowstep"].CooldownTimeLeft.TotalSeconds + "");
         }
     }
 }
