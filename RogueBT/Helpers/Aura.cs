@@ -239,7 +239,7 @@ namespace RogueBT.Helpers
             if (Rogue.mTarget != null)
             {
 
-                IsBehind = Rogue.mTarget.IsPlayerBehind || Rogue.mTarget.MeIsSafelyBehind || Settings.Mode.mForceBehind;
+                IsBehind = Rogue.mTarget.IsPlayerBehind || Settings.Mode.mForceBehind || Rogue.mTarget.MeIsSafelyBehind;
                 //if (IsBehind) Logging.Write(Colors.White, "IsPlayerBehind:" +Rogue.mTarget.IsPlayerBehind + " MeIsSafelyBehind:"+ Rogue.mTarget.MeIsSafelyBehind);
 
                 if (Rogue.mTarget.IsCasting)
