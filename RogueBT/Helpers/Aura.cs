@@ -186,13 +186,6 @@ namespace RogueBT.Helpers
                                 ShadowDance = true;
                                 break;
                             }
-                        case "Vendetta":
-                            {
-                                Vendetta = true;
-                                Logging.Write(LogLevel.Normal, "Vendetta");
-                                TimeVendetta = aura.TimeLeft.TotalSeconds;
-                                break;
-                            }
                         case "Adrenaline Rush":
                             {
                                 //if (aura.TimeLeft.TotalSeconds < 16 && aura.TimeLeft.TotalSeconds > 1)
@@ -274,6 +267,18 @@ namespace RogueBT.Helpers
                     }
                         switch (aura.Name) //goto case ; 
                         {
+
+                            case "Vendetta":
+                                {
+                                    if (aura.CreatorGuid == Helpers.Rogue.me.Guid) 
+                                    {
+                                        Vendetta = true;
+                                        Logging.Write(LogLevel.Normal, "Vendetta");
+                                        TimeVendetta = aura.TimeLeft.TotalSeconds;
+                                        
+                                    }
+                                    break;
+                                }
                             case "Rupture":
                                 {
                                     if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
