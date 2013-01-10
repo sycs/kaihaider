@@ -24,23 +24,23 @@ namespace RogueBT.Helpers
     {
         static public Composite Cast(int spellId)
         {
-            return Cast(spellId, ret => true, ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellId, ret => true, ret => Helpers.Rogue.mTarget);
         }
 
 
         static public Composite Cast(int spellId, CanRunDecoratorDelegate cond) 
         {
-            return Cast(spellId, cond, ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellId, cond, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite Cast(string spellName)
         {
-            return Cast( spellName, ret => true, ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellName, ret => true, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite Cast(string spellName, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellName, cond, ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellName, cond, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite CastFocusRaw(int spellId)
@@ -85,22 +85,22 @@ namespace RogueBT.Helpers
 
         static public Composite CastCooldown(int spellId)
         {
-            return Cast(spellId, ret => true,  ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellId, ret => true, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite CastCooldown(int spellId, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellId, cond,  ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellId, cond, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite CastCooldown(string spellName)
         {
-            return Cast(spellName, ret => true,  ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellName, ret => true, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite CastCooldown(string spellName, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellName, cond, ret => Helpers.Rogue.me.CurrentTarget);
+            return Cast(spellName, cond, ret => Helpers.Rogue.mTarget);
         }
 
         static public Composite CastSelf(int spellId)

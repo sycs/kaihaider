@@ -37,7 +37,7 @@ namespace RogueBT.Helpers
         static public bool Envenom { get; private set; }
         static public bool Blindside { get; private set; }
 
-        static public bool MasterOfSubtlety { get; private set; }
+        //static public bool MasterOfSubtlety { get; private set; }
         static public bool ShadowDance { get; private set; }
         static public double TimeHemorrhage { get; private set; }
         static public bool FindWeakness { get; private set; }
@@ -90,8 +90,8 @@ namespace RogueBT.Helpers
             ShadowDance = false; FindWeakness = false; Rupture = false; ShouldShiv = false;
             IsTargetDisoriented = false; IsTargetInvulnerable = false; IsTargetSapped = false;
             IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsBehind = false;
-            DeadlyPoison = false; MasterOfSubtlety = false;  Vendetta = false; Blindside = false; RevealingStrike = false;
-            ModerateInsight = false; DeepInsight = false; BladeFlurry = false;
+            DeadlyPoison = false; Vendetta = false; Blindside = false; RevealingStrike = false;//MasterOfSubtlety = false;  
+            ModerateInsight = false; DeepInsight = false; BladeFlurry = false; AdrenalineRush = false;
             CripplingPoison = false; LeechingPoison = false;
             DeadlyThrow = false;
             FaerieFire = false;
