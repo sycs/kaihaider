@@ -52,7 +52,7 @@ namespace RogueBT.Composites.Context.Battleground
                     Helpers.Focus.rawFocusTarget.IsCasting),
 
 		        Helpers.Spells.CastSelf("Recuperate",     ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 &&
-                                Helpers.Aura.TimeRecuperate< 3), // Helpers.Spells.GetAuraTimeLeft(StyxWoW.Me, "Recuperate") 
+                                Helpers.Aura.TimeRecuperate< 3), // Helpers.Spells.GetAuraTimeLeft(Helpers.Rogue.me, "Recuperate") 
 
                 new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented && 
                                         (Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer),
@@ -188,8 +188,8 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && 
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth") && Helpers.Aura.IsBehind),
-                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && StyxWoW.Me.HasAura("Stealth")),
+                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.HasAura("Stealth") && Helpers.Aura.IsBehind),
+                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.HasAura("Stealth")),
                 Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Rogue.mTarget.IsWithinMeleeRange),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 
@@ -199,16 +199,16 @@ namespace RogueBT.Composites.Context.Battleground
 
         static public Composite BuildBuffBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.Mounted,
+            return new Decorator(ret => !Helpers.Rogue.me.Mounted,
                 new PrioritySelector(
-                    Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell
+                    Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Rogue.me.HasAura("Stealth") &&
+                    Helpers.Rogue.me.IsAlive && !Helpers.Aura.FaerieFire && !Helpers.Rogue.me.IsAutoRepeatingSpell
                     &&
-                !StyxWoW.Me.Combat),
+                !Helpers.Rogue.me.Combat),
 
-                    Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") &&
+                    Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
-                    Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
+                    Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Slice and Dice") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock())
                 )
             );

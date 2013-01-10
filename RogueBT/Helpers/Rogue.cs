@@ -30,6 +30,7 @@ namespace RogueBT.Helpers
         static public int mComboPoints { get; private set; }
         static public int mRawComboPoints { get; private set; }
         static public WoWUnit mTarget { get; set; }
+        static public LocalPlayer me { get; set; }
         static public double mTargetHP { get; private set; }
         static public double mHP { get; private set; }
 
@@ -40,53 +41,58 @@ namespace RogueBT.Helpers
 
         static Rogue()
         {
-
-            Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", delegate
+            if (Helpers.Rogue.me == null && StyxWoW.Me != null)
+                Helpers.Rogue.me = StyxWoW.Me;
+            if (Helpers.Rogue.me != null)
             {
-                Logging.Write(LogLevel.Normal, "Your spec has been updated. Rebuilding behaviors...");
-                Helpers.Rogue.CreateWaitForLagDuration();
-                Helpers.Rogue.CreateWaitForLagDuration();
-                Helpers.Rogue.CreateWaitForLagDuration();
-                Helpers.Rogue.CreateWaitForLagDuration();
-                mCurrentSpec = StyxWoW.Me.Specialization;
+                mCurrentSpec = Helpers.Rogue.me.Specialization;
+
+                Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", delegate
+                {
+                    Logging.Write(LogLevel.Normal, "Your spec has been updated. Rebuilding behaviors...");
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    mCurrentSpec = Helpers.Rogue.me.Specialization;
+                }
+                );
+
+                Lua.Events.AttachEvent("ACTIVE_TALENT_GROUP_CHANGED", delegate
+                {
+                    Logging.Write(LogLevel.Normal, "Your spec has changed. Rebuilding behaviors...");
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    Helpers.Rogue.CreateWaitForLagDuration();
+                    mCurrentSpec = Helpers.Rogue.me.Specialization;
+
+                    if (Helpers.Rogue.me.Inventory.Equipped.MainHand != null && !Helpers.Rogue.me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !Helpers.Rogue.me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
+                }
+                );
+
+
+                if (Helpers.Rogue.me.Inventory.Equipped.MainHand != null && !Helpers.Rogue.me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !Helpers.Rogue.me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
             }
-            );
-
-            Lua.Events.AttachEvent("ACTIVE_TALENT_GROUP_CHANGED", delegate
-            {
-                Logging.Write(LogLevel.Normal, "Your spec has changed. Rebuilding behaviors...");
-                Helpers.Rogue.CreateWaitForLagDuration();
-                Helpers.Rogue.CreateWaitForLagDuration();
-                Helpers.Rogue.CreateWaitForLagDuration();
-                Helpers.Rogue.CreateWaitForLagDuration();
-                mCurrentSpec = StyxWoW.Me.Specialization;
-
-                if (StyxWoW.Me.Inventory.Equipped.MainHand != null && !StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
-            }
-            );
-
-            mCurrentSpec = StyxWoW.Me.Specialization;
-
-            if (StyxWoW.Me.Inventory.Equipped.MainHand != null && !StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !StyxWoW.Me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
         }
 
         static public void Pulse()
         {
             mCurrentEnergy = GetCurrentEnergyLua();
-            if (StyxWoW.Me == null)
+            if (Helpers.Rogue.me == null)
             {
                 mRawComboPoints = 0;
                 mComboPoints = 0;
             }
             else
             {
-                mComboPoints = StyxWoW.Me.ComboPoints;
+                mComboPoints = Helpers.Rogue.me.ComboPoints;
 
-                if (StyxWoW.Me.Combat)
-                    mRawComboPoints = StyxWoW.Me.RawComboPoints;
+                if (Helpers.Rogue.me.Combat)
+                    mRawComboPoints = Helpers.Rogue.me.RawComboPoints;
 
-                mTarget = StyxWoW.Me.CurrentTarget;
-                mHP = StyxWoW.Me.HealthPercent;
+                mTarget = Helpers.Rogue.me.CurrentTarget;
+                mHP = Helpers.Rogue.me.HealthPercent;
             }
             if (mTarget != null)
                 mTargetHP = mTarget.HealthPercent;
@@ -114,15 +120,15 @@ namespace RogueBT.Helpers
 
         static public bool IsInterruptUsable()
         {
-            if (StyxWoW.Me.CurrentTarget != null)
-                return StyxWoW.Me.CurrentTarget.IsCasting &&
-                    StyxWoW.Me.CurrentTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
-                    StyxWoW.Me.CurrentTarget.CurrentCastTimeLeft.TotalSeconds >= 0.1 &&
-                    StyxWoW.Me.CurrentTarget.CanInterruptCurrentSpellCast;//&& 
-                    //((StyxWoW.Me.CurrentTarget.CastingSpell.School == WoWSpellSchool.Holy ||
-                    //StyxWoW.Me.CurrentTarget.CastingSpell.School == WoWSpellSchool.Nature) ||
-                    //(StyxWoW.Me.CurrentTarget.CastingSpellId ==  ||
-                    //StyxWoW.Me.CurrentTarget.CastingSpellId == ));
+            if (Helpers.Rogue.me.CurrentTarget != null)
+                return Helpers.Rogue.me.CurrentTarget.IsCasting &&
+                    Helpers.Rogue.me.CurrentTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
+                    Helpers.Rogue.me.CurrentTarget.CurrentCastTimeLeft.TotalSeconds >= 0.1 &&
+                    Helpers.Rogue.me.CurrentTarget.CanInterruptCurrentSpellCast;//&& 
+                    //((Helpers.Rogue.me.CurrentTarget.CastingSpell.School == WoWSpellSchool.Holy ||
+                    //Helpers.Rogue.me.CurrentTarget.CastingSpell.School == WoWSpellSchool.Nature) ||
+                    //(Helpers.Rogue.me.CurrentTarget.CastingSpellId ==  ||
+                    //Helpers.Rogue.me.CurrentTarget.CastingSpellId == ));
             return false;
         }
 
@@ -138,14 +144,14 @@ namespace RogueBT.Helpers
 
                     new Decorator(ret => !Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast,
                             new PrioritySelector(
-                                Helpers.Spells.CastCooldown("Kidney Shot", ret => StyxWoW.Me.ComboPoints > 1 &&
+                                Helpers.Spells.CastCooldown("Kidney Shot", ret => Helpers.Rogue.me.ComboPoints > 1 &&
                                     !Helpers.Aura.IsTargetImmuneStun)
 
                                 )),
 
                     Helpers.Spells.CastCooldown("Gouge", ret => 
                                 Helpers.Rogue.IsHolyOrNat() &&
-                                Helpers.Rogue.mTarget.IsSafelyFacing(StyxWoW.Me)))
+                                Helpers.Rogue.mTarget.IsSafelyFacing(Helpers.Rogue.me)))
             );
         }
 
@@ -155,7 +161,7 @@ namespace RogueBT.Helpers
                  new PrioritySelector(
                          Helpers.Spells.CastFocusRaw("Kick", ret => !Helpers.Aura.ShadowDance && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast),
 
-                         Helpers.Spells.CastFocusRaw("Gouge", ret => !Helpers.Aura.ShadowDance && Helpers.Focus.rawFocusTarget.IsSafelyFacing(StyxWoW.Me)),
+                         Helpers.Spells.CastFocusRaw("Gouge", ret => !Helpers.Aura.ShadowDance && Helpers.Focus.rawFocusTarget.IsSafelyFacing(Helpers.Rogue.me)),
 
                          Helpers.Spells.CastFocusRaw("Cheap Shot", ret => !Helpers.Aura.IsTargetImmuneStun && (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance))
                  )
@@ -176,7 +182,7 @@ namespace RogueBT.Helpers
         static public bool IsCloakUsable()
         {
             return Target.mNearbyEnemyUnits.Any(unit => unit.CurrentTarget != null &&
-                                                        unit.CurrentTarget.Guid == StyxWoW.Me.Guid &&
+                                                        unit.CurrentTarget.Guid == Helpers.Rogue.me.Guid &&
                                                         unit.IsCasting &&
                                                         unit.CurrentCastTimeLeft.TotalSeconds <= 0.5 &&
                                                         (!unit.IsWithinMeleeRange ||
@@ -196,8 +202,8 @@ namespace RogueBT.Helpers
 
                     case Enum.CooldownUse.ByFocus:
 
-                        return StyxWoW.Me.FocusedUnit != null && StyxWoW.Me.FocusedUnit.Guid == StyxWoW.Me.CurrentTarget.Guid &&
-                               !StyxWoW.Me.FocusedUnit.IsFriendly;
+                        return Helpers.Rogue.me.FocusedUnit != null && Helpers.Rogue.me.FocusedUnit.Guid == Helpers.Rogue.me.CurrentTarget.Guid &&
+                               !Helpers.Rogue.me.FocusedUnit.IsFriendly;
 
                     case Enum.CooldownUse.OnlyOnBosses:
 
@@ -224,9 +230,9 @@ namespace RogueBT.Helpers
             {
                 return new PrioritySelector
                         (new Decorator
-                             (ret => !StyxWoW.Me.Mounted
+                             (ret => !Helpers.Rogue.me.Mounted
                                  && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) 
-                                     && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && StyxWoW.Me != null &&
+                                     && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
                            SpellManager.HasSpell((int)Settings.Mode.mPoisonsMain[(int)Area.mLocation]),
                               new Sequence
                                   (new Action
@@ -237,11 +243,11 @@ namespace RogueBT.Helpers
                                    CreateWaitForLagDuration(),
                                    new Action(ret => SpellManager.CastSpellById((uint)Settings.Mode.mPoisonsMain[(int)Area.mLocation])),
                                    CreateWaitForLagDuration(),
-                                   new WaitContinue(2, ret => StyxWoW.Me.IsCasting, new ActionAlwaysSucceed()),
-                                   new WaitContinue(10, ret => !StyxWoW.Me.IsCasting, new ActionAlwaysSucceed()),
+                                   new WaitContinue(2, ret => Helpers.Rogue.me.IsCasting, new ActionAlwaysSucceed()),
+                                   new WaitContinue(10, ret => !Helpers.Rogue.me.IsCasting, new ActionAlwaysSucceed()),
                                    new WaitContinue(1, ret => false, new ActionAlwaysSucceed()))),
                          new Decorator
-                             (ret => Aura.NeedsPoison && !(Aura.MindNumbing || Aura.Crippling || Aura.Paralytic || Aura.Leeching) && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && StyxWoW.Me != null &&
+                             (ret => Aura.NeedsPoison && !(Aura.MindNumbing || Aura.Crippling || Aura.Paralytic || Aura.Leeching) && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
                               SpellManager.HasSpell((int)Settings.Mode.mPoisonsOff[(int)Area.mLocation]),
                               new Sequence
                                   (new Action
@@ -251,8 +257,8 @@ namespace RogueBT.Helpers
                                    CreateWaitForLagDuration(),
                                    new Action(ret => SpellManager.CastSpellById((uint)Settings.Mode.mPoisonsOff[(int)Area.mLocation])),
                                    CreateWaitForLagDuration(),
-                                   new WaitContinue(2, ret => StyxWoW.Me.IsCasting, new ActionAlwaysSucceed()),
-                                   new WaitContinue(10, ret => !StyxWoW.Me.IsCasting, new ActionAlwaysSucceed()),
+                                   new WaitContinue(2, ret => Helpers.Rogue.me.IsCasting, new ActionAlwaysSucceed()),
+                                   new WaitContinue(10, ret => !Helpers.Rogue.me.IsCasting, new ActionAlwaysSucceed()),
                                    new WaitContinue(1, ret => false, new ActionAlwaysSucceed()))));
             }
         }

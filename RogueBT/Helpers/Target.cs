@@ -31,6 +31,8 @@ namespace RogueBT.Helpers
 
         static public void Pulse()
         {
+            if(StyxWoW.Me != null)
+            Helpers.Rogue.me = StyxWoW.Me;
             botBaseUnit = Targeting.Instance.FirstUnit;
 
             if (StyxWoW.IsInGame) //if no tar then any incombat
@@ -49,7 +51,7 @@ namespace RogueBT.Helpers
                                            || unit.TaggedByMe)
                                        && unit.Distance <= 40
                                         &&  !(unit.IsFlying || unit.Distance2DSqr < 3 * 3 &&
-                                                System.Math.Abs(StyxWoW.Me.Z - unit.Z) >= 3)
+                                                System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3)
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
         }
@@ -76,7 +78,7 @@ namespace RogueBT.Helpers
                                     unit!= Helpers.Rogue.mTarget
                                     && unit.IsTargetingMeOrPet
                                     && unit.IsWithinMeleeRange
-                                    && StyxWoW.Me.IsFacing(unit.Location)
+                                    && Helpers.Rogue.me.IsFacing(unit.Location)
                                     && !unit.HasAura("Blind"));
 
                 GougeCCUnit = AddsOnMe.FirstOrDefault();
@@ -95,8 +97,8 @@ namespace RogueBT.Helpers
 
         static public bool IsSappable()
         {
-            // if (!StyxWoW.Me.Combat ) Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Targeting..");
-            return Helpers.Aura.Stealth && StyxWoW.Me.IsSafelyFacing(Helpers.Rogue.mTarget)
+            // if (!Helpers.Rogue.me.Combat ) Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Targeting..");
+            return Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                    && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.mTarget.Combat
                    && (Helpers.Rogue.mTarget.IsBeast || Helpers.Rogue.mTarget.IsDemon || Helpers.Rogue.mTarget.IsDragon || Helpers.Rogue.mTarget.IsHumanoid);
 
@@ -118,7 +120,7 @@ namespace RogueBT.Helpers
                         Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
                         nextUnit.Target();
                     }
-                    else StyxWoW.Me.ClearTarget();
+                    else Helpers.Rogue.me.ClearTarget();
                 }
             );
         }

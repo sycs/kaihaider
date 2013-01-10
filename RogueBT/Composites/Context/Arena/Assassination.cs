@@ -48,21 +48,21 @@ namespace RogueBT.Composites.Context.Arena
                                 Helpers.Aura.TimeRecuperate < 3),
 
 
-                Helpers.Spells.Cast("Redirect",           ret => StyxWoW.Me.ComboPoints < StyxWoW.Me.RawComboPoints),
+                Helpers.Spells.Cast("Redirect",           ret => Helpers.Rogue.me.ComboPoints < Helpers.Rogue.me.RawComboPoints),
 
-                Helpers.Spells.Cast("Envenom",            ret => Helpers.Spells.IsAuraActive(StyxWoW.Me, "Fury of the Destroyer") &&
+                Helpers.Spells.Cast("Envenom",            ret => Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Fury of the Destroyer") &&
                                                                 Helpers.Aura.DeadlyPoison),
 
-                Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
-                                                                 StyxWoW.Me.ComboPoints >= 1),
+                Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Slice and Dice") &&
+                                                                 Helpers.Rogue.me.ComboPoints >= 1),
 
 
-		Helpers.Spells.Cast("Garrote", ret => StyxWoW.Me.HasAura("Vanish")),
+		Helpers.Spells.Cast("Garrote", ret => Helpers.Rogue.me.HasAura("Vanish")),
 
-                Helpers.Spells.Cast("Rupture",            ret => ((Helpers.Spells.GetAuraTimeLeft(StyxWoW.Me.CurrentTarget, "Rupture") < 1 && 
+                Helpers.Spells.Cast("Rupture",            ret => ((Helpers.Spells.GetAuraTimeLeft(Helpers.Rogue.me.CurrentTarget, "Rupture") < 1 && 
                                                                  Helpers.Rogue.mCurrentEnergy <= 100) ||
-                                                                 !Helpers.Spells.IsAuraActive(StyxWoW.Me.CurrentTarget, "Rupture")) &&
-                                                                 StyxWoW.Me.ComboPoints >= 1),
+                                                                 !Helpers.Spells.IsAuraActive(Helpers.Rogue.me.CurrentTarget, "Rupture")) &&
+                                                                 Helpers.Rogue.me.ComboPoints >= 1),
 
                 
 
@@ -70,29 +70,29 @@ namespace RogueBT.Composites.Context.Arena
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && 
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 6),
 		new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
-                                     Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
-                                     Helpers.Spells.IsAuraActive(StyxWoW.Me.CurrentTarget, "Rupture"),
+                                     Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Slice and Dice") &&
+                                     Helpers.Spells.IsAuraActive(Helpers.Rogue.me.CurrentTarget, "Rupture"),
                               new PrioritySelector(
 
                 		Helpers.Spells.CastCooldown("Vendetta"),
 
-                		Helpers.Spells.CastSelf("Cold Blood", ret => !StyxWoW.Me.HasAura("Cold Blood") && StyxWoW.Me.ComboPoints == 5 &&
+                		Helpers.Spells.CastSelf("Cold Blood", ret => !Helpers.Rogue.me.HasAura("Cold Blood") && Helpers.Rogue.me.ComboPoints == 5 &&
                                                                      Helpers.Rogue.mCurrentEnergy >= 60))),
 
 
                 Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison &&
-                                                       (((Helpers.Rogue.mCurrentEnergy >= 90 && StyxWoW.Me.ComboPoints >= 4 && StyxWoW.Me.CurrentTarget.HealthPercent >= 35) ||
-                                                       (Helpers.Rogue.mCurrentEnergy >= 90 && StyxWoW.Me.ComboPoints == 5 && StyxWoW.Me.CurrentTarget.HealthPercent < 35) ||
-                                                       (Helpers.Spells.GetAuraTimeLeft(StyxWoW.Me, "Slice and Dice") <= 3 && StyxWoW.Me.ComboPoints >= 1)) &&
-                                                       (!Helpers.Spells.IsAuraActive(StyxWoW.Me, "Envenom") || Helpers.Rogue.mCurrentEnergy > 100))),
+                                                       (((Helpers.Rogue.mCurrentEnergy >= 90 && Helpers.Rogue.me.ComboPoints >= 4 && Helpers.Rogue.me.CurrentTarget.HealthPercent >= 35) ||
+                                                       (Helpers.Rogue.mCurrentEnergy >= 90 && Helpers.Rogue.me.ComboPoints == 5 && Helpers.Rogue.me.CurrentTarget.HealthPercent < 35) ||
+                                                       (Helpers.Spells.GetAuraTimeLeft(Helpers.Rogue.me, "Slice and Dice") <= 3 && Helpers.Rogue.me.ComboPoints >= 1)) &&
+                                                       (!Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Envenom") || Helpers.Rogue.mCurrentEnergy > 100))),
 
                 
 
-                Helpers.Spells.Cast("Mutilate", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me.CurrentTarget, "Rupture") ||
-                                                       (StyxWoW.Me.ComboPoints < 4 && (Helpers.Rogue.mCurrentEnergy >= 90 ||
-                                                       Helpers.Spells.IsAuraActive(StyxWoW.Me, "Envenom")))),
+                Helpers.Spells.Cast("Mutilate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me.CurrentTarget, "Rupture") ||
+                                                       (Helpers.Rogue.me.ComboPoints < 4 && (Helpers.Rogue.mCurrentEnergy >= 90 ||
+                                                       Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Envenom")))),
 
-		Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Tricks of the Trade") &&
+		Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Tricks of the Trade") &&
                                                                        Helpers.Rogue.mCurrentEnergy < 90)
 
             );

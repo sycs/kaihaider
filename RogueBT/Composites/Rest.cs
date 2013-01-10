@@ -23,26 +23,26 @@ namespace RogueBT.Composites
     {
         public static Composite BuildRestBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.IsSwimming && !StyxWoW.Me.IsGhost
-                                        && StyxWoW.Me.IsAlive && !StyxWoW.Me.Mounted
+            return new Decorator(ret => !Helpers.Rogue.me.IsSwimming && !Helpers.Rogue.me.IsGhost
+                                        && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Mounted
                                         && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Loot
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.Raid
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
                                  new PrioritySelector(
-                                             Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90
-                                                 && !StyxWoW.Me.HasAura("Stealth") && StyxWoW.Me.GetAuraByName("Food").TimeLeft.TotalSeconds < 17 && !SpellManager.GlobalCooldown),
+                                             Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Food") && Helpers.Rogue.mHP <= 90
+                                                 && !Helpers.Rogue.me.HasAura("Stealth") && Helpers.Rogue.me.GetAuraByName("Food").TimeLeft.TotalSeconds < 17 && !SpellManager.GlobalCooldown),
                                      new Decorator(
                                          ret =>
-                                         Helpers.Spells.IsAuraActive(StyxWoW.Me, "Food") && Helpers.Rogue.mHP <= 90,
+                                         Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Food") && Helpers.Rogue.mHP <= 90,
                                          new ActionAlwaysSucceed()),
-                                     Helpers.Spells.CastSelf("Recuperate", ret => StyxWoW.Me.RawComboPoints >= 1 &&
+                                     Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.me.RawComboPoints >= 1 &&
                                                                                   !Helpers.Spells.IsAuraActive(
-                                                                                      StyxWoW.Me, "Recuperate") &&
+                                                                                      Helpers.Rogue.me, "Recuperate") &&
                                                                                   Helpers.Rogue.CheckSpamLock()),
                                      new Decorator(
                                          ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 70,
                                          new PrioritySelector(
-                                             new Decorator(ret => StyxWoW.Me.IsMoving,
+                                             new Decorator(ret => Helpers.Rogue.me.IsMoving,
                                                            new Action(ret => Navigator.PlayerMover.MoveStop())
                                                  ),
                                              new Action(ret =>
@@ -56,7 +56,7 @@ namespace RogueBT.Composites
                                      new Decorator(ret => Helpers.Rogue.mHP <= 30,
                                                    new PrioritySelector(
                                                        Helpers.Spells.CastSelf("Stealth",
-                                                                               ret => !StyxWoW.Me.HasAura("Stealth")),
+                                                                               ret => !Helpers.Rogue.me.HasAura("Stealth")),
                                                        new Action(
                                                            ret =>
                                                            Logging.Write(LogLevel.Normal, "No food, waiting to heal!"))

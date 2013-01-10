@@ -81,7 +81,7 @@ Helpers.Rogue.mComboPoints > 1),
 
                 Helpers.Movement.MoveToTarget(),
 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Styx.StyxWoW.Me.RawComboPoints)
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints)
             );
         }
 

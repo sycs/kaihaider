@@ -36,7 +36,7 @@ namespace RogueBT.Helpers
 
         static Specials()
         {
-            switch (StyxWoW.Me.Race)
+            switch (Helpers.Rogue.me.Race)
             {
                 case WoWRace.Orc:
                     mRacialName = "Blood Fury";
@@ -184,17 +184,17 @@ namespace RogueBT.Helpers
 
         static private WoWItem GetFirstTrinket()
         {
-            return StyxWoW.Me.Inventory.Equipped.Trinket1;
+            return Helpers.Rogue.me.Inventory.Equipped.Trinket1;
         }
 
         static private WoWItem GetSecondTrinket()
         {
-            return StyxWoW.Me.Inventory.Equipped.Trinket2;
+            return Helpers.Rogue.me.Inventory.Equipped.Trinket2;
         }
 
         static private WoWItem GetGloves()
         {
-            return StyxWoW.Me.Inventory.Equipped.Hands;
+            return Helpers.Rogue.me.Inventory.Equipped.Hands;
         }
     }
 }

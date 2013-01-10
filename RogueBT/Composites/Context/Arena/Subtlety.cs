@@ -25,10 +25,10 @@ namespace RogueBT.Composites.Context.Arena
                  */
 
                 
-                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive && !Helpers.Aura.FaerieFire && !StyxWoW.Me.IsAutoRepeatingSpell
+                Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Rogue.me.HasAura("Stealth") &&
+                    Helpers.Rogue.me.IsAlive && !Helpers.Aura.FaerieFire && !Helpers.Rogue.me.IsAutoRepeatingSpell
                     &&
-                !StyxWoW.Me.Combat),
+                !Helpers.Rogue.me.Combat),
 
                 Helpers.Spells.ToggleAutoAttack(),
 
@@ -62,7 +62,7 @@ namespace RogueBT.Composites.Context.Arena
                     ))**/
 
 		        Helpers.Spells.CastSelf("Recuperate",     ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 &&
-                                Helpers.Aura.TimeRecuperate< 3), // Helpers.Spells.GetAuraTimeLeft(StyxWoW.Me, "Recuperate") 
+                                Helpers.Aura.TimeRecuperate< 3), // Helpers.Spells.GetAuraTimeLeft(Helpers.Rogue.me, "Recuperate") 
 
                                 //add check to kidney, garrote, cheapshot for ! interrupts, exception tar.casting
                 new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented && 
@@ -149,9 +149,9 @@ namespace RogueBT.Composites.Context.Arena
         {
             return new PrioritySelector(
 
-                Helpers.Spells.CastSelf("Stealth", ret => !StyxWoW.Me.HasAura("Stealth") &&
-                    StyxWoW.Me.IsAlive  && StyxWoW.IsInGame &&!Helpers.Aura.FaerieFire &&
-                !StyxWoW.Me.Combat),
+                Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Rogue.me.HasAura("Stealth") &&
+                    Helpers.Rogue.me.IsAlive  && StyxWoW.IsInGame &&!Helpers.Aura.FaerieFire &&
+                !Helpers.Rogue.me.Combat),
 
                     Helpers.Spells.ToggleAutoAttack(),
 
