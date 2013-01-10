@@ -104,6 +104,7 @@ namespace RogueBT.Helpers
 
             foreach (WoWAura aura in Helpers.Rogue.me.GetAllAuras())
                 {
+                    if (aura.IsActive) { 
                     switch (aura.SpellId)
                     {
 
@@ -144,8 +145,7 @@ namespace RogueBT.Helpers
 
                         case "Blindside": //121152
                             {
-                                if (aura.TimeLeft.TotalSeconds < 10 && aura.TimeLeft.TotalSeconds > 1)
-                                    Blindside = true;
+                                Blindside = true;
                                 break;
                             }
                         case "Stealth":
@@ -208,7 +208,8 @@ namespace RogueBT.Helpers
                             }
                         case "Adrenaline Rush":
                             {
-                                AdrenalineRush = true;
+                                if (aura.TimeLeft.TotalSeconds < 16 && aura.TimeLeft.TotalSeconds > 1)
+                                    AdrenalineRush = true;
                                 break;
                             }
                         case "Blade Flurry":
@@ -232,8 +233,8 @@ namespace RogueBT.Helpers
                                 FaerieFire = true;
                                 break;
                             }
-
                     }
+                  }
                 }
 
             if (Rogue.mTarget != null)
@@ -246,6 +247,7 @@ namespace RogueBT.Helpers
                     IsTargetCasting = Rogue.mTarget.CastingSpellId;
                 foreach (WoWAura aura in Helpers.Rogue.me.CurrentTarget.GetAllAuras())
                 {
+                    if (aura.IsActive) { 
                     if (aura.SpellId == 89775 && aura.CreatorGuid == Helpers.Rogue.me.Guid) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
                      
                     if(aura.Spell.Mechanic == WoWSpellMechanic.Disoriented ||
@@ -286,8 +288,8 @@ namespace RogueBT.Helpers
                                 }
                             case "Find Weakness":
                                 {
-                                    if(aura.CreatorGuid == Helpers.Rogue.me.Guid)
-                                    FindWeakness = true;
+                                    if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
+                                        FindWeakness = true;
                                     break;
                                 }
                             case "Enrage":
@@ -345,7 +347,7 @@ namespace RogueBT.Helpers
                                 {
                                     IsTargetInvulnerable = true;
                                     break;
-                                } 
+                                }
                             case "Hand of Protection":
                                 {
                                     IsTargetInvulnerable = true;
@@ -363,7 +365,7 @@ namespace RogueBT.Helpers
                                 }
                             case "Deadly Poison":
                                 {
-                                    if (aura.StackCount > 2) 
+                                    if (aura.StackCount > 2)
                                         DeadlyPoison = true;
                                     break;
                                 }
@@ -374,8 +376,8 @@ namespace RogueBT.Helpers
                                 }
                             case "Revealing Strike":
                                 {
-                                    if(aura.CreatorGuid == Helpers.Rogue.me.Guid)
-                                    RevealingStrike = true;
+                                    if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
+                                        RevealingStrike = true;
                                     break;
                                 }
                             case "Spirit of Redemption":
@@ -388,7 +390,7 @@ namespace RogueBT.Helpers
                                     DeadlyThrow = true;
                                     break;
                                 }
-
+                        }
                         }
 
 
