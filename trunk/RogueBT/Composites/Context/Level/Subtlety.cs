@@ -190,7 +190,7 @@ namespace RogueBT.Composites.Context.Level
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
-                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.HasAura("Stealth")
+                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth
                     && !Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.IsHumanoid,
                     new Sequence(
                         Helpers.Rogue.CreateWaitForLagDuration(),
@@ -206,12 +206,13 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Rogue.CreateWaitForLagDuration()
                     )
                 ),
-                
-                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange),
+
+                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Rogue.me.HasAura("Stealth")),
+                Helpers.Movement.ChkFace(),
                 Helpers.Movement.PullMoveToTarget()
             );
         }
