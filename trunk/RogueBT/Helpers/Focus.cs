@@ -23,11 +23,11 @@ namespace RogueBT.Helpers
 
         static private WoWUnit GetFocusTarget()
         {
-            WoWUnit curFocus = StyxWoW.Me.FocusedUnit;
+            WoWUnit curFocus = Helpers.Rogue.me.FocusedUnit;
             rawFocusTarget = null;
             if (curFocus != null && curFocus.InLineOfSpellSight && curFocus.IsAlive ) rawFocusTarget = curFocus;
 
-            if (curFocus != null && curFocus.InLineOfSpellSight && curFocus.IsAlive && curFocus.Guid != StyxWoW.Me.Guid && curFocus.ToPlayer() != null && curFocus.ToPlayer().IsInMyPartyOrRaid)
+            if (curFocus != null && curFocus.InLineOfSpellSight && curFocus.IsAlive && curFocus.Guid != Helpers.Rogue.me.Guid && curFocus.ToPlayer() != null && curFocus.ToPlayer().IsInMyPartyOrRaid)
             {
                 return curFocus;
             }

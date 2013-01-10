@@ -24,23 +24,23 @@ namespace RogueBT.Helpers
     {
         static public Composite Cast(int spellId)
         {
-            return Cast(spellId, ret => true, ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellId, ret => true, ret => Helpers.Rogue.me.CurrentTarget);
         }
 
 
         static public Composite Cast(int spellId, CanRunDecoratorDelegate cond) 
         {
-            return Cast(spellId, cond, ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellId, cond, ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite Cast(string spellName)
         {
-            return Cast( spellName, ret => true, ret => StyxWoW.Me.CurrentTarget);
+            return Cast( spellName, ret => true, ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite Cast(string spellName, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellName, cond, ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellName, cond, ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite CastFocusRaw(int spellId)
@@ -85,50 +85,50 @@ namespace RogueBT.Helpers
 
         static public Composite CastCooldown(int spellId)
         {
-            return Cast(spellId, ret => true,  ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellId, ret => true,  ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite CastCooldown(int spellId, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellId, cond,  ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellId, cond,  ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite CastCooldown(string spellName)
         {
-            return Cast(spellName, ret => true,  ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellName, ret => true,  ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite CastCooldown(string spellName, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellName, cond, ret => StyxWoW.Me.CurrentTarget);
+            return Cast(spellName, cond, ret => Helpers.Rogue.me.CurrentTarget);
         }
 
         static public Composite CastSelf(int spellId)
         {
-            return Cast(spellId, ret => true, ret => StyxWoW.Me);
+            return Cast(spellId, ret => true, ret => Helpers.Rogue.me);
         }
 
         static public Composite CastSelf(int spellId, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellId, cond, ret => StyxWoW.Me);
+            return Cast(spellId, cond, ret => Helpers.Rogue.me);
         }
 
         static public Composite CastSelf(string spellName)
         {
-            return Cast(spellName, ret => true,  ret => StyxWoW.Me);
+            return Cast(spellName, ret => true,  ret => Helpers.Rogue.me);
         }
 
         static public Composite CastSelf(string spellName, CanRunDecoratorDelegate cond)
         {
-            return Cast(spellName, cond, ret => StyxWoW.Me);
+            return Cast(spellName, cond, ret => Helpers.Rogue.me);
         }
 
         static public Composite ToggleAutoAttack()
         { 
              if ( Helpers.Rogue.mTarget != null && !Helpers.Aura.Stealth && !Helpers.Aura.Vanish && 
-                 !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !StyxWoW.Me.IsAutoAttacking)
+                 !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.me.IsAutoAttacking)
             {
-                StyxWoW.Me.ToggleAttack();
+                Helpers.Rogue.me.ToggleAttack();
                 Logging.Write(LogLevel.Normal, "Auto-attack");
             }
 
@@ -150,7 +150,7 @@ namespace RogueBT.Helpers
 
         static public bool IsAuraActive(WoWUnit auraTarget, int auraId)
         {
-            return GetAuraTimeLeft(auraTarget, auraId, StyxWoW.Me.Guid) > 0;
+            return GetAuraTimeLeft(auraTarget, auraId, Helpers.Rogue.me.Guid) > 0;
         }
 
         static public bool IsAuraActive(WoWUnit auraTarget, int auraId, UInt64 creatorGuid)
@@ -160,7 +160,7 @@ namespace RogueBT.Helpers
 
         static public bool IsAuraActive(WoWUnit auraTarget, string auraName)
         {
-            return GetAuraTimeLeft(auraTarget, auraName, StyxWoW.Me.Guid) > 0;
+            return GetAuraTimeLeft(auraTarget, auraName, Helpers.Rogue.me.Guid) > 0;
         }
 
         static public bool IsAuraActive(WoWUnit auraTarget, string auraName, UInt64 creatorGuid)
@@ -170,7 +170,7 @@ namespace RogueBT.Helpers
 
         static public double GetAuraTimeLeft(WoWUnit auraTarget, int auraId)
         {
-            return GetAuraTimeLeft(auraTarget, auraId, StyxWoW.Me.Guid);
+            return GetAuraTimeLeft(auraTarget, auraId, Helpers.Rogue.me.Guid);
         }
 
         static public double GetAuraTimeLeft(WoWUnit auraTarget, int auraId, UInt64 creatorGuid)
@@ -183,7 +183,7 @@ namespace RogueBT.Helpers
 
         static public double GetAuraTimeLeft(WoWUnit auraTarget, string auraName)
         {
-            return GetAuraTimeLeft(auraTarget, auraName, StyxWoW.Me.Guid);
+            return GetAuraTimeLeft(auraTarget, auraName, Helpers.Rogue.me.Guid);
         }
 
         static public double GetAuraTimeLeft(WoWUnit auraTarget, string auraName, UInt64 creatorGuid)
@@ -216,11 +216,11 @@ namespace RogueBT.Helpers
                         string temp;
                         if (target(ret).IsPlayer)
                             temp = "Casting " + WoWSpell.FromId(spellId).Name + " on Player at " +  
-                                             Math.Round(target(ret).HealthPercent, 0) + " with " + StyxWoW.Me.ComboPoints + "CP and " + 
+                                             Math.Round(target(ret).HealthPercent, 0) + " with " + Helpers.Rogue.me.ComboPoints + "CP and " + 
                                              Rogue.mCurrentEnergy + " energy";
                         else
                             temp = "Casting " + WoWSpell.FromId(spellId).Name + " on " + target(ret).Name + " at " +  
-                                             Math.Round(target(ret).HealthPercent, 0) + " with " + StyxWoW.Me.ComboPoints + "CP and " + 
+                                             Math.Round(target(ret).HealthPercent, 0) + " with " + Helpers.Rogue.me.ComboPoints + "CP and " + 
                                              Rogue.mCurrentEnergy + " energy";
 
                         Logging.Write(LogLevel.Normal, temp );
@@ -245,11 +245,11 @@ namespace RogueBT.Helpers
                         SpellManager.Cast(spellName, target(ret));
                         if (target(ret).IsPlayer)
                             Logging.Write(LogLevel.Normal, "Casting " + spellName + " on Player at " +
-                                                 Math.Round(target(ret).HealthPercent, 0) + "% with " + StyxWoW.Me.ComboPoints + "CP and " +
+                                                 Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.me.ComboPoints + "CP and " +
                                                  Rogue.mCurrentEnergy + " energy");
                         else 
                             Logging.Write(LogLevel.Normal , "Casting " + spellName + " on " + target(ret).Name + " at " +
-                                             Math.Round(target(ret).HealthPercent, 0) + "% with " + StyxWoW.Me.ComboPoints + "CP and " +
+                                             Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.me.ComboPoints + "CP and " +
                                              Rogue.mCurrentEnergy + " energy");
                     }
                 )

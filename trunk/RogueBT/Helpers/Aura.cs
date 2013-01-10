@@ -74,9 +74,9 @@ namespace RogueBT.Helpers
         {
             get
             {
-                return StyxWoW.Me.Inventory.Equipped.MainHand != null &&
-                       StyxWoW.Me.Inventory.Equipped.MainHand.TemporaryEnchantment.Id == 0 &&
-                       StyxWoW.Me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole;
+                return Helpers.Rogue.me.Inventory.Equipped.MainHand != null &&
+                       Helpers.Rogue.me.Inventory.Equipped.MainHand.TemporaryEnchantment.Id == 0 &&
+                       Helpers.Rogue.me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass != WoWItemWeaponClass.FishingPole;
             }
         }
 
@@ -102,7 +102,7 @@ namespace RogueBT.Helpers
 
             Deadly = false; Wound = false; MindNumbing = false; Crippling = false; Paralytic = false; Leeching = false;
 
-            foreach (WoWAura aura in StyxWoW.Me.GetAllAuras())
+            foreach (WoWAura aura in Helpers.Rogue.me.GetAllAuras())
                 {
                     switch (aura.SpellId)
                     {
@@ -244,9 +244,9 @@ namespace RogueBT.Helpers
 
                 if (Rogue.mTarget.IsCasting)
                     IsTargetCasting = Rogue.mTarget.CastingSpellId;
-                foreach (WoWAura aura in StyxWoW.Me.CurrentTarget.GetAllAuras())
+                foreach (WoWAura aura in Helpers.Rogue.me.CurrentTarget.GetAllAuras())
                 {
-                    if (aura.SpellId == 89775 && aura.CreatorGuid == StyxWoW.Me.Guid) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
+                    if (aura.SpellId == 89775 && aura.CreatorGuid == Helpers.Rogue.me.Guid) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
                      
                     if(aura.Spell.Mechanic == WoWSpellMechanic.Disoriented ||
                         aura.Spell.Mechanic == WoWSpellMechanic.Incapacitated)
@@ -277,7 +277,7 @@ namespace RogueBT.Helpers
                         {
                             case "Rupture":
                                 {
-                                    if (aura.CreatorGuid == StyxWoW.Me.Guid)
+                                    if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
                                     {
                                         Rupture = true;
                                         TimeRupture = aura.TimeLeft.TotalSeconds;
@@ -286,7 +286,7 @@ namespace RogueBT.Helpers
                                 }
                             case "Find Weakness":
                                 {
-                                    if(aura.CreatorGuid == StyxWoW.Me.Guid)
+                                    if(aura.CreatorGuid == Helpers.Rogue.me.Guid)
                                     FindWeakness = true;
                                     break;
                                 }
@@ -374,7 +374,7 @@ namespace RogueBT.Helpers
                                 }
                             case "Revealing Strike":
                                 {
-                                    if(aura.CreatorGuid == StyxWoW.Me.Guid)
+                                    if(aura.CreatorGuid == Helpers.Rogue.me.Guid)
                                     RevealingStrike = true;
                                     break;
                                 }

@@ -34,7 +34,7 @@ namespace RogueBT.Composites.Context.Raid
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2 ),
 
 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < StyxWoW.Me.RawComboPoints),
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
 
                 new Decorator(ret => Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer,
                     new PrioritySelector(

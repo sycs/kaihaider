@@ -49,9 +49,20 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Spells.CastSelf("Evasion", ret => Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned),
                         Helpers.Spells.Cast("Combat Readiness", ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                         Helpers.Spells.CastSelf("Cloak of Shadows", ret => Helpers.Rogue.IsCloakUsable()),
+                        Helpers.Spells.Cast("Dismantle", ret => Helpers.Rogue.mTarget.IsHumanoid),
                         Helpers.Spells.Cast("Shiv", ret => Helpers.Aura.Leeching && Helpers.Rogue.mHP < 40)
                     )
                 ),
+
+                new Decorator(ret => Helpers.Spells.CanCast("Vanish") &&
+                                             Helpers.Rogue.mTarget.Stunned,
+                            new Sequence(
+                                Helpers.Spells.CastSelf("Vanish"),
+                                Helpers.Rogue.CreateWaitForLagDuration(),
+                                Helpers.Movement.MoveToTarget(),
+                                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange)
+                                )
+                            ),
 
                 new Decorator(ret => !Helpers.Rogue.IsAoeUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1 &&
                                         Helpers.Rogue.mHP < 85 && Helpers.Target.GetCCTarget(),
@@ -113,14 +124,14 @@ namespace RogueBT.Composites.Context.Level
 
                 
                 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < StyxWoW.Me.RawComboPoints)
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints)
             );
         }
 
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret => Helpers.General.UpdateHelpersBool() && StyxWoW.Me.Mounted, 
+                new Decorator(ret => Helpers.General.UpdateHelpersBool() && Helpers.Rogue.me.Mounted, 
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
                 //Helpers.Movement.PleaseStopPull(),
@@ -129,7 +140,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
                 Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
-                    && StyxWoW.Me.IsAlive && !StyxWoW.Me.Combat),
+                    && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
@@ -154,7 +165,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
-                    && Helpers.Rogue.IsAoeUsable() && !StyxWoW.Me.HasAura("Stealth")),
+                    && Helpers.Rogue.IsAoeUsable() && !Helpers.Rogue.me.HasAura("Stealth")),
                 Helpers.Movement.PullMoveToTarget()
 
 
@@ -163,11 +174,11 @@ namespace RogueBT.Composites.Context.Level
 
         public static Composite BuildBuffBehavior()
         {
-            return new Decorator(ret => !StyxWoW.Me.Mounted,
+            return new Decorator(ret => !Helpers.Rogue.me.Mounted,
                 new PrioritySelector(
-                    Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Recuperate") &&
+                    Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
-                    Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(StyxWoW.Me, "Slice and Dice") &&
+                    Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Slice and Dice") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock())
                 )
             );

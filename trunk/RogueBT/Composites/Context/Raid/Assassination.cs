@@ -93,7 +93,7 @@ namespace RogueBT.Composites.Context.Raid
 
                 Helpers.Movement.MoveToTarget(),
 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < StyxWoW.Me.RawComboPoints)
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints)
             );
         }
 

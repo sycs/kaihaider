@@ -40,28 +40,28 @@ namespace RogueBT.Helpers
             {
                 case Enum.LocationContext.Raid:
 
-                    return StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss ||
-                           (StyxWoW.Me.CurrentTarget.Level == 88 &&
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite);
+                    return Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss ||
+                           (Helpers.Rogue.me.CurrentTarget.Level == 88 &&
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite);
 
                 case Enum.LocationContext.HeroicDungeon:
 
-                    return StyxWoW.Me.CurrentTarget.Level >= 87 && 
-                           (StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite ||
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Rare ||
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.RareElite ||
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss);
+                    return Helpers.Rogue.me.CurrentTarget.Level >= 87 && 
+                           (Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite ||
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Rare ||
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.RareElite ||
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss);
 
                 case Enum.LocationContext.Battleground:
 
-                    return StyxWoW.Me.CurrentTarget.IsPlayer;
+                    return Helpers.Rogue.me.CurrentTarget.IsPlayer;
 
                 default:
 
-                    return StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite ||
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Rare ||
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.RareElite ||
-                           StyxWoW.Me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss;
+                    return Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Elite ||
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.Rare ||
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.RareElite ||
+                           Helpers.Rogue.me.CurrentTarget.CreatureRank == WoWUnitClassificationType.WorldBoss;
             }
         }
 
@@ -77,17 +77,17 @@ namespace RogueBT.Helpers
                 return Enum.LocationContext.Battleground;
             }
 
-            if(StyxWoW.Me.GroupInfo.IsInRaid)
+            if(Helpers.Rogue.me.GroupInfo.IsInRaid)
             {
                 return Enum.LocationContext.Raid;
             }
 
-            if (StyxWoW.Me.IsInInstance && StyxWoW.Me.Level == 85)
+            if (Helpers.Rogue.me.IsInInstance && Helpers.Rogue.me.Level == 85)
             {
                 return Enum.LocationContext.HeroicDungeon;
             }
 
-            if (StyxWoW.Me.IsInInstance)
+            if (Helpers.Rogue.me.IsInInstance)
             {
                 return Enum.LocationContext.Dungeon;
             }
