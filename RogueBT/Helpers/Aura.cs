@@ -402,8 +402,6 @@ namespace RogueBT.Helpers
                 //Logging.Write(LogLevel.Normal, Movement.IsInSafeMeleeRange + " " + IsBehind);
             }
             ShouldShiv = false;
-            Helpers.Target.EnsureValidTarget();
-            Helpers.Movement.ChkFace();
             //if(Styx.CommonBot.SpellManager.HasSpell("Shadowstep"))
         }
     }
