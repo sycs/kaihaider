@@ -139,9 +139,9 @@ namespace RogueBT.Helpers
         static public Composite UseSpecialAbilities(CanRunDecoratorDelegate cond)
         {
             return new PrioritySelector(
-                UseItem(ret => mTrinket1, ret => cond(ret) && mTrinket1Usable),
-                UseItem(ret => mTrinket2, ret => cond(ret) && mTrinket2Usable),
-                UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable)//,
+                //UseItem(ret => mTrinket1, ret => cond(ret) && mTrinket1Usable),
+                //UseItem(ret => mTrinket2, ret => cond(ret) && mTrinket2Usable),
+                //UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable)//,
 
                 //new Decorator(ret => mRacialName != null,
                 //    Spells.Cast(mRacialName))
