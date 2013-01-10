@@ -230,7 +230,7 @@ namespace RogueBT.Helpers
             {
                 return new PrioritySelector
                         (new Decorator
-                             (ret => !Helpers.Rogue.me.Mounted
+                             (ret => !(Helpers.Rogue.me.Mounted || (StyxWoW.Me != null && StyxWoW.Me.Mounted))
                                  && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) 
                                      && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
                            SpellManager.HasSpell((int)Settings.Mode.mPoisonsMain[(int)Area.mLocation]),
@@ -247,7 +247,8 @@ namespace RogueBT.Helpers
                                    new WaitContinue(10, ret => !Helpers.Rogue.me.IsCasting, new ActionAlwaysSucceed()),
                                    new WaitContinue(1, ret => false, new ActionAlwaysSucceed()))),
                          new Decorator
-                             (ret => Aura.NeedsPoison && !(Aura.MindNumbing || Aura.Crippling || Aura.Paralytic || Aura.Leeching) && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
+                             (ret => !(Helpers.Rogue.me.Mounted || (StyxWoW.Me != null && StyxWoW.Me.Mounted))
+                                 && Aura.NeedsPoison && !(Aura.MindNumbing || Aura.Crippling || Aura.Paralytic || Aura.Leeching) && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
                               SpellManager.HasSpell((int)Settings.Mode.mPoisonsOff[(int)Area.mLocation]),
                               new Sequence
                                   (new Action
