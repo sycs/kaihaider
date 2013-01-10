@@ -45,6 +45,7 @@ namespace RogueBT.Helpers
         static public double TimeRupture { get; private set; }
         static public bool DeadlyPoison { get; private set; }
         static public bool CripplingPoison { get; private set; }
+        static public bool LeechingPoison { get; private set; }
 
         //Combat
         static public bool RevealingStrike { get; private set; }
@@ -91,7 +92,7 @@ namespace RogueBT.Helpers
             IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsBehind = false;
             DeadlyPoison = false; MasterOfSubtlety = false;  Vendetta = false; Blindside = false; RevealingStrike = false;
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false;
-            CripplingPoison = false;
+            CripplingPoison = false; LeechingPoison = false;
             DeadlyThrow = false;
             FaerieFire = false;
 
@@ -138,6 +139,11 @@ namespace RogueBT.Helpers
                                 Leeching = true;
                                 break;
                             }
+                        case 57934:
+                            {
+                                Tricks = true;
+                                break;
+                            }// MasterOfSubtlety 31223\
                         
                     }
                     switch (aura.Name) //goto case ; 
@@ -146,11 +152,6 @@ namespace RogueBT.Helpers
                         case "Blindside": //121152
                             {
                                 Blindside = true;
-                                break;
-                            }
-                        case "Stealth":
-                            {
-                                Stealth = true;
                                 break;
                             }
                         case "Vanish":
@@ -175,19 +176,9 @@ namespace RogueBT.Helpers
                                 FuryoftheDestroyer = true;
                                 break;
                             }
-                        case "Cold Blood":
-                            {
-                                ColdBlood = true;
-                                break;
-                            }
                         case "Envenom":
                             {
                                 Envenom = true;
-                                break;
-                            }
-                        case "Tricks":
-                            {
-                                Tricks = true;
                                 break;
                             }
                         case "Shadow Dance":
@@ -195,28 +186,36 @@ namespace RogueBT.Helpers
                                 ShadowDance = true;
                                 break;
                             }
-                        case "Master Of Subtlety":
-                            {
-                                MasterOfSubtlety = true;
-                                break;
-                            }
                         case "Vendetta":
                             {
                                 Vendetta = true;
+                                Logging.Write(LogLevel.Normal, "Vendetta");
                                 TimeVendetta = aura.TimeLeft.TotalSeconds;
                                 break;
                             }
                         case "Adrenaline Rush":
                             {
-                                if (aura.TimeLeft.TotalSeconds < 16 && aura.TimeLeft.TotalSeconds > 1)
-                                    AdrenalineRush = true;
+                                //if (aura.TimeLeft.TotalSeconds < 16 && aura.TimeLeft.TotalSeconds > 1)
+                                AdrenalineRush = true;
                                 break;
                             }
-                        case "Blade Flurry":
+                        case "Faerie Fire":
                             {
-                                BladeFlurry = true;
+                                FaerieFire = true;
                                 break;
                             }
+                    }
+
+                  }
+                    switch (aura.Name) //goto case ; 
+                    {
+
+                        case "Stealth":
+                            {
+                                Stealth = true;
+                                break;
+                            }
+
                         case "Moderate Insight":
                             {
                                 ModerateInsight = true;
@@ -227,14 +226,13 @@ namespace RogueBT.Helpers
                                 DeepInsight = true;
                                 break;
                             }
-
-                        case "Faerie Fire":
+                        case "Blade Flurry":
                             {
-                                FaerieFire = true;
+                                BladeFlurry = true;
                                 break;
                             }
                     }
-                  }
+
                 }
 
             if (Rogue.mTarget != null)
@@ -249,6 +247,7 @@ namespace RogueBT.Helpers
                 {
                     if (aura.IsActive) { 
                     if (aura.SpellId == 89775 && aura.CreatorGuid == Helpers.Rogue.me.Guid) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
+                    //if (aura.SpellId == 91023 && aura.CreatorGuid == Helpers.Rogue.me.Guid) TimeHemorrhage = aura.TimeLeft.TotalSeconds;
                      
                     if(aura.Spell.Mechanic == WoWSpellMechanic.Disoriented ||
                         aura.Spell.Mechanic == WoWSpellMechanic.Incapacitated)
@@ -273,8 +272,6 @@ namespace RogueBT.Helpers
                         Logging.Write(LogLevel.Diagnostic, Colors.White, "Interrupted!!!");
                         IsTargetInterrupted = true;
                     }
-                    else
-                    {
                         switch (aura.Name) //goto case ; 
                         {
                             case "Rupture":
@@ -284,12 +281,6 @@ namespace RogueBT.Helpers
                                         Rupture = true;
                                         TimeRupture = aura.TimeLeft.TotalSeconds;
                                     }
-                                    break;
-                                }
-                            case "Find Weakness":
-                                {
-                                    if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
-                                        FindWeakness = true;
                                     break;
                                 }
                             case "Enrage":
@@ -374,6 +365,11 @@ namespace RogueBT.Helpers
                                     CripplingPoison = true;
                                     break;
                                 }
+                            case "Leeching Poison":
+                                {
+                                    LeechingPoison = true;
+                                    break;
+                                }
                             case "Revealing Strike":
                                 {
                                     if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
@@ -390,13 +386,29 @@ namespace RogueBT.Helpers
                                     DeadlyThrow = true;
                                     break;
                                 }
-                        }
+                            case "Find Weakness":
+                                {
+                                    if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
+                                      FindWeakness = true;
+                                    break;
+                                }
+                        
+
+
                         }
 
 
                     }
+                    //switch (aura.Name) //goto case ; 
+                    //{
                     
-                    
+                    //        case "Find Weakness":
+                    //            {
+                    //                if (aura.CreatorGuid == Helpers.Rogue.me.Guid)
+                    //                    FindWeakness = true;
+                    //                break;
+                    //            }
+                    //}
                 }
                 if (IsTargetInvulnerable) Logging.Write(LogLevel.Diagnostic, Colors.White, "Invulnerable!!!");
 
