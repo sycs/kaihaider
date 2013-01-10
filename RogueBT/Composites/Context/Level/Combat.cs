@@ -56,7 +56,7 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                new Decorator(ret => Helpers.Spells.CanCast("Vanish") &&
+                new Decorator(ret => Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mHP < 45 &&
                                              Helpers.Rogue.mTarget.Stunned,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
