@@ -207,11 +207,13 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
-                Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Aura.Stealth
+                    && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Aura.Stealth
+                    && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
                 Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
-                    && Helpers.Rogue.IsAoeUsable() && !Helpers.Rogue.me.HasAura("Stealth")),
+                    && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
                 Helpers.Movement.ChkFace(),
                 Helpers.Movement.PullMoveToTarget()
             );
