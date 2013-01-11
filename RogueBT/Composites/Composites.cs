@@ -21,15 +21,21 @@ namespace RogueBT.Composites
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
-                  Context.Assassination.BuildCombatBehavior()
+                    new PrioritySelector(
+                        Helpers.Rogue.ApplyPoisons,
+                  Context.Assassination.BuildCombatBehavior())
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueCombat,
-                  Context.Combat.BuildCombatBehavior()
+                    new PrioritySelector(
+                        Helpers.Rogue.ApplyPoisons,
+                  Context.Combat.BuildCombatBehavior())
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueSubtlety,
-                    Context.Subtlety.BuildCombatBehavior()  
+                    new PrioritySelector(
+                        Helpers.Rogue.ApplyPoisons,
+                    Context.Subtlety.BuildCombatBehavior())
                 )
 
             );

@@ -18,7 +18,6 @@ namespace RogueBT.Composites.Context.Raid
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-                Helpers.Rogue.ApplyPoisons,
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
@@ -40,7 +39,7 @@ namespace RogueBT.Composites.Context.Raid
                 ),
 
 
-                Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
+                Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.mComboPoints > 4 &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
 
                 Helpers.Spells.CastSelf("Slice and Dice", ret => (Helpers.Rogue.mComboPoints >= 1 || 

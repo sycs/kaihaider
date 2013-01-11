@@ -20,7 +20,6 @@ namespace RogueBT.Composites.Context.Raid
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-                Helpers.Rogue.ApplyPoisons,
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
@@ -31,19 +30,20 @@ namespace RogueBT.Composites.Context.Raid
                     && Helpers.Movement.IsInSafeMeleeRange),
 
 
-                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer && Helpers.Movement.IsInSafeMeleeRange),
 
-                Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Aura.TimeSliceandDice < 3 &&
+                Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Aura.TimeSliceandDice < 2 &&
                                                                  Helpers.Rogue.mComboPoints >= 1),
 
                 Helpers.Spells.Cast("Rupture", ret => ((Helpers.Aura.TimeRupture < 1 &&
                                                                  Helpers.Rogue.mCurrentEnergy <= 100) ||
                                                                  !Helpers.Aura.Rupture) &&
-                                                                 Helpers.Rogue.mComboPoints >= 1 && Helpers.Movement.IsInSafeMeleeRange),
+                                                                 Helpers.Rogue.mComboPoints > 4 && Helpers.Movement.IsInSafeMeleeRange),
 
-                
-                Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
+
+                Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.mComboPoints > 4 &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
+
+                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer && Helpers.Movement.IsInSafeMeleeRange),
 
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
                                      Helpers.Aura.SliceandDice &&
