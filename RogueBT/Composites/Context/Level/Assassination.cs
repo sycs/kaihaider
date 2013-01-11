@@ -115,7 +115,7 @@ namespace RogueBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret => Helpers.General.UpdateHelpersBool() && Helpers.Rogue.me.Mounted,
+                new Decorator(ret => Helpers.Rogue.me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
                 //Helpers.Movement.PleaseStopPull(),
