@@ -88,9 +88,6 @@ namespace RogueBT.Composites.Context.Battleground
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
 
-                         Helpers.Spells.CastCooldown("Shiv", ret => Helpers.Aura.ShouldShiv &&
-                                        !(Helpers.Aura.ShadowDance) && Helpers.Rogue.mCurrentEnergy < 100 && Helpers.Movement.IsInSafeMeleeRange),
-
                          Helpers.Spells.CastCooldown("Dismantle", ret => (Helpers.Rogue.mHP < 65 || (Helpers.Focus.rawFocusTarget != null && Helpers.Focus.rawFocusTarget == Helpers.Rogue.mTarget)) &&
                              Helpers.Rogue.mTarget.IsPlayer && Helpers.Rogue.mCurrentEnergy < 100 && !(Helpers.Aura.ShadowDance) && Helpers.Rogue.mTarget.IsPlayer && Helpers.Movement.IsInSafeMeleeRange
                             )

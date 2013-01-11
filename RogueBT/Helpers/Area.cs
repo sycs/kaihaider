@@ -82,7 +82,7 @@ namespace RogueBT.Helpers
                 return Enum.LocationContext.Raid;
             }
 
-            if (Helpers.Rogue.me.IsInInstance && Helpers.Rogue.me.Level == 85)
+            if (Helpers.Rogue.me.IsInInstance && Helpers.Rogue.me.Level == 90)
             {
                 return Enum.LocationContext.HeroicDungeon;
             }
