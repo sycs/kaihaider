@@ -25,7 +25,7 @@ namespace RogueBT.Helpers
         static public Composite WalkBackwards()
         {
             return new Decorator(ret => true, //(!Helpers.Target.mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
-                new Action(ret => {WoWMovement.Move(WoWMovement.MovementDirection.Forward);})
+                new Action(ret => {WoWMovement.Move(WoWMovement.MovementDirection.Backwards);})
             );
         }
 
@@ -159,11 +159,12 @@ namespace RogueBT.Helpers
 
         public static Composite ChkFace()
         { //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
-            return new Decorator(ret => Rogue.mTarget != null && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.IsWithinMeleeRange) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+            return new Decorator(ret => Rogue.mTarget != null && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Action(ret =>
-                                          { if(Helpers.Rogue.me.IsActuallyInCombat)
+                                          {
+                                              if (Helpers.Rogue.me.IsActuallyInCombat || Rogue.mTarget.IsPlayer)
                                               Navigator.PlayerMover.MoveStop();
-                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "facing");
+                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "facing");
                                               Rogue.mTarget.Face();
                                           }));
         }
@@ -171,9 +172,11 @@ namespace RogueBT.Helpers
         {
             //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");
             return new PrioritySelector(
-             new Decorator(ret => Helpers.Rogue.me.IsMoving && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill
-                 && Rogue.mTarget != null && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget) && !BotManager.Current.Name.Equals("BGBuddy")
-                 || !Rogue.mTarget.Attackable //|| Rogue.mTarget.CreatedByUnitGuid != Helpers.Rogue.me.Guid
+             new Decorator(ret => (Helpers.Rogue.me.IsMoving && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)
+                 || !Rogue.mTarget.Attackable 
+//  || (Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestTurnIn || Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestPickUp) && Rogue.mHP >50
+                ) && Rogue.mTarget != null && !BotManager.Current.Name.Equals("BGBuddy")
+                 //|| Rogue.mTarget.CreatedByUnitGuid != Helpers.Rogue.me.Guid
                  ,
                  new Action(ret => Helpers.Rogue.me.ClearTarget())),
              new Decorator(ret => true, MoveToTarget()));
@@ -182,7 +185,7 @@ namespace RogueBT.Helpers
         }
         public static Composite MoveToTarget()
         {
-            
+            //if (StyxWoW.Me.IsActuallyInCombat && Movement.MoveTo(StyxWoW.Me.CurrentTarget)) { Blacklist.Flush(); }
             //change dec continue
             return new Decorator(
                 ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted &&
