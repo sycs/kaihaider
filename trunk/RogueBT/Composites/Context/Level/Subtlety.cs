@@ -184,12 +184,16 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
-                Helpers.Spells.CastSelf("Stealth", ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
-                    && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat),
+                new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
+                    && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
+                    new Sequence(
+                        Helpers.Spells.CastSelf("Stealth", ret => true),
+                        Helpers.Rogue.CreateWaitForLagDuration()
+                    )
+                ),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-               Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
-
+                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
                 new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth
                     && !Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.IsHumanoid,
                     new Sequence(
