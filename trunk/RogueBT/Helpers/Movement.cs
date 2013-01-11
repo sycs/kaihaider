@@ -24,8 +24,8 @@ namespace RogueBT.Helpers
 
         static public Composite WalkBackwards()
         {
-            return new Decorator(ret => (!Helpers.Target.mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
-                MoveToTarget()
+            return new Decorator(ret => true, //(!Helpers.Target.mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
+                new Action(ret => {WoWMovement.Move(WoWMovement.MovementDirection.Forward);})
             );
         }
 

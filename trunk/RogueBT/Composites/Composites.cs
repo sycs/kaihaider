@@ -46,15 +46,21 @@ namespace RogueBT.Composites
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
-                    Context.Assassination.BuildPullBehavior()
+                    new Sequence(
+                    new Action(ret => { Helpers.General.UpdateHelpers(); }),
+                    Context.Assassination.BuildPullBehavior())
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueCombat,
-                    Context.Combat.BuildPullBehavior()
+                    new Sequence(
+                    new Action(ret => { Helpers.General.UpdateHelpers(); }),
+                    Context.Combat.BuildPullBehavior())
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueSubtlety,
-                    Context.Subtlety.BuildPullBehavior() 
+                    new Sequence(
+                    new Action(ret => { Helpers.General.UpdateHelpers(); }),
+                    Context.Subtlety.BuildPullBehavior() )
                 )
 
             );
