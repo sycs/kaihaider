@@ -20,7 +20,7 @@ namespace RogueBT
 {
     class RogueRaidBT : CombatRoutine
     {
-        public Version mCurVersion = new Version(0, 1);
+        public Version mCurVersion = new Version(0, 2);
 
         public override string Name { get { return "RogueBT v" + mCurVersion; } }
         public override WoWClass Class { get { return WoWClass.Rogue; } }
