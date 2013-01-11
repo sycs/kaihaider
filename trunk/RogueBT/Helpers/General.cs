@@ -40,17 +40,6 @@ namespace RogueBT.Helpers
                         //if (Movement.IsPVPSuiteEnabled) Settings.Mode.mUseMovement = false;
 
                     }
-        }
-
-        static public bool UpdateHelpersBool()
-        {
-
-
-            UpdateHelpers();
-
-            return true;
-
-        }
-        
+        }       
     }
 }

@@ -42,7 +42,9 @@ namespace RogueBT.Composites
             return new Switch<Styx.WoWSpec>(ret => Helpers.Rogue.mCurrentSpec,
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.None,
-                    Context.None.BuildPullBehavior()
+                    new Sequence(
+                    new Action(ret => { Helpers.General.UpdateHelpers(); }),
+                    Context.None.BuildPullBehavior())
                 ),
 
                 new SwitchArgument<Styx.WoWSpec>(Styx.WoWSpec.RogueAssassination,
