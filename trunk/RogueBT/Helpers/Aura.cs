@@ -273,7 +273,6 @@ namespace RogueBT.Helpers
                                     if (aura.CreatorGuid == Helpers.Rogue.me.Guid) 
                                     {
                                         Vendetta = true;
-                                        Logging.Write(LogLevel.Normal, "Vendetta");
                                         TimeVendetta = aura.TimeLeft.TotalSeconds;
                                         
                                     }
@@ -361,8 +360,7 @@ namespace RogueBT.Helpers
                                 }
                             case "Deadly Poison":
                                 {
-                                    if (aura.StackCount > 2)
-                                        DeadlyPoison = true;
+                                    DeadlyPoison = true;
                                     break;
                                 }
                             case "Crippling Poison":

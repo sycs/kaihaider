@@ -33,8 +33,8 @@ namespace RogueBT.Settings
             mPoisonsMain = new Helpers.Enum.LeathalPoisonSpellId[6];
             mPoisonsOff = new Helpers.Enum.NonLeathalPoisonSpellId[6];
 
-            mUsePoisons[(int)Helpers.Enum.LocationContext.Raid] = false;
-            mUsePoisons[(int)Helpers.Enum.LocationContext.Arena] = false;
+            mUsePoisons[(int)Helpers.Enum.LocationContext.Raid] = true;
+            mUsePoisons[(int)Helpers.Enum.LocationContext.Arena] = true;
             mUsePoisons[(int)Helpers.Enum.LocationContext.Dungeon] = true;
             mUsePoisons[(int)Helpers.Enum.LocationContext.Battleground] = true;
             mUsePoisons[(int)Helpers.Enum.LocationContext.World] = true;

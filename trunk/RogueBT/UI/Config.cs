@@ -138,16 +138,16 @@ namespace RogueBT.UI
 
         private void buttonApply_Click(object sender, EventArgs e)
         {
-            if (checkBoxRaidPoison.Checked || checkBoxArenaPoison.Checked)
-            {
-                var input = MessageBox.Show("WARNING: You have enabled poisons for Raid mode or Arena mode. Using Apoc's Raid Bot as your botbase will result in RogueBT being " +
-                                             "unable to apply poisons, regardless of context, due to a design limitation with Raid Bot. ",
-                                             "Warning",
-                                             MessageBoxButtons.OKCancel,
-                                             MessageBoxIcon.Exclamation);
+            //if (checkBoxRaidPoison.Checked || checkBoxArenaPoison.Checked)
+            //{
+            //    var input = MessageBox.Show("WARNING: You have enabled poisons for Raid mode or Arena mode. Using Apoc's Raid Bot as your botbase will result in RogueBT being " +
+            //                                 "unable to apply poisons, regardless of context, due to a design limitation with Raid Bot. ",
+            //                                 "Warning",
+            //                                 MessageBoxButtons.OKCancel,
+            //                                 MessageBoxIcon.Exclamation);
 
-                if (input == DialogResult.Cancel) return;
-            }
+            //    if (input == DialogResult.Cancel) return;
+            //}
 
             Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Raid]          = checkBoxRaidPoison.Checked;
             Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Arena]         = checkBoxArenaPoison.Checked;
