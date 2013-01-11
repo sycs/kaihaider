@@ -56,6 +56,7 @@ namespace RogueBT.Helpers
                                     .OrderBy(unit => unit.Distance).ToList();
         }
 
+
         static public bool GetCCTarget()
         {
             GougeCCUnit = null;

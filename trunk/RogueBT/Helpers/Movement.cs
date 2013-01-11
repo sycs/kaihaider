@@ -21,6 +21,14 @@ namespace RogueBT.Helpers
 {
     internal static class Movement
     {
+
+        static public Composite WalkBackwards()
+        {
+            return new Decorator(ret => (!Helpers.Target.mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
+                MoveToTarget()
+            );
+        }
+
         public static bool IsGlueEnabled
         {
             get

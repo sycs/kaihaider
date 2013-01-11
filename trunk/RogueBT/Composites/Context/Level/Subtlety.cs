@@ -194,14 +194,12 @@ namespace RogueBT.Composites.Context.Level
                     && !Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.IsHumanoid,
                     new Sequence(
                         Helpers.Rogue.CreateWaitForLagDuration(),
-                        Helpers.Movement.MoveToTarget(),
-                        Helpers.Movement.ChkFace(),
-                        Helpers.Rogue.CreateWaitForLagDuration(),
                         new Action(ret =>
                         {
                             Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
                             Helpers.Rogue.CreateWaitForLagDuration();
-                            return RunStatus.Success;
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
+                            return RunStatus.Failure;
                         }),
                         Helpers.Rogue.CreateWaitForLagDuration()
                     )
