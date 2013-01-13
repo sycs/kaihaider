@@ -28,6 +28,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
+                Helpers.Movement.WalkBackwards(),
                 Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
@@ -192,6 +193,7 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Rogue.CreateWaitForLagDuration()
                     )
                 ),
+                Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
