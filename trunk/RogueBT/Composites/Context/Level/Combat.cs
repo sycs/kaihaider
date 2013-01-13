@@ -24,7 +24,8 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
+                Helpers.Movement.WalkBackwards(),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
@@ -60,8 +61,8 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                new Decorator(ret => Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mHP < 45 &&
-                                             Helpers.Rogue.mTarget.Stunned,
+                new Decorator(ret => Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mHP < 45 && !Helpers.Rogue.IsAoeUsable() &&
+                                             Helpers.Aura.KidneyTime > 4,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
@@ -139,9 +140,9 @@ namespace RogueBT.Composites.Context.Level
                 new Decorator(ret =>  Helpers.Rogue.me.Mounted, 
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
-                //Helpers.Movement.PleaseStopPull(),
+                Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
 
@@ -153,34 +154,46 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
+                Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                //Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
-
-                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth
-                    && !Helpers.Rogue.mTarget.IsFlying,// && Helpers.Rogue.mTarget.IsHumanoid,
+                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
+                /**
+                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange 
+                    && !Helpers.Rogue.mTarget.IsFlying,
                     new Sequence(
-                        //Helpers.Rogue.CreateWaitForLagDuration(),
-                        //Helpers.Movement.MoveToTarget(),
-                        //Helpers.Movement.ChkFace(),
-                        Helpers.Rogue.CreateWaitForLagDuration(),
                         new Action(ret =>
                         {
                             Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
-                            Helpers.Rogue.CreateWaitForLagDuration();
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
+                            return RunStatus.Success;
+                        }),
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Cheap Shot attempted");
                             return RunStatus.Failure;
                         }),
                         Helpers.Rogue.CreateWaitForLagDuration()
                        
                     )
-                ),
+                ), **/
 
-                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange  && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange
+                    && !Helpers.Rogue.mTarget.IsFlying,
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
+                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Rogue.me.HasAura("Stealth")),
-                Helpers.Movement.ChkFace(),
                 Helpers.Movement.PullMoveToTarget()
 
 

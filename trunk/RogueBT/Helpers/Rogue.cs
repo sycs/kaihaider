@@ -151,7 +151,6 @@ namespace RogueBT.Helpers
                                 )),
 
                     Helpers.Spells.CastCooldown("Gouge", ret => 
-                                Helpers.Rogue.IsHolyOrNat() &&
                                 Helpers.Rogue.mTarget.IsSafelyFacing(Helpers.Rogue.me)))
             );
         }

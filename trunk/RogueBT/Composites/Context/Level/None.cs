@@ -18,8 +18,8 @@ namespace RogueBT.Composites.Context.Level
             return new PrioritySelector(
                Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
-                Helpers.Movement.MoveToLos(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.MoveToLos(), 
+                Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
                 
 
@@ -36,7 +36,9 @@ namespace RogueBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
+               Helpers.Movement.PleaseStop(),
                 Helpers.Movement.MoveToLos(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Movement.PullMoveToTarget()
             );

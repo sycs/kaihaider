@@ -21,11 +21,25 @@ namespace RogueBT.Helpers
 {
     internal static class Movement
     {
-
+        static Movement()
+        {
+            FNorth = false;
+            FEast = false;
+            FSouth = false;
+            FWest = false;
+        }
         static public Composite WalkBackwards()
         {
-            return new Decorator(ret => true, //(!Helpers.Target.mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
-                new Action(ret => {WoWMovement.Move(WoWMovement.MovementDirection.Backwards);})
+            return new Sequence(
+                new PrioritySelector(
+                    new Decorator(ret => Helpers.Rogue.me.MovementInfo.MovingBackward
+                        && (!Helpers.Movement.IsInSafeMeleeRange || Helpers.Movement.IsInSafeMeleeRange && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
+                        new Action(ret => WoWMovement.MoveStop(WoWMovement.MovementDirection.Backwards))),
+                    new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation+WoWMathHelper.DegreesToRadians(150),6f))
+                        && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f +unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0, 
+                        new Action(ret => WoWMovement.Move(WoWMovement.MovementDirection.Backwards)))
+                    ),
+                    new Action(ret => RunStatus.Failure)
             );
         }
 
@@ -75,7 +89,7 @@ namespace RogueBT.Helpers
 
         public static float SafeMeleeRange
         {
-            get { return System.Math.Max(MeleeRange - 1f, 4.7f); }
+            get { return System.Math.Max(MeleeRange - 2.5f, 2.5f); }
         }
 
         public static bool IsInSafeMeleeRange
@@ -84,7 +98,7 @@ namespace RogueBT.Helpers
             {
                 if (Helpers.Rogue.mTarget == null) return false;
                 
-                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1f, 2.5f); 
+                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1.4f, 2.5f); 
             }
         }
 
@@ -93,15 +107,14 @@ namespace RogueBT.Helpers
         public static void Pulse()
         {
         }
-
-        public static bool StopRunning()
+        public static bool OldStopRunning()
         {
             if (System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)) > 1) //|| Helpers.Rogue.me.MovementInfo.Heading.CompareTo(Rogue.mTarget.MovementInfo.Heading) > 0 && Helpers.Aura.IsBehind
             {
                 if (!Aura.LastDirection)
                 {
                     //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "" + System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)));
-            
+
                     directionChange = true;
                     Aura.LastDirection = true;
                 }
@@ -111,22 +124,84 @@ namespace RogueBT.Helpers
                 if (Aura.LastDirection)
                 {
                     //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "" + System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)));
-            
+
                     directionChange = true;
                     Aura.LastDirection = false;
                 }
             }
 
+
             Helpers.Aura.LastRenderFacing = Helpers.Rogue.me.RenderFacing;
 
-            
+
+            return true;
+        }
+
+        public static bool FNorth { get; private set; }
+        public static bool FEast { get; private set; }
+        public static bool FWest { get; private set; }
+        public static bool FSouth { get; private set; }
+
+        public static bool StopRunning()
+        {
+            if (Helpers.Rogue.me.RenderFacing < 0.8125 && Helpers.Rogue.me.RenderFacing > -0.8125) 
+            {
+                FNorth = true;
+                if (FSouth)
+                {
+                    directionChange = true;
+                    FNorth = false;
+                    FEast = false;
+                    FSouth = false;
+                    FWest = false;
+                }
+            }
+            else if (Helpers.Rogue.me.RenderFacing > -2.4375 && Helpers.Rogue.me.RenderFacing < -0.8125)
+            {
+
+                FWest = true;
+                if (FEast)
+                {
+                    directionChange = true;
+                    FNorth = false;
+                    FEast = false;
+                    FSouth = false;
+                    FWest = false;
+                }
+            }
+            else if (Helpers.Rogue.me.RenderFacing < 2.4375 && Helpers.Rogue.me.RenderFacing > 0.8125)
+            {
+
+                FEast = true;
+                if (FWest)
+                {
+                    directionChange = true;
+                    FNorth = false;
+                    FEast = false;
+                    FSouth = false;
+                    FWest = false;
+                }
+            }
+            else if (Helpers.Rogue.me.RenderFacing > 2.4375 || Helpers.Rogue.me.RenderFacing < -2.4375)
+            {
+
+                FSouth = true;
+                if (FNorth)
+                {
+                    directionChange = true;
+                    FNorth = false;
+                    FEast = false;
+                    FSouth = false;
+                    FWest = false;
+                }
+            }
             return true;
         }
 
         public static Composite PleaseStop()
         {
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.IsStrafing &&
-                 StopRunning() && directionChange,
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
+                 && StopRunning() && directionChange,
                 new Action(ret => {
                     Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
                 directionChange = false;
@@ -138,14 +213,14 @@ namespace RogueBT.Helpers
         }
         public static Composite PleaseStopPull()
         {
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.IsStrafing &&
-                 StopRunning() && directionChange,
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
+                 && StopRunning() && directionChange,
                 new Action(ret =>
                 {
                     Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
                     directionChange = false;
                     Navigator.PlayerMover.MoveStop();
-                    Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), MeleeRange - 1f));
+                    //Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), MeleeRange - 1f));
 
                 }));
         }
@@ -159,14 +234,14 @@ namespace RogueBT.Helpers
 
         public static Composite ChkFace()
         { //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
-            return new Decorator(ret => Rogue.mTarget != null && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
-                                          new Action(ret =>
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+                                          new Sequence(new Action(ret =>
                                           {
                                               if (Helpers.Rogue.me.IsActuallyInCombat || Rogue.mTarget.IsPlayer)
                                               Navigator.PlayerMover.MoveStop();
                                               Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "facing");
                                               Rogue.mTarget.Face();
-                                          }));
+                                          }), new Action(ret => RunStatus.Failure)));
         }
         public static Composite PullMoveToTarget()
         {
@@ -179,23 +254,8 @@ namespace RogueBT.Helpers
                  //|| Rogue.mTarget.CreatedByUnitGuid != Helpers.Rogue.me.Guid
                  ,
                  new Action(ret => Helpers.Rogue.me.ClearTarget())),
-             new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted && !(Rogue.mTarget.Distance < 10 && IsGlueEnabled), 
-                 new Sequence(
-
-                                      new DecoratorContinue(
-                                          ret => !IsInSafeMeleeRange && !Helpers.Rogue.me.IsCasting,
-                                          new Action(ret =>
-                                          {
-                                              Navigator.MoveTo(Rogue.mTarget.Location);
-                                          })),
-
-                                      new DecoratorContinue(
-                                          ret =>
-                                          IsInSafeMeleeRange &&
-                                          !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
-                                          new Action(ret => Rogue.mTarget.Face())),
-                                      new Action(ret => RunStatus.Failure)
-                                      )));
+             new Decorator(ret => Rogue.mTarget != null,
+                 MoveToTarget()));
         }
         public static Composite MoveToTarget()
         {
@@ -213,15 +273,15 @@ namespace RogueBT.Helpers
 
                                       new DecoratorContinue(
                                           ret =>
-                                          (!Aura.IsBehind || ((!Rogue.mTarget.IsPlayer && !IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance > 2.5f) ||
-                                                Rogue.mTarget.IsMoving) && !Helpers.Rogue.me.IsCasting &&
+                                          (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange )//|| Rogue.mTarget.IsMoving)
+                                                 && !Helpers.Rogue.me.IsCasting &&
                                           (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving), // (!Aura.IsBehind || Rogue.mTarget.Distance > MeleeRange - 3f) && !Helpers.Rogue.me.IsCasting,
                                           new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
                                                                  Rogue.mTarget.Rotation +
                                                                  WoWMathHelper.DegreesToRadians(150),
-                                                                 MeleeRange - 1f)))),
+                                                                 SafeMeleeRange)))),
                                       new DecoratorContinue(
-                                          ret => IsInSafeMeleeRange &&
+                                          ret => Helpers.Rogue.mTarget.Distance > SafeMeleeRange &&
                                               //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
                                           !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Action(ret => Rogue.mTarget.Face())),

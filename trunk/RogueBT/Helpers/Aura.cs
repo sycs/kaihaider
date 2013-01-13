@@ -1,5 +1,6 @@
 ﻿
 
+using System.Linq;
 using System.Windows.Media;
 using Styx;
 using Styx.Helpers;
@@ -55,6 +56,7 @@ namespace RogueBT.Helpers
         static public bool BladeFlurry { get; private set; }
 
         //Target
+        static public bool IsInSafeMeleeRange { get; private set; }
         static public bool IsTargetDisoriented { get; private set; }
         static public bool IsTargetInvulnerable { get; private set; }
         static public bool IsTargetInterrupted { get; private set; }
@@ -69,7 +71,9 @@ namespace RogueBT.Helpers
         static public bool HealingGhost { get; private set; }
         
         static public float LastRenderFacing { get; set; }
-        
+
+        static public double KidneyTime { get; private set; }
+
         //stolen from clu
         public static bool NeedsPoison
         {
@@ -230,7 +234,7 @@ namespace RogueBT.Helpers
 
             if (Rogue.mTarget != null)
             {
-
+                IsInSafeMeleeRange = Helpers.Movement.IsInSafeMeleeRange;
                 IsBehind = Rogue.mTarget.IsPlayerBehind || Settings.Mode.mForceBehind || Rogue.mTarget.MeIsSafelyBehind;
                 //if (IsBehind) Logging.Write(Colors.White, "IsPlayerBehind:" +Rogue.mTarget.IsPlayerBehind + " MeIsSafelyBehind:"+ Rogue.mTarget.MeIsSafelyBehind);
 
@@ -266,8 +270,13 @@ namespace RogueBT.Helpers
                         IsTargetInterrupted = true;
                     }
                         switch (aura.Name) //goto case ; 
-                        {
+                        { 
 
+                            case "Kidney Shot":
+                                {
+                                    KidneyTime = aura.TimeLeft.TotalSeconds;
+                                    break;
+                                }
                             case "Vendetta":
                                 {
                                     if (aura.CreatorGuid == Helpers.Rogue.me.Guid) 
@@ -415,11 +424,13 @@ namespace RogueBT.Helpers
                 }
                 if (IsTargetInvulnerable) Logging.Write(LogLevel.Diagnostic, Colors.White, "Invulnerable!!!");
 
-
+                
                 //Logging.Write(LogLevel.Normal, Movement.IsInSafeMeleeRange + " " + IsBehind);
             }
             ShouldShiv = false;
-            //if(Styx.CommonBot.SpellManager.HasSpell("Shadowstep"))
+            //Logging.Write(LogLevel.Normal, Helpers.Rogue.me.RenderFacing + " " );
+            //if (Helpers.Target.mNearbyEnemyUnits != null && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) >0)
+              //  Logging.Write(LogLevel.Normal, Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) + " ");
         }
     }
 }

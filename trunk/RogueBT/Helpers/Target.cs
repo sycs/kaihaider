@@ -41,6 +41,7 @@ namespace RogueBT.Helpers
                                         unit.IsAlive
                                         && !unit.IsNonCombatPet
                                         && !unit.IsCritter
+                                        && !unit.IsPetBattleCritter
                                         && (unit.IsTargetingMeOrPet 
                                            || unit.IsTargetingMyPartyMember
                                            || unit.IsTargetingMyRaidMember
@@ -91,10 +92,13 @@ namespace RogueBT.Helpers
 
         static public Composite EnsureValidTarget()
         {
-            return new Decorator(ret => (!mNearbyEnemyUnits.Contains(Rogue.mTarget) || Rogue.mTarget == null) && !BotManager.Current.Name.Equals("BGBuddy"),
+           // if (Helpers.Rogue.mTarget != null && Helpers.Rogue.me.Combat && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Hotspot)) 
+           // Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
+            return new Decorator(ret => (Rogue.mTarget == null || !Rogue.mTarget.IsAlive || !mNearbyEnemyUnits.Contains(Rogue.mTarget) ) && !BotManager.Current.Name.Equals("BGBuddy"),
                 GetNewTarget()
             );
         }
+
 
         static public bool IsSappable()
         {
@@ -116,7 +120,7 @@ namespace RogueBT.Helpers
                 {
                     var nextUnit = mNearbyEnemyUnits.FirstOrDefault();
 
-                    if (nextUnit != null)
+                    if (nextUnit != null && nextUnit.IsAlive)
                     {
                         Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
                         nextUnit.Target();
