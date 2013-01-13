@@ -120,6 +120,7 @@ namespace RogueBT.Composites.Context.Level
                 ),
                 Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
+                Helpers.Movement.WalkBackwards(),
                 Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
@@ -130,6 +131,7 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Rogue.CreateWaitForLagDuration()
                     )
                 ),
+                Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
