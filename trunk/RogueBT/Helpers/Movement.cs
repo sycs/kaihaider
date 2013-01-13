@@ -179,9 +179,23 @@ namespace RogueBT.Helpers
                  //|| Rogue.mTarget.CreatedByUnitGuid != Helpers.Rogue.me.Guid
                  ,
                  new Action(ret => Helpers.Rogue.me.ClearTarget())),
-             new Decorator(ret => true, MoveToTarget()));
-                //!Helpers.Rogue.me.IsCasting && Helpers.Rogue.me.CurrentTarget != null && Helpers.Rogue.me.CurrentTarget.IsWithinMeleeRange, 
-                //new Action(ret => Navigator.MoveTo(Helpers.Rogue.me.CurrentTarget.Location))));
+             new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted && !(Rogue.mTarget.Distance < 10 && IsGlueEnabled), 
+                 new Sequence(
+
+                                      new DecoratorContinue(
+                                          ret => !IsInSafeMeleeRange && !Helpers.Rogue.me.IsCasting,
+                                          new Action(ret =>
+                                          {
+                                              Navigator.MoveTo(Rogue.mTarget.Location);
+                                          })),
+
+                                      new DecoratorContinue(
+                                          ret =>
+                                          IsInSafeMeleeRange &&
+                                          !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+                                          new Action(ret => Rogue.mTarget.Face())),
+                                      new Action(ret => RunStatus.Failure)
+                                      )));
         }
         public static Composite MoveToTarget()
         {
