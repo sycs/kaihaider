@@ -241,7 +241,7 @@ namespace RogueBT.Helpers
                                               Navigator.PlayerMover.MoveStop();
                                               Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "facing");
                                               Rogue.mTarget.Face();
-                                          }), new Action(ret => RunStatus.Failure)));
+                                          }), new Action(ret => RunStatus.Success)));
         }
         public static Composite PullMoveToTarget()
         {

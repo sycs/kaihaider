@@ -92,8 +92,8 @@ namespace RogueBT.Helpers
 
         static public Composite EnsureValidTarget()
         {
-           // if (Helpers.Rogue.mTarget != null && Helpers.Rogue.me.Combat && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Hotspot)) 
-           // Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
+          //  if (Helpers.Rogue.mTarget != null && Helpers.Rogue.me.Combat && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Hotspot)) 
+          //  Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
             return new Decorator(ret => (Rogue.mTarget == null || !Rogue.mTarget.IsAlive || !mNearbyEnemyUnits.Contains(Rogue.mTarget) ) && !BotManager.Current.Name.Equals("BGBuddy"),
                 GetNewTarget()
             );
