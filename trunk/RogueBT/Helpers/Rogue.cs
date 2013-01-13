@@ -92,6 +92,7 @@ namespace RogueBT.Helpers
                     mRawComboPoints = Helpers.Rogue.me.RawComboPoints;
 
                 mTarget = Helpers.Rogue.me.CurrentTarget;
+                if (mTarget != null & !mTarget.IsAlive) mTarget = null;
 
                 mHP = Helpers.Rogue.me.HealthPercent;
             }
