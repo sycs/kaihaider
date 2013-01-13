@@ -36,7 +36,7 @@ namespace RogueBT.Helpers
                         Aura.Pulse();
                         
                         Target.EnsureValidTarget();
-                        Movement.ChkFace();
+                        //Movement.ChkFace();
                         //if (Movement.IsPVPSuiteEnabled) Settings.Mode.mUseMovement = false;
 
                     }

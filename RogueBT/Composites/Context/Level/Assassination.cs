@@ -30,7 +30,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
@@ -57,8 +57,8 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                new Decorator(ret => Helpers.Spells.CanCast("Vanish") &&
-                                             Helpers.Rogue.mTarget.Stunned,
+                new Decorator(ret => Helpers.Spells.CanCast("Vanish") && !Helpers.Rogue.IsAoeUsable() &&
+                                             Helpers.Aura.KidneyTime > 4,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
@@ -118,9 +118,9 @@ namespace RogueBT.Composites.Context.Level
                 new Decorator(ret => Helpers.Rogue.me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
-                //Helpers.Movement.PleaseStopPull(),
+                Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
                 new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
@@ -134,29 +134,26 @@ namespace RogueBT.Composites.Context.Level
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
-                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth
-                    && !Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.IsHumanoid,
+
+                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange
+                    && !Helpers.Rogue.mTarget.IsFlying,
                     new Sequence(
-                        Helpers.Rogue.CreateWaitForLagDuration(),
                         new Action(ret =>
                         {
                             Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
-                            Helpers.Rogue.CreateWaitForLagDuration();
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
                             return RunStatus.Failure;
-                        }),
-                        Helpers.Rogue.CreateWaitForLagDuration()
+                        })
                     )
                 ),
 
                 Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Aura.Stealth 
-                    && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                    && Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Aura.Stealth
-                    && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
-                Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)),
+                    && Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
-                Helpers.Movement.ChkFace(),
                 Helpers.Movement.PullMoveToTarget()
 
             );

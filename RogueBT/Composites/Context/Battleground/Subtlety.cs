@@ -24,7 +24,7 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 46924 || Helpers.Aura.IsTargetCasting == 1680) &&
@@ -178,9 +178,9 @@ namespace RogueBT.Composites.Context.Battleground
                 
 
 
-                //Helpers.Movement.PleaseStopPull(),
+                Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && 

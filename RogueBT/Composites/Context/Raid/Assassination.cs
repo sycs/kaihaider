@@ -23,7 +23,7 @@ namespace RogueBT.Composites.Context.Raid
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033) 

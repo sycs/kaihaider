@@ -25,7 +25,7 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
@@ -144,9 +144,9 @@ namespace RogueBT.Composites.Context.Battleground
                 new Decorator(ret => Helpers.Rogue.me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
-                //Helpers.Movement.PleaseStopPull(),
+                Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
-                //Helpers.Movement.ChkFace(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
 
