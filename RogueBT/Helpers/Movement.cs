@@ -245,7 +245,7 @@ namespace RogueBT.Helpers
         }
         public static Composite PullMoveToTarget()
         {
-            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");
+            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");  //Styx.CommonBot.InactivityDetector.TimeUntilLogout
             return new PrioritySelector(
              new Decorator(ret => (Helpers.Rogue.me.IsMoving && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)
                  || !Rogue.mTarget.Attackable 
