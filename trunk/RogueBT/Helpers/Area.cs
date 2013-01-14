@@ -26,6 +26,11 @@ namespace RogueBT.Helpers
 
             if (mLocation != curLocation)
             {
+                if (mLocation.Equals(Enum.LocationContext.Battleground) && curLocation.Equals(Enum.LocationContext.World)
+                    && Helpers.Rogue.me != null && !Helpers.Rogue.me.Mounted)
+                    if (Helpers.Rogue.me.Combat && Styx.CommonBot.SpellManager.HasSpell("Vanish") && Helpers.Spells.CanCast("Vanish")) Styx.CommonBot.SpellManager.Cast("Vanish", Helpers.Rogue.mTarget);
+                    else if (!Helpers.Rogue.me.Combat && !Helpers.Aura.Stealth)
+                Styx.CommonBot.SpellManager.Cast("Stealth", Helpers.Rogue.mTarget);
                 mLocation = curLocation;
 
                 Logging.Write(LogLevel.Normal, "");

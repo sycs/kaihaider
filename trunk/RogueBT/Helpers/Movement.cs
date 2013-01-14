@@ -263,7 +263,7 @@ namespace RogueBT.Helpers
                  && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill 
                  && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)
 //  || (Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestTurnIn || Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestPickUp) && Rogue.mHP >50
-                 && BotManager.Current != null && !(BotManager.Current.Name.Equals("BGBuddy") || !BotManager.Current.IsPrimaryType && BotManager.Current.Name.Equals("Mixed"))
+                 && BotManager.Current != null && !(Helpers.Area.mLocation.Equals(Enum.LocationContext.Battleground))
                  ,
                  new Action(ret => Helpers.Rogue.me.ClearTarget())),
              new Decorator(ret => Rogue.mTarget != null,
