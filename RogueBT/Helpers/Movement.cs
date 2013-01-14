@@ -92,6 +92,16 @@ namespace RogueBT.Helpers
             get { return System.Math.Max(MeleeRange - 2.5f, 2.5f); }
         }
 
+        public static bool IsInAttemptMeleeRange
+        {
+            get
+            {
+                if (Helpers.Rogue.mTarget == null) return false;
+
+                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1.2f, 2.5f);
+            }
+        }
+
         public static bool IsInSafeMeleeRange
         {
             get
@@ -247,11 +257,13 @@ namespace RogueBT.Helpers
         {
             //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");  //Styx.CommonBot.InactivityDetector.TimeUntilLogout
             return new PrioritySelector(
-             new Decorator(ret => (Helpers.Rogue.me.IsMoving && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)
-                 || !Rogue.mTarget.Attackable 
+             new Decorator(ret => Helpers.Rogue.me != null && Rogue.mTarget != null
+                 && Helpers.Rogue.me.IsMoving
+                 && Styx.CommonBot.POI.BotPoi.Current != null
+                 && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill 
+                 && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)
 //  || (Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestTurnIn || Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestPickUp) && Rogue.mHP >50
-                ) && Rogue.mTarget != null && !BotManager.Current.Name.Equals("BGBuddy")
-                 //|| Rogue.mTarget.CreatedByUnitGuid != Helpers.Rogue.me.Guid
+                 && BotManager.Current != null && !(BotManager.Current.Name.Equals("BGBuddy") || !BotManager.Current.IsPrimaryType && BotManager.Current.Name.Equals("Mixed"))
                  ,
                  new Action(ret => Helpers.Rogue.me.ClearTarget())),
              new Decorator(ret => Rogue.mTarget != null,
@@ -262,7 +274,7 @@ namespace RogueBT.Helpers
             //if (StyxWoW.Me.IsActuallyInCombat && Movement.MoveTo(StyxWoW.Me.CurrentTarget)) { Blacklist.Flush(); }
             //change dec continue
             return new Decorator(
-                ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted &&
+                ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted && !Rogue.mTarget.IsFriendly &&
                     //!Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile &&  
                                         !(Rogue.mTarget.Distance < 10 && IsGlueEnabled) //|| Helpers.Rogue.me.Stunned || Helpers.Rogue.me.Rooted || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
                 //&& !Helpers.Aura.IsTargetInvulnerable 
