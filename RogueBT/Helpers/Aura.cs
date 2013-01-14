@@ -428,7 +428,7 @@ namespace RogueBT.Helpers
                 //Logging.Write(LogLevel.Normal, Movement.IsInSafeMeleeRange + " " + IsBehind);
             }
             ShouldShiv = false;
-            Logging.Write(LogLevel.Normal, Styx.CommonBot.InactivityDetector.TimeUntilLogout + " " );
+           // Logging.Write(LogLevel.Normal, Styx.CommonBot.InactivityDetector.TimeUntilLogout + " " );
             //if (Helpers.Target.mNearbyEnemyUnits != null && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) >0)
               //  Logging.Write(LogLevel.Normal, Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) + " ");
         }
