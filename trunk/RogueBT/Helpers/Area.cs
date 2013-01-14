@@ -67,10 +67,10 @@ namespace RogueBT.Helpers
 
         static private Enum.LocationContext GetCurrentLocation()
         {
-            if (Battlegrounds.IsInsideBattleground && Battlegrounds.Current == BattlegroundType.None)
-            {
-                return Enum.LocationContext.Arena;
-            }
+            //if (Battlegrounds.IsInsideBattleground && Battlegrounds.Current == BattlegroundType.None)
+            //{
+            //    return Enum.LocationContext.Arena;
+            //}
 
             if (Battlegrounds.IsInsideBattleground)
             {
@@ -82,10 +82,10 @@ namespace RogueBT.Helpers
                 return Enum.LocationContext.Raid;
             }
 
-            if (Helpers.Rogue.me.IsInInstance && Helpers.Rogue.me.Level == 90)
-            {
-                return Enum.LocationContext.HeroicDungeon;
-            }
+            //if (Helpers.Rogue.me.IsInInstance && Helpers.Rogue.me.Level == 90)
+            //{
+            //    return Enum.LocationContext.HeroicDungeon;
+            //}
 
             if (Helpers.Rogue.me.IsInInstance)
             {

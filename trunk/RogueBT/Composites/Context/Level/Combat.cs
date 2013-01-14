@@ -57,7 +57,7 @@ namespace RogueBT.Composites.Context.Level
                         //Helpers.Spells.Cast("Dismantle", ret => !Helpers.Rogue.mTarget.Disarmed && Helpers.Rogue.CheckSpamLock()
                         //     && !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned
                         //     && !Helpers.Aura.IsTargetImmuneStun && Helpers.Movement.IsInSafeMeleeRange),
-                        Helpers.Spells.Cast("Shiv", ret => Helpers.Aura.Leeching && Helpers.Rogue.mHP < 40)
+                        Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching && Helpers.Rogue.mHP < 40)
                     )
                 ),
 
@@ -101,8 +101,22 @@ namespace RogueBT.Composites.Context.Level
 
                 Helpers.Spells.CastSelf("Adrenaline Rush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
                 Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
-                Helpers.Spells.CastCooldown("Killing Spree", ret => Helpers.Movement.IsInSafeMeleeRange &&  Helpers.Rogue.mTarget.Distance <10
-                    && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush),
+                //Helpers.Spells.CastCooldown("Killing Spree", ret => Helpers.Movement.IsInSafeMeleeRange //&& System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) < 3
+                    //Helpers.Rogue.mTarget.Distance <10
+                 //   && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush),
+
+                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush 
+                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree")
+                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
 
 
                 Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry &&
@@ -192,8 +206,33 @@ namespace RogueBT.Composites.Context.Level
                         })
                     )
                 ),
-                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
+
+                //Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth
+                    && Styx.CommonBot.SpellManager.HasSpell("Cheap Shot"),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Cheap Shot attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
+
+
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.Combat),
+                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && !Helpers.Aura.Stealth
+                    && Styx.CommonBot.SpellManager.HasSpell("Sinister Strike"),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Sinister Strike", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Sinister Strike attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Rogue.me.HasAura("Stealth")),
                 Helpers.Movement.PullMoveToTarget()

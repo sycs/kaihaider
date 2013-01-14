@@ -53,7 +53,7 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Spells.Cast("Combat Readiness", ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                         Helpers.Spells.CastSelf("Cloak of Shadows", ret => Helpers.Rogue.IsCloakUsable()),
                         //Helpers.Spells.Cast("Dismantle", ret => Helpers.Rogue.mTarget.IsHumanoid),
-                        Helpers.Spells.Cast("Shiv", ret => Helpers.Aura.Leeching && Helpers.Rogue.mHP < 25)
+                        Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching && Helpers.Rogue.mHP < 25)
                     )
                 ),
 
@@ -151,9 +151,33 @@ namespace RogueBT.Composites.Context.Level
 
                 Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Aura.Stealth 
                     && Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Cheap Shot", ret => !Helpers.Aura.IsBehind && Helpers.Aura.Stealth
-                    && Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange),
+
+                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth
+                    && Styx.CommonBot.SpellManager.HasSpell("Cheap Shot"),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Cheap Shot attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
+                //Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+
+
+                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && !Helpers.Aura.Stealth
+                    && Styx.CommonBot.SpellManager.HasSpell("Sinister Strike"),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Sinister Strike", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Mutilate attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
+                //Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
                 Helpers.Movement.PullMoveToTarget()

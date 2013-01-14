@@ -45,6 +45,8 @@ namespace RogueBT.Helpers
                 Helpers.Rogue.me = StyxWoW.Me;
             if (Helpers.Rogue.me != null)
             {
+               
+
                 mCurrentSpec = Helpers.Rogue.me.Specialization;
 
                 Lua.Events.AttachEvent("CHARACTER_POINTS_CHANGED", delegate
@@ -78,6 +80,8 @@ namespace RogueBT.Helpers
 
         static public void Pulse()
         {
+            
+
             mCurrentEnergy = GetCurrentEnergyLua();
             if (Helpers.Rogue.me == null)
             {
