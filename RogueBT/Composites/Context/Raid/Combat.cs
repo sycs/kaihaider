@@ -30,7 +30,7 @@ namespace RogueBT.Composites.Context.Raid
 
                 Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry
                                                                 && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) > 1
-                                                               && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 3)),
+                                                               && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 4)),
 
                 new Decorator(ret => Helpers.Rogue.IsAoeUsable() &&  Helpers.Aura.BladeFlurry
                     && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 || Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) > 3)
@@ -58,10 +58,10 @@ namespace RogueBT.Composites.Context.Raid
 Helpers.Rogue.mComboPoints > 1),
 
 
-                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice &&
-                                     (Helpers.Aura.ModerateInsight ||
-                                     Helpers.Aura.DeepInsight) &&
-                                     Helpers.Rogue.mCurrentEnergy <= 30,
+                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice
+                                     && (Helpers.Aura.ModerateInsight || Helpers.Aura.DeepInsight) 
+                                     && Helpers.Movement.IsInSafeMeleeRange
+                                     && Helpers.Rogue.mCurrentEnergy <= 30,
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(),
                         Helpers.Spells.CastSelf("Adrenaline Rush"),
@@ -69,6 +69,8 @@ Helpers.Rogue.mComboPoints > 1),
                     )
                 ),
 
+                Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable()  &&
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                 Helpers.Spells.Cast("Revealing Strike", ret => !Helpers.Aura.RevealingStrike && Helpers.Movement.IsInSafeMeleeRange),
 
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Rogue.mComboPoints < 5 && Helpers.Movement.IsInSafeMeleeRange),

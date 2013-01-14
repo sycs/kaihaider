@@ -35,8 +35,16 @@ namespace RogueBT.Helpers
             Helpers.Rogue.me = StyxWoW.Me;
             botBaseUnit = Targeting.Instance.FirstUnit;
 
-            if (StyxWoW.IsInGame) //if no tar then any incombat
-            mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
+            if(StyxWoW.IsInGame && Helpers.Area.mLocation.Equals(Enum.LocationContext.Battleground))
+                mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
+                                    .Where(unit =>
+                                        unit.IsAlive
+                                        && unit.IsPlayer
+                                       && unit.Distance <= 40
+                                        && !unit.IsFriendly)
+                                    .OrderBy(unit => unit.Distance).ToList();
+            else if(StyxWoW.IsInGame)
+                mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                     .Where(unit =>
                                         unit.IsAlive
                                         && !unit.IsNonCombatPet
