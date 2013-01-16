@@ -37,7 +37,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
 
-                new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
+                new Decorator(ret => Helpers.Rogue.mHP <= 10 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
                         Helpers.Spells.CastSelf("Vanish"),
                         new WaitContinue(2, ret => false, new ActionAlwaysSucceed())
@@ -139,7 +139,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadowstep", ret => Helpers.Rogue.mTarget.Distance > 10
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-               Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
+               //Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
 
                 new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange

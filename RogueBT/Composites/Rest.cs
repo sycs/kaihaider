@@ -35,7 +35,7 @@ namespace RogueBT.Composites
                                                    new PrioritySelector(
                                                        new Action(
                                                            ret =>{
-                                                               Logging.Write(LogLevel.Normal, "Waiting so I don't get ganked by those mobs");
+                                                               Logging.Write(LogLevel.Diagnostic, "Waiting so I don't get ganked by those mobs");
                                                                //new WaitContinue(System.TimeSpan.FromSeconds(2), ret2 => false, new ActionAlwaysSucceed());
                                                            })
                                                        )
