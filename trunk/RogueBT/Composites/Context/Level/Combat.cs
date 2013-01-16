@@ -184,7 +184,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
+                //Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
                 new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange,
                     new Sequence(

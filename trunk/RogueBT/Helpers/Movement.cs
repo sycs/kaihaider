@@ -30,10 +30,20 @@ namespace RogueBT.Helpers
                 new PrioritySelector(
                     new Decorator(ret => Helpers.Rogue.me.MovementInfo.MovingBackward
                         && (!Helpers.Movement.IsInSafeMeleeRange || Helpers.Movement.IsInSafeMeleeRange && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
-                        new Action(ret => WoWMovement.MoveStop(WoWMovement.MovementDirection.Backwards))),
-                    new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation+WoWMathHelper.DegreesToRadians(150),6f))
-                        && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f +unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0, 
-                        new Action(ret => WoWMovement.Move(WoWMovement.MovementDirection.Backwards)))
+                        new Action(ret =>
+                        {
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards, stop");
+                            WoWMovement.MoveStop(WoWMovement.MovementDirection.Backwards);
+
+                        })),
+                    new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(150), 6f))
+                        && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0,
+                        new Action(ret => {
+
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards"); 
+                            WoWMovement.Move(WoWMovement.MovementDirection.Backwards); 
+                        
+                        }))
                     ),
                     new Action(ret => RunStatus.Failure)
             );
@@ -222,7 +232,8 @@ namespace RogueBT.Helpers
 
         public static Composite MoveToLos()
         {
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !((!Rogue.mTarget.IsPlayer && !IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance > 2.5f) &&//!IsInSafeMeleeRange && 
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
+                && !((!Rogue.mTarget.IsPlayer && !IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance > 2.5f) &&//!IsInSafeMeleeRange && 
             !Rogue.mTarget.InLineOfSight,
                 new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location)));
         }
@@ -257,9 +268,11 @@ namespace RogueBT.Helpers
         public static Composite MoveToTarget()
         {
             return new Decorator(
-                ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted && !Rogue.mTarget.IsFriendly &&
+                ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted
+                    && !Rogue.mTarget.IsFriendly && !Helpers.Rogue.me.MovementInfo.IsStrafing
+                    && !(Rogue.mTarget.Distance < 10 && IsGlueEnabled) 
                     //!Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile &&  
-                   !(Rogue.mTarget.Distance < 10 && IsGlueEnabled) 
+                   
                    //|| Helpers.Rogue.me.Stunned || Helpers.Rogue.me.Rooted || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,

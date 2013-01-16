@@ -435,7 +435,7 @@ namespace RogueBT.Helpers
             }
             ShouldShiv = false;
 
-            if (!Helpers.Rogue.me.Combat)
+           // if (!Helpers.Rogue.me.Combat)
                 Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Thinking");
             //if (Styx.CommonBot.InactivityDetector.TimeUntilLogout!=null)
             //Logging.Write(LogLevel.Normal, Styx.CommonBot.InactivityDetector.TimeUntilLogout.TotalMinutes + " " );
