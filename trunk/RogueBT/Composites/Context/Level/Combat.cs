@@ -22,11 +22,12 @@ namespace RogueBT.Composites.Context.Level
         {
             return new PrioritySelector(
                 Helpers.Movement.PleaseStop(),
-                //Helpers.Target.EnsureValidTarget(),
+                Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
-                Helpers.Movement.WalkBackwards(),
                 Helpers.Movement.ChkFace(),
-                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
+                //Spell.WaitForCastOrChannel(),
+                Helpers.Movement.WalkBackwards(),
+                Helpers.Spells.Cast("Shadowstep", ret => Helpers.Rogue.mTarget.Distance > 10
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.ToggleAutoAttack(),
@@ -34,6 +35,9 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && 
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
 
+
+                Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint &&
+                    Helpers.Rogue.mTarget.IsWithinMeleeRange),
 
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 85 &&
                                 Helpers.Aura.TimeRecuperate < 3), 
@@ -151,14 +155,23 @@ namespace RogueBT.Composites.Context.Level
         static public Composite BuildPullBehavior()
         {
             return new PrioritySelector(
-                new Decorator(ret =>  Helpers.Rogue.me.Mounted, 
+                new Decorator(ret => Helpers.Rogue.me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
+                new Decorator(ret => !Helpers.Rogue.me.Combat,
+                    new Action(ret => { Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pulling"); return RunStatus.Failure; })
+                ),
                 Helpers.Movement.PleaseStopPull(),
+                new Decorator(ret => !Helpers.Rogue.me.Combat,
+                    new Action(ret => { Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pulling2"); return RunStatus.Failure; })
+                ),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
-                Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
+
+                //Helpers.Movement.MoveToLos(),
+
+                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.InLineOfSight
+                    && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
 
                 new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                     && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
@@ -173,30 +186,7 @@ namespace RogueBT.Composites.Context.Level
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
-
-                /**
-                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange 
-                    && !Helpers.Rogue.mTarget.IsFlying,
-                    new Sequence(
-                        new Action(ret =>
-                        {
-                            Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
-                            return RunStatus.Success;
-                        }),
-                        new Action(ret =>
-                        {
-                            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Cheap Shot attempted");
-                            return RunStatus.Failure;
-                        }),
-                        Helpers.Rogue.CreateWaitForLagDuration()
-                       
-                    )
-                ), **/
-
-                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange
-                    && !Helpers.Rogue.mTarget.IsFlying,
+                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange,
                     new Sequence(
                         new Action(ret =>
                         {
@@ -207,21 +197,33 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                //Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+                //Helpers.Spells.Cast("Garrote", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
                 new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth
-                    && Styx.CommonBot.SpellManager.HasSpell("Cheap Shot"),
+                    && Styx.CommonBot.SpellManager.HasSpell("Garrote"),
                     new Sequence(
                         new Action(ret =>
                         {
-                            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Cheap Shot attempted");
+                            Styx.CommonBot.SpellManager.Cast("Garrote", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Garrote attempted");
                             return RunStatus.Failure;
                         })
                     )
                 ),
+                //Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+                //new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth
+                //    && Styx.CommonBot.SpellManager.HasSpell("Cheap Shot"),
+                //    new Sequence(
+                //        new Action(ret =>
+                //        {
+                //            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
+                //            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Cheap Shot attempted");
+                //            return RunStatus.Failure;
+                //        })
+                //    )
+                //),
 
 
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.Combat),
+                //Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && !Helpers.Aura.Stealth),
                 new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && !Helpers.Aura.Stealth
                     && Styx.CommonBot.SpellManager.HasSpell("Sinister Strike"),
                     new Sequence(
@@ -235,6 +237,11 @@ namespace RogueBT.Composites.Context.Level
                 ),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Rogue.me.HasAura("Stealth")),
+
+
+                new Decorator(ret => !Helpers.Rogue.me.Combat,
+                    new Action(ret => {Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Pulling3"); return RunStatus.Failure; })
+                ),
                 Helpers.Movement.PullMoveToTarget()
 
 

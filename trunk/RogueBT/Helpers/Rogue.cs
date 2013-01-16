@@ -235,9 +235,9 @@ namespace RogueBT.Helpers
             {
                 return new PrioritySelector
                         (new Decorator
-                             (ret => !Helpers.Rogue.me.Mounted 
+                             (ret => Helpers.Rogue.me != null && !Helpers.Rogue.me.IsMoving && !Helpers.Rogue.me.Mounted 
                                  && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) 
-                                     && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
+                                     && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && 
                            SpellManager.HasSpell((int)Settings.Mode.mPoisonsMain[(int)Area.mLocation]),
                               new Sequence
                                   (new Action

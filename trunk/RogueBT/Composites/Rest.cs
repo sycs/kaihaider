@@ -6,6 +6,7 @@
 //    Reused with permission from the author.   //
 //////////////////////////////////////////////////
 
+using System.Linq;
 using System.Drawing;
 using Honorbuddy.Resources;
 using CommonBehaviors.Actions;
@@ -29,8 +30,18 @@ namespace RogueBT.Composites
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.Raid
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
                                  new PrioritySelector(
+
+                                     new Decorator(ret => Helpers.Aura.Stealth && Helpers.Rogue.mHP < 20 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) < 0,
+                                                   new PrioritySelector(
+                                                       new Action(
+                                                           ret =>{
+                                                               Logging.Write(LogLevel.Normal, "Waiting so I don't get ganked by those mobs");
+                                                               //new WaitContinue(System.TimeSpan.FromSeconds(2), ret2 => false, new ActionAlwaysSucceed());
+                                                           })
+                                                       )
+                                         ),
                                              Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Food") && Helpers.Rogue.mHP <= 90
-                                                 && !Helpers.Rogue.me.HasAura("Stealth") && Helpers.Rogue.me.GetAuraByName("Food").TimeLeft.TotalSeconds < 17 && !SpellManager.GlobalCooldown),
+                                                 && !Helpers.Rogue.me.HasAura("Stealth") && Helpers.Rogue.me.GetAuraByName("Food").TimeLeft.TotalSeconds < 18 && !SpellManager.GlobalCooldown),
                                      new Decorator(
                                          ret =>
                                          Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Food") && Helpers.Rogue.mHP <= 90,
