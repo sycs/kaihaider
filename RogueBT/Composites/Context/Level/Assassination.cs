@@ -31,6 +31,7 @@ namespace RogueBT.Composites.Context.Level
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Movement.ChkFace(),
+                Helpers.Movement.WalkBackwards(),
                 Helpers.Spells.ToggleAutoAttack(),
 
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
@@ -120,10 +121,10 @@ namespace RogueBT.Composites.Context.Level
                 ),
                 Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
-                Helpers.Movement.WalkBackwards(),
                 Helpers.Movement.ChkFace(),
-                Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
+                //Helpers.Movement.MoveToLos(),
+                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.InLineOfSight
+                    && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
                 new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                     && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
                     new Sequence(
@@ -132,7 +133,8 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
                 Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
-                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
+                Helpers.Spells.Cast("Shadowstep", ret => Helpers.Rogue.mTarget.Distance > 10
+                            && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
@@ -149,23 +151,50 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
-                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Aura.Stealth 
-                    && Helpers.Movement.IsInSafeMeleeRange),
-
-                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth
-                    && Styx.CommonBot.SpellManager.HasSpell("Cheap Shot"),
+                //Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind && Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange),
+                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange
+                    && Helpers.Aura.Stealth && Helpers.Aura.IsBehind
+                    && Styx.CommonBot.SpellManager.HasSpell("Ambush"),
                     new Sequence(
                         new Action(ret =>
                         {
-                            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Cheap Shot attempted");
+                            Styx.CommonBot.SpellManager.Cast("Ambush", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Ambush attempted");
                             return RunStatus.Failure;
                         })
                     )
                 ),
+
+                //Helpers.Spells.Cast("Garrote", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+                new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange
+                    && Helpers.Aura.Stealth && !Helpers.Aura.IsBehind
+                    && Styx.CommonBot.SpellManager.HasSpell("Garrote"),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Garrote", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Garrote attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
+
                 //Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Stealth),
+                //new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth
+                //    && Styx.CommonBot.SpellManager.HasSpell("Cheap Shot"),
+                //    new Sequence(
+                //        new Action(ret =>
+                //        {
+                //            Styx.CommonBot.SpellManager.Cast("Cheap Shot", Helpers.Rogue.mTarget);
+                //            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Cheap Shot attempted");
+                //            return RunStatus.Failure;
+                //        })
+                //    )
+                //),
+                //
 
 
+                //Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 new Decorator(ret => Helpers.Rogue.mTarget != null && Helpers.Movement.IsInAttemptMeleeRange && !Helpers.Aura.Stealth
                     && Styx.CommonBot.SpellManager.HasSpell("Sinister Strike"),
                     new Sequence(
@@ -177,7 +206,6 @@ namespace RogueBT.Composites.Context.Level
                         })
                     )
                 ),
-                //Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
                 Helpers.Movement.PullMoveToTarget()

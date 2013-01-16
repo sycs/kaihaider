@@ -65,7 +65,7 @@ Helpers.Rogue.mComboPoints > 1),
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(),
                         Helpers.Spells.CastSelf("Adrenaline Rush"),
-                        Helpers.Spells.CastCooldown("Killing Spree", ret => !Helpers.Aura.AdrenalineRush)
+                        Helpers.Spells.CastCooldown("Killing Spree", ret => !Helpers.Aura.AdrenalineRush && !Helpers.Rogue.mTarget.Name.Equals("Empyreal Focus"))
                     )
                 ),
 

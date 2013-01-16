@@ -23,10 +23,6 @@ namespace RogueBT.Helpers
     {
         static Movement()
         {
-            FNorth = false;
-            FEast = false;
-            FSouth = false;
-            FWest = false;
         }
         static public Composite WalkBackwards()
         {
@@ -119,12 +115,10 @@ namespace RogueBT.Helpers
         }
         public static bool OldStopRunning()
         {
-            if (System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)) > 1) //|| Helpers.Rogue.me.MovementInfo.Heading.CompareTo(Rogue.mTarget.MovementInfo.Heading) > 0 && Helpers.Aura.IsBehind
+            if (System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)) > 1)
             {
                 if (!Aura.LastDirection)
                 {
-                    //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "" + System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)));
-
                     directionChange = true;
                     Aura.LastDirection = true;
                 }
@@ -133,17 +127,11 @@ namespace RogueBT.Helpers
             {
                 if (Aura.LastDirection)
                 {
-                    //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "" + System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)));
-
                     directionChange = true;
                     Aura.LastDirection = false;
                 }
             }
-
-
             Helpers.Aura.LastRenderFacing = Helpers.Rogue.me.RenderFacing;
-
-
             return true;
         }
 
@@ -216,23 +204,20 @@ namespace RogueBT.Helpers
                     Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
                 directionChange = false;
                 Navigator.PlayerMover.MoveStop();
-                //if (Rogue.mTarget.Distance < 2d && Rogue.mTarget.CurrentTarget != Helpers.Rogue.me)
-                   // Navigator.MoveTo(Rogue.mTarget.Location.RayCast( Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150),  MeleeRange - 1f));
-                
                 }));
         }
         public static Composite PleaseStopPull()
         {
             return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
                  && StopRunning() && directionChange,
-                new Action(ret =>
+                new Sequence(new Action(ret =>
                 {
                     Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
                     directionChange = false;
                     Navigator.PlayerMover.MoveStop();
-                    //Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), MeleeRange - 1f));
-
-                }));
+                })
+                ,new Action(ret => RunStatus.Failure))
+                );
         }
 
         public static Composite MoveToLos()
@@ -243,8 +228,9 @@ namespace RogueBT.Helpers
         }
 
         public static Composite ChkFace()
-        { //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+        { 
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
+                && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Sequence(new Action(ret =>
                                           {
                                               if (Helpers.Rogue.me.IsActuallyInCombat || Rogue.mTarget.IsPlayer)
@@ -255,15 +241,14 @@ namespace RogueBT.Helpers
         }
         public static Composite PullMoveToTarget()
         {
-            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "pull");  //Styx.CommonBot.InactivityDetector.TimeUntilLogout
             return new PrioritySelector(
              new Decorator(ret => Helpers.Rogue.me != null && Rogue.mTarget != null
                  && Helpers.Rogue.me.IsMoving
                  && Styx.CommonBot.POI.BotPoi.Current != null
                  && Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.Kill 
                  && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)
-//  || (Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestTurnIn || Styx.CommonBot.POI.BotPoi.Current.Type != Styx.CommonBot.POI.PoiType.QuestPickUp) && Rogue.mHP >50
-                 && BotManager.Current != null && !(Helpers.Area.mLocation.Equals(Enum.LocationContext.Battleground))
+                 && !(Helpers.Area.mLocation.Equals(Enum.LocationContext.Battleground))
+                 || Helpers.Aura.Stealth && Helpers.Rogue.mHP < 20
                  ,
                  new Action(ret => Helpers.Rogue.me.ClearTarget())),
              new Decorator(ret => Rogue.mTarget != null,
@@ -271,43 +256,55 @@ namespace RogueBT.Helpers
         }
         public static Composite MoveToTarget()
         {
-            //if (StyxWoW.Me.IsActuallyInCombat && Movement.MoveTo(StyxWoW.Me.CurrentTarget)) { Blacklist.Flush(); }
-            //change dec continue
             return new Decorator(
                 ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted && !Rogue.mTarget.IsFriendly &&
                     //!Aura.HealingGhost && Rogue.mTarget.Attackable && Rogue.mTarget.IsHostile &&  
-                                        !(Rogue.mTarget.Distance < 10 && IsGlueEnabled) //|| Helpers.Rogue.me.Stunned || Helpers.Rogue.me.Rooted || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
+                   !(Rogue.mTarget.Distance < 10 && IsGlueEnabled) 
+                   //|| Helpers.Rogue.me.Stunned || Helpers.Rogue.me.Rooted || Aura.IsTargetSapped && Rogue.mTarget.IsAlive|| Aura.IsTargetDisoriented
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
-                    new Decorator(ret => Rogue.mTarget.CurrentTarget != Helpers.Rogue.me || Rogue.mTarget.IsPlayer,//&& Helpers.Rogue.me.GroupInfo.IsInParty
+                    new Decorator(ret => Rogue.mTarget.CurrentTarget != Helpers.Rogue.me || Rogue.mTarget.IsPlayer,
                                   new Sequence(
 
                                       new DecoratorContinue(
                                           ret =>
-                                          (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange )//|| Rogue.mTarget.IsMoving)
+                                          (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange )
                                                  && !Helpers.Rogue.me.IsCasting &&
-                                          (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving), // (!Aura.IsBehind || Rogue.mTarget.Distance > MeleeRange - 3f) && !Helpers.Rogue.me.IsCasting,
+                                          (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
+                                          && System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(
+                                                                 Rogue.mTarget.Rotation +
+                                                                 WoWMathHelper.DegreesToRadians(150),
+                                                                 SafeMeleeRange))) < 3
+                                          ,
                                           new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
                                                                  Rogue.mTarget.Rotation +
                                                                  WoWMathHelper.DegreesToRadians(150),
                                                                  SafeMeleeRange)))),
+
                                       new DecoratorContinue(
-                                          ret => Helpers.Rogue.mTarget.Distance > SafeMeleeRange &&
-                                              //Rogue.mTarget.Distance > 0.6 && Rogue.mTarget.Distance < 6 &&
+                                          ret =>
+                                          (Helpers.Rogue.mTarget.Distance > SafeMeleeRange)
+                                                 && !Helpers.Rogue.me.IsCasting &&
+                                          (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
+
+                                          ,
+                                          new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location))),
+
+                                      new DecoratorContinue(
+                                          ret => IsInSafeMeleeRange &&
                                           !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
-                                          new Action(ret => Rogue.mTarget.Face())),
-                                      new Action(ret => RunStatus.Failure)
+                                          new Action(ret => Rogue.mTarget.Face()))
+                                      ,new Action(ret => RunStatus.Failure)
                                       )
                         ),
-                    new Decorator(ret => !Rogue.mTarget.IsPlayer,
+                    new Decorator(ret => !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget== Helpers.Rogue.me,
                                   new Sequence(
 
                                       new DecoratorContinue(
                                           ret => !IsInSafeMeleeRange && !Helpers.Rogue.me.IsCasting,
                                           new Action(ret =>
                                           {
-                                              //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "move " + IsInSafeMeleeRange);
                                               Navigator.MoveTo(Rogue.mTarget.Location);
                                           })),
 
@@ -315,11 +312,63 @@ namespace RogueBT.Helpers
                                           ret =>
                                           IsInSafeMeleeRange &&
                                           !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
-                                          new Action(ret => Rogue.mTarget.Face())),
-                                      new Action(ret => RunStatus.Failure)
+                                          new Action(ret => Rogue.mTarget.Face()))
+                                      ,new Action(ret => RunStatus.Failure)
                                       )
                         ))
                 );
+        }
+
+
+        /// stolen from clu
+        /// <summary>
+        /// determines if a target is off the ground far enough that you can
+        /// reach it with melee spells if standing directly under.
+        /// </summary>
+        /// <param name="u">unit</param>
+        /// <returns>true if above melee reach</returns>
+        public static bool IsAboveTheGround(this Styx.WoWInternals.WoWObjects.WoWUnit u)
+        {
+            float height = HeightOffTheGround(u);
+            if (height == float.MaxValue)
+                return false;   // make this true if better to assume aerial 
+
+            if (height > System.Math.Max(Helpers.Rogue.me.CombatReach - 0.1f + u.CombatReach, 2.5f))
+                return true;
+
+            return false;
+        }
+
+        /// stolen from clu
+        /// <summary>
+        /// calculate a unit's vertical distance (height) above ground level (mesh).  this is the units position
+        /// relative to the ground and is independent of any other character.  
+        /// </summary>
+        /// <param name="u">unit</param>
+        /// <returns>float.MinValue if can't determine, otherwise distance off ground</returns>
+        public static float HeightOffTheGround(this Styx.WoWInternals.WoWObjects.WoWUnit u)
+        {
+            var unitLoc = new WoWPoint(u.Location.X, u.Location.Y, u.Location.Z);
+            var listMeshZ = Navigator.FindHeights(unitLoc.X, unitLoc.Y).Where(h => h <= unitLoc.Z);
+            if (listMeshZ.Any())
+                return unitLoc.Z - listMeshZ.Max();
+
+            return float.MaxValue;
+        }
+        /// stolen from clu
+        /// <summary>
+        /// calculate a point's vertical distance (height) above ground level (mesh).  this is the units position
+        /// relative to the ground and is independent of any other character.  
+        /// </summary>
+        /// <param name="u">unit</param>
+        /// <returns>float.MinValue if can't determine, otherwise distance off ground</returns>
+        public static float HeightOffTheGround(this WoWPoint unitLoc)
+        {
+            var listMeshZ = Navigator.FindHeights(unitLoc.X, unitLoc.Y).Where(h => h <= unitLoc.Z);
+            if (listMeshZ.Any())
+                return unitLoc.Z - listMeshZ.Max();
+
+            return float.MaxValue;
         }
     }
 }
