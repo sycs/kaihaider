@@ -32,8 +32,8 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.WalkBackwards(),
                 Helpers.Spells.ToggleAutoAttack(),
 
-                Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 46924 || Helpers.Aura.IsTargetCasting == 1680) &&
-                    Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint &&
+                    Helpers.Rogue.mTarget.IsWithinMeleeRange),
 
                     //kick on  tranquility, penance(needs testing), divine hymn, evocation, polymorph, fear
                Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&

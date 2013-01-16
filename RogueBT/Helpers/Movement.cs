@@ -272,12 +272,12 @@ namespace RogueBT.Helpers
                                           new PrioritySelector(
                                               new Decorator(
                                                 ret => System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(
-                                                    Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150),SafeMeleeRange))) < 3,
+                                                    Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange))) < 3,
                                                 new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
                                                     Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange)))),
                                               new Decorator(
                                                 ret => System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(
-                                                  Rogue.me.Rotation +  WoWMathHelper.DegreesToRadians(180), SafeMeleeRange))) < 3 ,
+                                                  Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(180), SafeMeleeRange))) < 3,
                                                 new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
                                                  Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(180), SafeMeleeRange)))),
                                              new Decorator(
