@@ -44,6 +44,9 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
 
+                Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint &&
+                    Helpers.Rogue.mTarget.IsWithinMeleeRange),
+
                 new Decorator(ret => Helpers.Rogue.mHP < 75,
                     new PrioritySelector(
 
