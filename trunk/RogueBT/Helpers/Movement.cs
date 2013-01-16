@@ -85,7 +85,7 @@ namespace RogueBT.Helpers
 
         public static float SafeMeleeRange
         {
-            get { return System.Math.Max(MeleeRange - 2.5f, 2.5f); }
+            get { return System.Math.Max(MeleeRange - 1.7f, 2.5f); }
         }
 
         public static bool IsInAttemptMeleeRange
@@ -264,32 +264,25 @@ namespace RogueBT.Helpers
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
-                    new Decorator(ret => Rogue.mTarget.CurrentTarget != Helpers.Rogue.me || Rogue.mTarget.IsPlayer,
+                    new Decorator(ret =>  !Helpers.Rogue.me.IsCasting && (Rogue.mTarget.CurrentTarget != Helpers.Rogue.me || Rogue.mTarget.IsPlayer),
                                   new Sequence(
-
                                       new DecoratorContinue(
-                                          ret =>
-                                          (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange )
-                                                 && !Helpers.Rogue.me.IsCasting &&
-                                          (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
-                                          && System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(
-                                                                 Rogue.mTarget.Rotation +
-                                                                 WoWMathHelper.DegreesToRadians(150),
-                                                                 SafeMeleeRange))) < 3
-                                          ,
-                                          new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
-                                                                 Rogue.mTarget.Rotation +
-                                                                 WoWMathHelper.DegreesToRadians(150),
-                                                                 SafeMeleeRange)))),
-
-                                      new DecoratorContinue(
-                                          ret =>
-                                          (Helpers.Rogue.mTarget.Distance > SafeMeleeRange)
-                                                 && !Helpers.Rogue.me.IsCasting &&
-                                          (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
-
-                                          ,
-                                          new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location))),
+                                          ret => (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
+                                         && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange ),
+                                          new PrioritySelector(
+                                              new Decorator(
+                                                ret => System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(
+                                                    Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150),SafeMeleeRange))) < 3,
+                                                new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
+                                                    Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange)))),
+                                              new Decorator(
+                                                ret => System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(
+                                                  Rogue.me.Rotation +  WoWMathHelper.DegreesToRadians(180), SafeMeleeRange))) < 3 ,
+                                                new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location.RayCast(
+                                                 Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(180), SafeMeleeRange)))),
+                                             new Decorator(
+                                                ret => true,
+                                                new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location))))),
 
                                       new DecoratorContinue(
                                           ret => IsInSafeMeleeRange &&
@@ -298,11 +291,11 @@ namespace RogueBT.Helpers
                                       ,new Action(ret => RunStatus.Failure)
                                       )
                         ),
-                    new Decorator(ret => !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget== Helpers.Rogue.me,
+                    new Decorator(ret => true,
                                   new Sequence(
 
                                       new DecoratorContinue(
-                                          ret => !IsInSafeMeleeRange && !Helpers.Rogue.me.IsCasting,
+                                          ret => !IsInSafeMeleeRange,
                                           new Action(ret =>
                                           {
                                               Navigator.MoveTo(Rogue.mTarget.Location);
