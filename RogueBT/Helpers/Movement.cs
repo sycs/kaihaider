@@ -290,7 +290,7 @@ namespace RogueBT.Helpers
                                       ,new Action(ret => RunStatus.Failure)
                                       )
                         ),
-                    new Decorator(ret =>  true,
+                    new Decorator(ret => Rogue.mTarget.IsPlayer || Rogue.mTarget.CurrentTarget != Helpers.Rogue.me,
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)

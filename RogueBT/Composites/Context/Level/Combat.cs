@@ -60,18 +60,7 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Spells.CastSelf("Cloak of Shadows", ret => !Helpers.Rogue.me.HasAura("Evasion") && !Helpers.Rogue.me.HasAura("Evasion") && Helpers.Rogue.IsCloakUsable()),
                         Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching),
                         Helpers.Spells.Cast("Smoke Bomb", ret => Helpers.Movement.IsInSafeMeleeRange
-                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 0),
-                        new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange
-                            && Helpers.Spells.CanCast("Dismantle"),
-                            new Sequence(
-                                new Action(ret =>
-                                {
-                                    Styx.CommonBot.SpellManager.Cast("Dismantle", Helpers.Rogue.mTarget);
-                                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Dismantle attempted");
-                                return RunStatus.Failure;
-                                })
-                            )
-                        )
+                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 0)
                     )
                 ),
 
@@ -85,10 +74,10 @@ namespace RogueBT.Composites.Context.Level
                                 )
                             ),
 
-                new Decorator(ret => !Helpers.Rogue.IsAoeUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1 
+                new Decorator(ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) > 1 
                                         && Helpers.Rogue.mHP < 85 && Helpers.Target.GetCCTarget(),
                     new PrioritySelector(
-                        Helpers.Spells.Cast("Blind", ret => Helpers.Rogue.mHP < 65 && Helpers.Target.BlindCCUnit != null, ret => Helpers.Target.BlindCCUnit),
+                        Helpers.Spells.Cast("Blind", ret => Helpers.Target.BlindCCUnit != null && Helpers.Target.BlindCCUnit.Distance > 10, ret => Helpers.Target.BlindCCUnit),
                         
                         Helpers.Spells.Cast("Gouge", ret => Helpers.Target.GougeCCUnit!=null, ret => Helpers.Target.GougeCCUnit)
                     )
@@ -146,7 +135,19 @@ namespace RogueBT.Composites.Context.Level
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Movement.MoveToTarget(),
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints)
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
+                new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mHP < 75
+                            && Helpers.Spells.CanCast("Dismantle"),
+                            new Sequence(
+                                new Action(ret =>
+                                {
+                                    Styx.CommonBot.SpellManager.Cast("Dismantle", Helpers.Rogue.mTarget);
+                                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Dismantle attempted");
+                                }),
+                                new Action(ret => RunStatus.Failure)
+
+                            )
+                        )
             );
         }
 
