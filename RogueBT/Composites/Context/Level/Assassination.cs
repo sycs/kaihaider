@@ -126,7 +126,7 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
                 //Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => Helpers.Rogue.mTarget.IsFlying && Helpers.Rogue.mTarget.InLineOfSight
+                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) && Helpers.Rogue.mTarget.InLineOfSight
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
                 new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                     && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
@@ -142,8 +142,8 @@ namespace RogueBT.Composites.Context.Level
                //Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
 
 
-                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInSafeMeleeRange
-                    && !Helpers.Rogue.mTarget.IsFlying,
+                new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInAttemptMeleeRange
+                    && !Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget),
                     new Sequence(
                         new Action(ret =>
                         {

@@ -164,7 +164,7 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
-                Helpers.Movement.MoveToLos(),
+                //Helpers.Movement.MoveToLos(),
 
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget != null && 
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
