@@ -64,18 +64,7 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Spells.CastSelf("Cloak of Shadows", ret => Helpers.Rogue.IsCloakUsable()),
                         Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching),
                         Helpers.Spells.Cast("Smoke Bomb", ret => Helpers.Movement.IsInSafeMeleeRange
-                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 0),
-                        new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange
-                            && Helpers.Spells.CanCast("Dismantle"),
-                            new Sequence(
-                                new Action(ret =>
-                                {
-                                    Styx.CommonBot.SpellManager.Cast("Dismantle", Helpers.Rogue.mTarget);
-                                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Dismantle attempted");
-                                    return RunStatus.Failure;
-                                })
-                            )
-                        )
+                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 0)
                     )
                 ),
 
@@ -281,7 +270,19 @@ namespace RogueBT.Composites.Context.Level
                 ),
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
-                Helpers.Movement.PullMoveToTarget()
+                Helpers.Movement.PullMoveToTarget(),
+                new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mHP < 75
+                            && Helpers.Spells.CanCast("Dismantle"),
+                            new Sequence(
+                                new Action(ret =>
+                                {
+                                    Styx.CommonBot.SpellManager.Cast("Dismantle", Helpers.Rogue.mTarget);
+                                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Dismantle attempted");
+                                }),
+                                new Action(ret => RunStatus.Failure)
+
+                            )
+                        )
             );
         }
 
