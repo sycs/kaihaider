@@ -36,7 +36,8 @@ namespace RogueBT.Helpers
                             WoWMovement.MoveStop(WoWMovement.MovementDirection.Backwards);
 
                         })),
-                    new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(150), 6f))
+                    new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.IsCasting
+                        && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(150), 6f))
                         && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0,
                         new Action(ret => {
 
@@ -313,7 +314,7 @@ namespace RogueBT.Helpers
         }
 
 
-        /// stolen from clu
+        /// stolen from singular
         /// <summary>
         /// determines if a target is off the ground far enough that you can
         /// reach it with melee spells if standing directly under.
@@ -332,7 +333,7 @@ namespace RogueBT.Helpers
             return false;
         }
 
-        /// stolen from clu
+        /// stolen from singular
         /// <summary>
         /// calculate a unit's vertical distance (height) above ground level (mesh).  this is the units position
         /// relative to the ground and is independent of any other character.  
@@ -348,7 +349,7 @@ namespace RogueBT.Helpers
 
             return float.MaxValue;
         }
-        /// stolen from clu
+        /// stolen from singular
         /// <summary>
         /// calculate a point's vertical distance (height) above ground level (mesh).  this is the units position
         /// relative to the ground and is independent of any other character.  

@@ -30,7 +30,11 @@ namespace RogueBT.Helpers
                     && Helpers.Rogue.me != null && !Helpers.Rogue.me.Mounted)
                     if (Helpers.Rogue.me.Combat && Styx.CommonBot.SpellManager.HasSpell("Vanish") && Helpers.Spells.CanCast("Vanish")) Styx.CommonBot.SpellManager.Cast("Vanish", Helpers.Rogue.mTarget);
                     else if (!Helpers.Rogue.me.Combat && !Helpers.Aura.Stealth)
-                Styx.CommonBot.SpellManager.Cast("Stealth", Helpers.Rogue.mTarget);
+                    {
+                        Styx.Pathing.Navigator.PlayerMover.MoveStop();
+                        Styx.CommonBot.SpellManager.Cast("Stealth", Helpers.Rogue.mTarget);
+                    }
+                    else Styx.Pathing.Navigator.PlayerMover.MoveStop();
                 mLocation = curLocation;
 
                 Logging.Write(LogLevel.Normal, "");

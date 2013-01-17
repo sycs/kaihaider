@@ -59,8 +59,9 @@ namespace RogueBT.Helpers
                                            || unit == botBaseUnit
                                            || unit.TaggedByMe)
                                        && unit.Distance <= 40
-                                        &&  !(unit.IsFlying || unit.Distance2DSqr < 3 * 3 &&
-                                                System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3)
+                                        && !( unit.Distance2DSqr < 3 * 3 &&
+                                                System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3
+                                              || Helpers.Movement.IsAboveTheGround(unit))
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
         }
