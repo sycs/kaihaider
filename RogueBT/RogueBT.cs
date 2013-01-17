@@ -16,13 +16,15 @@ using Styx.CommonBot.Routines;
 using Styx.Helpers;
 using Styx.TreeSharp;
 
+
+[assembly: System.Reflection.AssemblyVersion("0.3.0.0")]
+
 namespace RogueBT
 {
     class RogueRaidBT : CombatRoutine
     {
-        public Version mCurVersion = new Version(0, 3);
 
-        public override string Name { get { return "RogueBT v" + mCurVersion; } }
+        public override string Name { get { return "RogueBT"; } }
         public override WoWClass Class { get { return WoWClass.Rogue; } }
         public override bool WantButton { get { return true; } }
 
@@ -36,7 +38,7 @@ namespace RogueBT
         public override void Initialize()
         {
             Logging.Write(LogLevel.Normal, "");
-            Logging.Write(LogLevel.Normal, "RogueBT v" + mCurVersion + " is now operational.");
+            Logging.Write(LogLevel.Normal, "RogueBT is now operational.");
             Logging.Write(LogLevel.Normal, "");
             Logging.Write(LogLevel.Normal, "Your feedback is appreciated. Please leave some in the forum thread at:");
             Logging.Write(LogLevel.Normal, "http://www.thebuddyforum.com/honorbuddy-forum/classes/rogue/...");

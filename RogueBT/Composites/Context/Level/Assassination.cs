@@ -23,7 +23,6 @@ namespace RogueBT.Composites.Context.Level
         static public Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
-
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.MoveToLos(),
@@ -56,8 +55,20 @@ namespace RogueBT.Composites.Context.Level
                             !Helpers.Aura.IsTargetImmuneStun && Helpers.Movement.IsInSafeMeleeRange),
                         Helpers.Spells.Cast("Combat Readiness", ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                         Helpers.Spells.CastSelf("Cloak of Shadows", ret => Helpers.Rogue.IsCloakUsable()),
-                        //Helpers.Spells.Cast("Dismantle", ret => Helpers.Rogue.mTarget.IsHumanoid),
-                        Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching && Helpers.Rogue.mHP < 25)
+                        Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching),
+                        Helpers.Spells.Cast("Smoke Bomb", ret => Helpers.Movement.IsInSafeMeleeRange
+                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 0),
+                        new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange 
+                            && Helpers.Spells.CanCast("Dismantle"),
+                            new Sequence(
+                                new Action(ret =>
+                                {
+                                    Styx.CommonBot.SpellManager.Cast("Dismantle", Helpers.Rogue.mTarget);
+                                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Dismantle attempted");
+                                    return RunStatus.Failure;
+                                })
+                            )
+                        )
                     )
                 ),
 
@@ -126,7 +137,8 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
                 //Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) && Helpers.Rogue.mTarget.InLineOfSight
+                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) 
+                    && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 3 && Helpers.Rogue.mTarget.InLineOfSight
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
                 new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                     && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
@@ -143,7 +155,7 @@ namespace RogueBT.Composites.Context.Level
 
 
                 new Decorator(ret => Helpers.Aura.Stealth && Helpers.Movement.IsInAttemptMeleeRange
-                    && !Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget),
+                    && Styx.CommonBot.SpellManager.HasSpell("Pick Pocket"),
                     new Sequence(
                         new Action(ret =>
                         {

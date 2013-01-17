@@ -31,7 +31,6 @@ namespace RogueBT.Helpers
 
         static public void Pulse()
         {
-            if(StyxWoW.Me != null)
             Helpers.Rogue.me = StyxWoW.Me;
             botBaseUnit = Targeting.Instance.FirstUnit;
 
@@ -59,9 +58,7 @@ namespace RogueBT.Helpers
                                            || unit == botBaseUnit
                                            || unit.TaggedByMe)
                                        && unit.Distance <= 40
-                                        && !( unit.Distance2DSqr < 3 * 3 &&
-                                                System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3
-                                              || Helpers.Movement.IsAboveTheGround(unit))
+                                        && !( System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3 && Helpers.Movement.IsAboveTheGround(unit))
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
         }
@@ -106,7 +103,7 @@ namespace RogueBT.Helpers
             return new Decorator(ret =>  Rogue.mTarget == null || !Rogue.mTarget.IsAlive
                 || mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
                 || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
-                || Rogue.mTarget.Distance > 30 && Movement.IsAboveTheGround(Rogue.mTarget)
+                || Rogue.mTarget.Distance > 30 && Movement.IsAboveTheGround(Rogue.mTarget) && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 3 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
                 || Rogue.mTarget.IsFriendly,
                 GetNewTarget()
             );
