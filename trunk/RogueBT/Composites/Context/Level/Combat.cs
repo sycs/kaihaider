@@ -108,18 +108,6 @@ namespace RogueBT.Composites.Context.Level
                     //Helpers.Rogue.mTarget.Distance <10
                  //   && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush),
 
-                new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush 
-                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree")
-                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
-                    new Sequence(
-                        new Action(ret =>
-                        {
-                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
-                            return RunStatus.Failure;
-                        })
-                    )
-                ),
                 Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry &&
                                                                Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) > 1
                                                                && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 3),
@@ -147,7 +135,24 @@ namespace RogueBT.Composites.Context.Level
                                 new Action(ret => RunStatus.Failure)
 
                             )
-                        )
+                        ),
+
+                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
+                                     && Helpers.Movement.IsInSafeMeleeRange
+                                     && Helpers.Rogue.mCurrentEnergy <= 30 &&
+
+                    !Helpers.Aura.AdrenalineRush && !Helpers.Rogue.mTarget.Name.Equals("Empyreal Focus")
+                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree")
+                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                )
             );
         }
 
