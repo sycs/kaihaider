@@ -64,19 +64,7 @@ Helpers.Rogue.mComboPoints > 1),
                                      && Helpers.Rogue.mCurrentEnergy <= 30,
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(),
-                        Helpers.Spells.CastSelf("Adrenaline Rush"),
-                        new Decorator(ret => !Helpers.Aura.AdrenalineRush && !Helpers.Rogue.mTarget.Name.Equals("Empyreal Focus")
-                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree") 
-                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
-                    new Sequence(
-                        new Action(ret =>
-                        {
-                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
-                            return RunStatus.Failure;
-                        })
-                    )
-                )
+                        Helpers.Spells.CastSelf("Adrenaline Rush")
                     )
                 ),
 
@@ -93,7 +81,25 @@ Helpers.Rogue.mComboPoints > 1),
 
                 Helpers.Movement.MoveToTarget(),
 
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints)
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
+
+                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice
+                                     && (Helpers.Aura.ModerateInsight || Helpers.Aura.DeepInsight) 
+                                     && Helpers.Movement.IsInSafeMeleeRange
+                                     && Helpers.Rogue.mCurrentEnergy <= 30 &&
+                    
+                    !Helpers.Aura.AdrenalineRush && !Helpers.Rogue.mTarget.Name.Equals("Empyreal Focus")
+                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree")
+                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                )
             );
         }
 
