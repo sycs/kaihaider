@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////
-//                Target.cs                     //
-//      Part of RogueBT by kaihaider        //
+//                   Target.cs                  //
+//         Part of RogueBT by kaihaider         //
 //////////////////////////////////////////////////
 //   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
@@ -60,11 +60,11 @@ namespace RogueBT.Helpers
                                            || unit.IsPlayer
                                            || unit == botBaseUnit
                                            || unit.TaggedByMe)
-                                       && (unit.Entry == 52288 ///taken from singular
-                                       ||unit.Entry == 52302
-                                       ||unit.Entry == 52320
-                                       ||unit.Entry == 52525
-                                       || unit.Entry == 52387)
+                                    //   && (unit.Entry == 52288 ///taken from singular
+                                    //   ||unit.Entry == 52302
+                                    //   ||unit.Entry == 52320
+                                   //    ||unit.Entry == 52525
+                                   //    || unit.Entry == 52387)
                                        && unit.Distance <= 40
                                         && !( System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 4 && Helpers.Movement.IsAboveTheGround(unit))
                                         && !unit.IsFriendly)

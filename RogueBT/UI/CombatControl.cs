@@ -17,6 +17,7 @@ namespace RogueBT.UI
     public partial class CombatControl : Form
     {
         [DllImport("user32.dll")]
+        [System.Security.SuppressUnmanagedCodeSecurity]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
         public CombatControl()

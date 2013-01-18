@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////
 //                 Spells.cs                    //
-//      Part of RogueBT by kaihaider        //
+//        Part of RogueBT by kaihaider          //
 //////////////////////////////////////////////////
 //   Originally from MutaRaidBT by fiftypence.  //
 //    Reused with permission from the author.   //
