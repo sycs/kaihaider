@@ -56,10 +56,6 @@ namespace RogueBT.UI
             this.radioButtonHolderPanel = new System.Windows.Forms.Panel();
             this.radioButtonLevel = new System.Windows.Forms.RadioButton();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.labelUseMovement = new System.Windows.Forms.Label();
-            this.panelMovement = new System.Windows.Forms.Panel();
-            this.radioButtonMoveOff = new System.Windows.Forms.RadioButton();
-            this.radioButtonMoveOn = new System.Windows.Forms.RadioButton();
             this.labelApplyPoisons = new System.Windows.Forms.Label();
             this.panelRaidPoison = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -91,19 +87,19 @@ namespace RogueBT.UI
             this.label9 = new System.Windows.Forms.Label();
             this.comboBoxLevelPoison1 = new System.Windows.Forms.ComboBox();
             this.checkBoxLevelPoison = new System.Windows.Forms.CheckBox();
-            this.panelUseAoe = new System.Windows.Forms.Panel();
-            this.radioButtonAoeOff = new System.Windows.Forms.RadioButton();
-            this.radioButtonAoeOn = new System.Windows.Forms.RadioButton();
+            this.alwaysStealth = new System.Windows.Forms.CheckBox();
+            this.pickPocket = new System.Windows.Forms.CheckBox();
+            this.moveBehind = new System.Windows.Forms.CheckBox();
+            this.aoe = new System.Windows.Forms.CheckBox();
+            this.movement = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.panelCooldowns.SuspendLayout();
             this.radioButtonHolderPanel.SuspendLayout();
-            this.panelMovement.SuspendLayout();
             this.panelRaidPoison.SuspendLayout();
             this.panelArenaPoison.SuspendLayout();
             this.panelBgPoison.SuspendLayout();
             this.panelDungeonPoison.SuspendLayout();
             this.panelLevelPoison.SuspendLayout();
-            this.panelUseAoe.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonApply
@@ -222,12 +218,12 @@ namespace RogueBT.UI
             this.radioButtonDungeon.Text = "Dungeon mode";
             this.radioButtonDungeon.UseVisualStyleBackColor = true;
             // 
-            // radioButtonHeroicDungeon
+            // radioButtonArena
             // 
             this.radioButtonArena.AutoSize = true;
             this.radioButtonArena.Location = new System.Drawing.Point(3, 49);
             this.radioButtonArena.Name = "radioButtonArena";
-            this.radioButtonArena.Size = new System.Drawing.Size(132, 17);
+            this.radioButtonArena.Size = new System.Drawing.Size(82, 17);
             this.radioButtonArena.TabIndex = 1;
             this.radioButtonArena.TabStop = true;
             this.radioButtonArena.Text = "Arena mode";
@@ -284,52 +280,11 @@ namespace RogueBT.UI
             this.radioButtonLevel.AutoSize = true;
             this.radioButtonLevel.Location = new System.Drawing.Point(3, 118);
             this.radioButtonLevel.Name = "radioButtonLevel";
-            this.radioButtonLevel.Size = new System.Drawing.Size(80, 17);
+            this.radioButtonLevel.Size = new System.Drawing.Size(82, 17);
             this.radioButtonLevel.TabIndex = 5;
             this.radioButtonLevel.TabStop = true;
-            this.radioButtonLevel.Text = "Level mode";
+            this.radioButtonLevel.Text = "World mode";
             this.radioButtonLevel.UseVisualStyleBackColor = true;
-            // 
-            // labelUseMovement
-            // 
-            this.labelUseMovement.AutoSize = true;
-            this.labelUseMovement.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelUseMovement.Location = new System.Drawing.Point(287, 9);
-            this.labelUseMovement.Name = "labelUseMovement";
-            this.labelUseMovement.Size = new System.Drawing.Size(99, 24);
-            this.labelUseMovement.TabIndex = 7;
-            this.labelUseMovement.Text = "Movement";
-            // 
-            // panelMovement
-            // 
-            this.panelMovement.Controls.Add(this.radioButtonMoveOff);
-            this.panelMovement.Controls.Add(this.radioButtonMoveOn);
-            this.panelMovement.Location = new System.Drawing.Point(291, 36);
-            this.panelMovement.Name = "panelMovement";
-            this.panelMovement.Size = new System.Drawing.Size(51, 55);
-            this.panelMovement.TabIndex = 8;
-            // 
-            // radioButtonMoveOff
-            // 
-            this.radioButtonMoveOff.AutoSize = true;
-            this.radioButtonMoveOff.Location = new System.Drawing.Point(3, 26);
-            this.radioButtonMoveOff.Name = "radioButtonMoveOff";
-            this.radioButtonMoveOff.Size = new System.Drawing.Size(39, 17);
-            this.radioButtonMoveOff.TabIndex = 1;
-            this.radioButtonMoveOff.TabStop = true;
-            this.radioButtonMoveOff.Text = "Off";
-            this.radioButtonMoveOff.UseVisualStyleBackColor = true;
-            // 
-            // radioButtonMoveOn
-            // 
-            this.radioButtonMoveOn.AutoSize = true;
-            this.radioButtonMoveOn.Location = new System.Drawing.Point(3, 3);
-            this.radioButtonMoveOn.Name = "radioButtonMoveOn";
-            this.radioButtonMoveOn.Size = new System.Drawing.Size(39, 17);
-            this.radioButtonMoveOn.TabIndex = 0;
-            this.radioButtonMoveOn.TabStop = true;
-            this.radioButtonMoveOn.Text = "On";
-            this.radioButtonMoveOn.UseVisualStyleBackColor = true;
             // 
             // labelApplyPoisons
             // 
@@ -398,7 +353,7 @@ namespace RogueBT.UI
             this.checkBoxRaidPoison.UseVisualStyleBackColor = true;
             this.checkBoxRaidPoison.CheckedChanged += new System.EventHandler(this.checkBoxRaidPoison_CheckedChanged);
             // 
-            // panelHeroicPoison
+            // panelArenaPoison
             // 
             this.panelArenaPoison.Controls.Add(this.label2);
             this.panelArenaPoison.Controls.Add(this.comboBoxArenaPoison2);
@@ -418,7 +373,7 @@ namespace RogueBT.UI
             this.label2.TabIndex = 4;
             this.label2.Text = "Offhand";
             // 
-            // comboBoxHeroicPoison2
+            // comboBoxArenaPoison2
             // 
             this.comboBoxArenaPoison2.FormattingEnabled = true;
             this.comboBoxArenaPoison2.Location = new System.Drawing.Point(193, 0);
@@ -435,7 +390,7 @@ namespace RogueBT.UI
             this.label3.TabIndex = 2;
             this.label3.Text = "Mainhand";
             // 
-            // comboBoxHeroicPoison1
+            // comboBoxArenaPoison1
             // 
             this.comboBoxArenaPoison1.FormattingEnabled = true;
             this.comboBoxArenaPoison1.Location = new System.Drawing.Point(70, 0);
@@ -443,12 +398,12 @@ namespace RogueBT.UI
             this.comboBoxArenaPoison1.Size = new System.Drawing.Size(76, 21);
             this.comboBoxArenaPoison1.TabIndex = 1;
             // 
-            // checkBoxHeroicPoison
+            // checkBoxArenaPoison
             // 
             this.checkBoxArenaPoison.AutoSize = true;
             this.checkBoxArenaPoison.Location = new System.Drawing.Point(19, 246);
             this.checkBoxArenaPoison.Name = "checkBoxArenaPoison";
-            this.checkBoxArenaPoison.Size = new System.Drawing.Size(62, 17);
+            this.checkBoxArenaPoison.Size = new System.Drawing.Size(54, 17);
             this.checkBoxArenaPoison.TabIndex = 0;
             this.checkBoxArenaPoison.Text = "Arena";
             this.checkBoxArenaPoison.UseVisualStyleBackColor = true;
@@ -622,54 +577,82 @@ namespace RogueBT.UI
             this.checkBoxLevelPoison.UseVisualStyleBackColor = true;
             this.checkBoxLevelPoison.CheckedChanged += new System.EventHandler(this.checkBoxLevelPoison_CheckedChanged);
             // 
-            // panelUseAoe
+            // alwaysStealth
             // 
-            this.panelUseAoe.Controls.Add(this.radioButtonAoeOff);
-            this.panelUseAoe.Controls.Add(this.radioButtonAoeOn);
-            this.panelUseAoe.Location = new System.Drawing.Point(291, 131);
-            this.panelUseAoe.Name = "panelUseAoe";
-            this.panelUseAoe.Size = new System.Drawing.Size(51, 55);
-            this.panelUseAoe.TabIndex = 10;
+            this.alwaysStealth.AutoSize = true;
+            this.alwaysStealth.Location = new System.Drawing.Point(279, 105);
+            this.alwaysStealth.Name = "alwaysStealth";
+            this.alwaysStealth.Size = new System.Drawing.Size(95, 17);
+            this.alwaysStealth.TabIndex = 24;
+            this.alwaysStealth.Text = "Always Stealth";
+            this.alwaysStealth.UseVisualStyleBackColor = true;
+            this.alwaysStealth.CheckedChanged += new System.EventHandler(this.checkAlwaysStealth_CheckedChanged);
             // 
-            // radioButtonAoeOff
+            // pickPocket
             // 
-            this.radioButtonAoeOff.AutoSize = true;
-            this.radioButtonAoeOff.Location = new System.Drawing.Point(3, 26);
-            this.radioButtonAoeOff.Name = "radioButtonAoeOff";
-            this.radioButtonAoeOff.Size = new System.Drawing.Size(39, 17);
-            this.radioButtonAoeOff.TabIndex = 1;
-            this.radioButtonAoeOff.TabStop = true;
-            this.radioButtonAoeOff.Text = "Off";
-            this.radioButtonAoeOff.UseVisualStyleBackColor = true;
+            this.pickPocket.AutoSize = true;
+            this.pickPocket.Location = new System.Drawing.Point(279, 128);
+            this.pickPocket.Name = "pickPocket";
+            this.pickPocket.Size = new System.Drawing.Size(84, 17);
+            this.pickPocket.TabIndex = 23;
+            this.pickPocket.Text = "Pick Pocket";
+            this.pickPocket.UseVisualStyleBackColor = true;
+            this.pickPocket.CheckedChanged += new System.EventHandler(this.checkPickPocket_CheckedChanged);
             // 
-            // radioButtonAoeOn
+            // moveBehind
             // 
-            this.radioButtonAoeOn.AutoSize = true;
-            this.radioButtonAoeOn.Location = new System.Drawing.Point(3, 3);
-            this.radioButtonAoeOn.Name = "radioButtonAoeOn";
-            this.radioButtonAoeOn.Size = new System.Drawing.Size(39, 17);
-            this.radioButtonAoeOn.TabIndex = 0;
-            this.radioButtonAoeOn.TabStop = true;
-            this.radioButtonAoeOn.Text = "On";
-            this.radioButtonAoeOn.UseVisualStyleBackColor = true;
+            this.moveBehind.AutoSize = true;
+            this.moveBehind.Location = new System.Drawing.Point(279, 82);
+            this.moveBehind.Name = "moveBehind";
+            this.moveBehind.Size = new System.Drawing.Size(89, 17);
+            this.moveBehind.TabIndex = 22;
+            this.moveBehind.Text = "Move Behind";
+            this.moveBehind.UseVisualStyleBackColor = true;
+            this.moveBehind.CheckedChanged += new System.EventHandler(this.checkMoveBehind_CheckedChanged);
+            // 
+            // aoe
+            // 
+            this.aoe.AutoSize = true;
+            this.aoe.Location = new System.Drawing.Point(279, 59);
+            this.aoe.Name = "aoe";
+            this.aoe.Size = new System.Drawing.Size(45, 17);
+            this.aoe.TabIndex = 21;
+            this.aoe.Text = "Aoe";
+            this.aoe.UseVisualStyleBackColor = true;
+            this.aoe.CheckedChanged += new System.EventHandler(this.checkAoe_CheckedChanged);
+            // 
+            // movement
+            // 
+            this.movement.AutoSize = true;
+            this.movement.Location = new System.Drawing.Point(279, 36);
+            this.movement.Name = "movement";
+            this.movement.Size = new System.Drawing.Size(76, 17);
+            this.movement.TabIndex = 20;
+            this.movement.Text = "Movement";
+            this.movement.UseVisualStyleBackColor = true;
+            this.movement.CheckedChanged += new System.EventHandler(this.checkMovement_CheckedChanged);
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(287, 104);
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(269, 9);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(47, 24);
-            this.label10.TabIndex = 9;
-            this.label10.Text = "AoE";
+            this.label10.Size = new System.Drawing.Size(79, 24);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "Toggles";
             // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(394, 389);
-            this.Controls.Add(this.panelUseAoe);
             this.Controls.Add(this.label10);
+            this.Controls.Add(this.alwaysStealth);
+            this.Controls.Add(this.pickPocket);
+            this.Controls.Add(this.moveBehind);
+            this.Controls.Add(this.aoe);
+            this.Controls.Add(this.movement);
             this.Controls.Add(this.panelLevelPoison);
             this.Controls.Add(this.panelDungeonPoison);
             this.Controls.Add(this.panelBgPoison);
@@ -681,8 +664,6 @@ namespace RogueBT.UI
             this.Controls.Add(this.checkBoxRaidPoison);
             this.Controls.Add(this.panelRaidPoison);
             this.Controls.Add(this.labelApplyPoisons);
-            this.Controls.Add(this.panelMovement);
-            this.Controls.Add(this.labelUseMovement);
             this.Controls.Add(this.panelCooldowns);
             this.Controls.Add(this.labelUseCooldowns);
             this.Controls.Add(this.buttonLaunchCombatControl);
@@ -699,8 +680,6 @@ namespace RogueBT.UI
             this.panelCooldowns.PerformLayout();
             this.radioButtonHolderPanel.ResumeLayout(false);
             this.radioButtonHolderPanel.PerformLayout();
-            this.panelMovement.ResumeLayout(false);
-            this.panelMovement.PerformLayout();
             this.panelRaidPoison.ResumeLayout(false);
             this.panelRaidPoison.PerformLayout();
             this.panelArenaPoison.ResumeLayout(false);
@@ -711,8 +690,6 @@ namespace RogueBT.UI
             this.panelDungeonPoison.PerformLayout();
             this.panelLevelPoison.ResumeLayout(false);
             this.panelLevelPoison.PerformLayout();
-            this.panelUseAoe.ResumeLayout(false);
-            this.panelUseAoe.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -738,10 +715,6 @@ namespace RogueBT.UI
         private System.Windows.Forms.Panel radioButtonHolderPanel;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.RadioButton radioButtonLevel;
-        private System.Windows.Forms.Label labelUseMovement;
-        private System.Windows.Forms.Panel panelMovement;
-        private System.Windows.Forms.RadioButton radioButtonMoveOff;
-        private System.Windows.Forms.RadioButton radioButtonMoveOn;
         private System.Windows.Forms.Label labelApplyPoisons;
         private System.Windows.Forms.Panel panelRaidPoison;
         private System.Windows.Forms.Label label1;
@@ -773,9 +746,11 @@ namespace RogueBT.UI
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox comboBoxLevelPoison1;
         private System.Windows.Forms.CheckBox checkBoxLevelPoison;
-        private System.Windows.Forms.Panel panelUseAoe;
-        private System.Windows.Forms.RadioButton radioButtonAoeOff;
-        private System.Windows.Forms.RadioButton radioButtonAoeOn;
+        private System.Windows.Forms.CheckBox alwaysStealth;
+        private System.Windows.Forms.CheckBox pickPocket;
+        private System.Windows.Forms.CheckBox moveBehind;
+        private System.Windows.Forms.CheckBox aoe;
+        private System.Windows.Forms.CheckBox movement;
         private System.Windows.Forms.Label label10;
     }
 }

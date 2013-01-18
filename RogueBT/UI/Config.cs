@@ -20,6 +20,12 @@ namespace RogueBT.UI
 
         private void Config_Load(object sender, EventArgs e)
         {
+            movement.Checked = Settings.Mode.mUseMovement;
+            aoe.Checked = Settings.Mode.mUseAoe;
+            moveBehind.Checked = Settings.Mode.mMoveBehind;
+            alwaysStealth.Checked = Settings.Mode.mAlwaysStealth;
+            pickPocket.Checked = Settings.Mode.mPickPocket;
+
             comboBoxRaidPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
             comboBoxRaidPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
             comboBoxArenaPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
@@ -94,24 +100,6 @@ namespace RogueBT.UI
                 }
             }
 
-            if (Settings.Mode.mUseMovement)
-            {
-                radioButtonMoveOn.Checked = true;
-            }
-            else
-            {
-                radioButtonMoveOff.Checked = true;
-            }
-
-            if (Settings.Mode.mUseAoe)
-            {
-                radioButtonAoeOn.Checked = true;
-            }
-            else
-            {
-                radioButtonAoeOff.Checked = true;
-            }
-
             switch (Settings.Mode.mCooldownUse)
             {
                 case Helpers.Enum.CooldownUse.Always:
@@ -167,8 +155,6 @@ namespace RogueBT.UI
             Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.World]          = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxLevelPoison2.SelectedItem;
 
             Settings.Mode.mOverrideContext = !radioButtonAuto.Checked;
-            Settings.Mode.mUseMovement = radioButtonMoveOn.Checked;
-            Settings.Mode.mUseAoe = radioButtonAoeOn.Checked;
 
             if (radioButtonRaid.Checked)
             {
@@ -222,6 +208,34 @@ namespace RogueBT.UI
             combatControl.Show();
         }
 
+        private void checkMovement_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkAoe_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mUseAoe = aoe.Checked;
+
+        }
+
+        private void checkMoveBehind_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mMoveBehind = moveBehind.Checked;
+
+        }
+
+        private void checkAlwaysStealth_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mAlwaysStealth = alwaysStealth.Checked;
+
+        }
+
+        private void checkPickPocket_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mPickPocket = pickPocket.Checked;
+
+        }
         private void checkBoxRaidPoison_CheckedChanged(object sender, EventArgs e)
         {
             panelRaidPoison.Enabled = checkBoxRaidPoison.Checked;

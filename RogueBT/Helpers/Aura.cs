@@ -66,6 +66,7 @@ namespace RogueBT.Helpers
         static public bool IsTargetImmuneSilence { get; private set; }
         static public int IsTargetCasting { get; private set; }
 
+        static public bool ShouldBurst { get; private set; }
         static public bool IsBehind { get; private set; }
         static public bool LastDirection { get;  set; }
         static public bool FaerieFire { get; private set; }
@@ -97,7 +98,7 @@ namespace RogueBT.Helpers
             IsTargetImmuneStun = false; IsTargetImmuneSilence = false; IsBehind = false;
             DeadlyPoison = false; Vendetta = false; Blindside = false; RevealingStrike = false;//MasterOfSubtlety = false;  
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false; AdrenalineRush = false;
-            CripplingPoison = false; LeechingPoison = false; Feint = false;
+            CripplingPoison = false; LeechingPoison = false; Feint = false; ShouldBurst = false;
             DeadlyThrow = false;
             FaerieFire = false;
 
@@ -110,7 +111,16 @@ namespace RogueBT.Helpers
 
             foreach (WoWAura aura in Helpers.Rogue.me.GetAllAuras())
                 {
-                    if (aura.IsActive) { 
+                    if (aura.IsActive) {
+                        if (aura.Spell.Mechanic == WoWSpellMechanic.Dazed
+                            || aura.Spell.Mechanic == WoWSpellMechanic.Disoriented
+                            || aura.Spell.Mechanic == WoWSpellMechanic.Frozen
+                            || aura.Spell.Mechanic == WoWSpellMechanic.Incapacitated
+                            || aura.Spell.Mechanic == WoWSpellMechanic.Rooted
+                            || aura.Spell.Mechanic == WoWSpellMechanic.Slowed
+                            || aura.Spell.Mechanic == WoWSpellMechanic.Snared)
+                            ShouldBurst = true;
+
                     switch (aura.SpellId)
                     {
 
@@ -435,8 +445,10 @@ namespace RogueBT.Helpers
             }
             ShouldShiv = false;
 
-           // if (!Helpers.Rogue.me.Combat)
-                Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Thinking");
+            // if (!Helpers.Rogue.me.Combat) 
+            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Thinking");
+            //Helpers.Spells.FindSpell  114014 Helpers.Spells.GetSpellCooldown("Evasion") Styx.CommonBot.SpellManager.Spells["Throw"].Id
+            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " ");
             //if (Styx.CommonBot.InactivityDetector.TimeUntilLogout!=null)
             //Logging.Write(LogLevel.Normal, Styx.CommonBot.InactivityDetector.TimeUntilLogout.TotalMinutes + " " );
             //if (Helpers.Target.mNearbyEnemyUnits != null && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) >0)

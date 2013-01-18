@@ -32,9 +32,6 @@ namespace RogueBT.Composites.Context.Raid
                     Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2 ),
 
-
-                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
-
                 new Decorator(ret => Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer,
                     new PrioritySelector(
 
@@ -46,15 +43,10 @@ namespace RogueBT.Composites.Context.Raid
                         Helpers.Spells.Cast("Rupture", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                     Helpers.Aura.TimeRupture < 3 && Helpers.Movement.IsInSafeMeleeRange),
                 //!Helpers.Aura.Sanguinary Vein 
-
                         Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Movement.IsInSafeMeleeRange)
-
                     )
 
                 ),
-
-                
-
 
                 Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Rogue.mComboPoints <= 3 && (Helpers.Aura.Stealth || 
                                                                     Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)),
@@ -108,11 +100,25 @@ namespace RogueBT.Composites.Context.Raid
                     )
                 ),
 
-
                 Helpers.Movement.MoveToTarget(),
-
-                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks  && Helpers.Focus.mFocusTarget!=null &&
-                                                                       Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.mCurrentEnergy < 75 && Helpers.Rogue.mComboPoints > 1)
+                Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
+                new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
+                    && !Helpers.Aura.Stealth
+                    && (Helpers.Rogue.mTarget.Distance > 10 && Helpers.Rogue.mTarget.Distance < 30
+                    || !Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget.Distance < 30 && Helpers.Rogue.mComboPoints < 5),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Throw", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Casting Shuriken Toss on target at " +
+                            System.Math.Round(Helpers.Rogue.mTarget.HealthPercent, 0) + "% with " + Helpers.Rogue.mComboPoints + "CP and " +
+                               Helpers.Rogue.mCurrentEnergy + " energy");
+                        }),
+                                new Action(ret => RunStatus.Failure)
+                    )
+                ),
+                Helpers.Spells.CastFocus("Tricks of the Trade", ret => !Helpers.Aura.Tricks && Helpers.Focus.mFocusTarget != null
+                                  && Helpers.Rogue.mCurrentEnergy > 40 && Helpers.Rogue.mCurrentEnergy < 75 && Helpers.Rogue.mComboPoints > 1)
 
 
             );

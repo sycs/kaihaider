@@ -26,6 +26,9 @@ namespace RogueBT.Settings
         static public bool mUseAoe { get; set; }
         static public bool mUseCombat { get; set; }
         static public bool mForceBehind { get; set; }
+        static public bool mMoveBehind { get; set; }
+        static public bool mAlwaysStealth { get; set; }
+        static public bool mPickPocket { get; set; }
 
         static Mode()
         {
@@ -54,6 +57,11 @@ namespace RogueBT.Settings
             mUseAoe = true;
             mUseCombat = true;
             mForceBehind = false;
+
+            mMoveBehind = true;
+            mAlwaysStealth = false;
+            mPickPocket = true;
+
         }
     }
 }

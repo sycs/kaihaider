@@ -108,6 +108,8 @@ namespace RogueBT.UI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
+            this.CausesValidation = false;
             this.ClientSize = new System.Drawing.Size(429, 61);
             this.Controls.Add(this.labelBehindTarStatus);
             this.Controls.Add(this.buttonToggleBehindTar);
