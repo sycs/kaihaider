@@ -22,6 +22,12 @@ namespace RogueBT.Helpers
 {
     static class Spells
     {
+        static public bool FindSpell(int spellId)
+        {
+            Styx.CommonBot.SpellFindResults TempSpellFind;
+            return Styx.CommonBot.SpellManager.FindSpell(spellId, out TempSpellFind);
+        }
+
         static public Composite Cast(int spellId)
         {
             return Cast(spellId, ret => true, ret => Helpers.Rogue.mTarget);
@@ -245,17 +251,29 @@ namespace RogueBT.Helpers
                         SpellManager.Cast(spellName, target(ret));
                         if (target(ret).IsPlayer)
                             Logging.Write(LogLevel.Normal, "Casting " + spellName + " on Player at " +
-                                                 Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.me.ComboPoints + "CP and " +
+                                                 Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.mComboPoints + "CP and " +
                                                  Rogue.mCurrentEnergy + " energy");
                         else 
                             Logging.Write(LogLevel.Normal , "Casting " + spellName + " on " + target(ret).Name + " at " +
-                                             Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.me.ComboPoints + "CP and " +
+                                             Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.mComboPoints + "CP and " +
                                              Rogue.mCurrentEnergy + " energy");
                     }
                 )
             );
         }
 
+        /// Stolen from singular
+        /// <summary>
+        ///  Checks for the auras on a specified unit. Returns true if the unit has any aura with any of the mechanics in the mechanics list.
+        /// </summary>
+        /// <param name="unit"> The unit to check auras for. </param>
+        /// <param name="mechanics"> Mechanics to be checked. </param>
+        /// <returns></returns>
+        public static bool HasAuraWithMechanic(this WoWUnit unit, params WoWSpellMechanic[] mechanics)
+        {
+            var auras = unit.GetAllAuras();
+            return auras.Any(a => mechanics.Contains(a.Spell.Mechanic));
+        }
         
                // Spell.WaitForCastOrChannel(),
     }

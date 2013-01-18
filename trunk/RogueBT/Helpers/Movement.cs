@@ -277,7 +277,7 @@ namespace RogueBT.Helpers
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
-                    new Decorator(ret => !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me,
+                    new Decorator(ret => !Settings.Mode.mMoveBehind || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me,
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => !IsInSafeMeleeRange,

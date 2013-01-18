@@ -40,12 +40,15 @@ namespace RogueBT.Helpers
                                         unit.IsAlive
                                         && unit.IsPlayer
                                        && unit.Distance <= 40
-                                        && !unit.IsFriendly)
+                                        && !unit.IsFriendly) //friendly only works on npcs ///from singular unit.ToPlayer().IsHorde != StyxWoW.Me.IsHorde
                                     .OrderBy(unit => unit.Distance).ToList();
             else if(StyxWoW.IsInGame)
                 mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                     .Where(unit =>
                                         unit.IsAlive
+                                        && unit.Attackable
+                                        && unit.CanSelect
+                                        && !unit.IsDead
                                         && !unit.IsNonCombatPet
                                         && !unit.IsCritter
                                         && !unit.IsPetBattleCritter
@@ -57,8 +60,13 @@ namespace RogueBT.Helpers
                                            || unit.IsPlayer
                                            || unit == botBaseUnit
                                            || unit.TaggedByMe)
+                                       && (unit.Entry == 52288 ///taken from singular
+                                       ||unit.Entry == 52302
+                                       ||unit.Entry == 52320
+                                       ||unit.Entry == 52525
+                                       || unit.Entry == 52387)
                                        && unit.Distance <= 40
-                                        && !( System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3 && Helpers.Movement.IsAboveTheGround(unit))
+                                        && !( System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 4 && Helpers.Movement.IsAboveTheGround(unit))
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
         }
@@ -103,7 +111,7 @@ namespace RogueBT.Helpers
             return new Decorator(ret =>  Rogue.mTarget == null || !Rogue.mTarget.IsAlive
                 || mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
                 || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
-                || Rogue.mTarget.Distance > 30 && Movement.IsAboveTheGround(Rogue.mTarget) && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 3 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
+                || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
                 || Rogue.mTarget.IsFriendly,
                 GetNewTarget()
             );

@@ -205,7 +205,7 @@ namespace RogueBT.Composites.Context.Battleground
                                          Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()), 
 
                  
-                     new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
+                     new Decorator(ret => Settings.Mode.mAlwaysStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                         && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
                         new Sequence(
                             Helpers.Spells.CastSelf("Stealth", ret => true),
