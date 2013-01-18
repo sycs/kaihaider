@@ -46,9 +46,6 @@ namespace RogueBT.Helpers
                 mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                     .Where(unit =>
                                         unit.IsAlive
-                                        && unit.Attackable
-                                        && unit.CanSelect
-                                        && !unit.IsDead
                                         && !unit.IsNonCombatPet
                                         && !unit.IsCritter
                                         && !unit.IsPetBattleCritter
@@ -66,6 +63,9 @@ namespace RogueBT.Helpers
                                    //    ||unit.Entry == 52525
                                    //    || unit.Entry == 52387)
                                        && unit.Distance <= 40
+                                        && unit.Attackable
+                                        && unit.CanSelect
+                                        && !unit.IsDead
                                         && !( System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 4 && Helpers.Movement.IsAboveTheGround(unit))
                                         && !unit.IsFriendly)
                                     .OrderBy(unit => unit.Distance).ToList();
