@@ -25,6 +25,7 @@ namespace RogueBT.UI
             moveBehind.Checked = Settings.Mode.mMoveBehind;
             alwaysStealth.Checked = Settings.Mode.mAlwaysStealth;
             pickPocket.Checked = Settings.Mode.mPickPocket;
+            crowdControl.Checked = Settings.Mode.mCrowdControl;
 
             comboBoxRaidPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
             comboBoxRaidPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
@@ -208,9 +209,14 @@ namespace RogueBT.UI
             combatControl.Show();
         }
 
+        private void checkCrowdControl_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mCrowdControl = crowdControl.Checked;
+        }
+        
         private void checkMovement_CheckedChanged(object sender, EventArgs e)
         {
-
+            Settings.Mode.mUseMovement = movement.Checked;
         }
 
         private void checkAoe_CheckedChanged(object sender, EventArgs e)

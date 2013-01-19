@@ -29,6 +29,7 @@ namespace RogueBT.Settings
         static public bool mMoveBehind { get; set; }
         static public bool mAlwaysStealth { get; set; }
         static public bool mPickPocket { get; set; }
+        static public bool mCrowdControl { get; set; }
 
         static Mode()
         {
@@ -61,7 +62,7 @@ namespace RogueBT.Settings
             mMoveBehind = true;
             mAlwaysStealth = false;
             mPickPocket = true;
-
+            mCrowdControl = true;
         }
     }
 }
