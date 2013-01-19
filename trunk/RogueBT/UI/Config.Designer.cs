@@ -93,6 +93,7 @@ namespace RogueBT.UI
             this.aoe = new System.Windows.Forms.CheckBox();
             this.movement = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.crowdControl = new System.Windows.Forms.CheckBox();
             this.panelCooldowns.SuspendLayout();
             this.radioButtonHolderPanel.SuspendLayout();
             this.panelRaidPoison.SuspendLayout();
@@ -642,11 +643,22 @@ namespace RogueBT.UI
             this.label10.TabIndex = 25;
             this.label10.Text = "Toggles";
             // 
+            // crowdControl
+            // 
+            this.crowdControl.AutoSize = true;
+            this.crowdControl.Location = new System.Drawing.Point(279, 152);
+            this.crowdControl.Name = "crowdControl";
+            this.crowdControl.Size = new System.Drawing.Size(92, 17);
+            this.crowdControl.TabIndex = 26;
+            this.crowdControl.Text = "Crowd Control";
+            this.crowdControl.UseVisualStyleBackColor = true;
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(394, 389);
+            this.Controls.Add(this.crowdControl);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.alwaysStealth);
             this.Controls.Add(this.pickPocket);
@@ -752,5 +764,6 @@ namespace RogueBT.UI
         private System.Windows.Forms.CheckBox aoe;
         private System.Windows.Forms.CheckBox movement;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox crowdControl;
     }
 }

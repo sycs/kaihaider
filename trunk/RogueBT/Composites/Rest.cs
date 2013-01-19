@@ -40,7 +40,7 @@ namespace RogueBT.Composites
                                                            })
                                                        )
                                          ),
-                                             Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells. GetAuraTimeLeft(Helpers.Rogue.me, "Food", Helpers.Rogue.me.Guid) > 17
+                                             Helpers.Spells.CastSelf("Stealth", ret => Helpers.Spells.GetAuraTimeLeft(Helpers.Rogue.me, "Food", Helpers.Rogue.me.Guid) > 17
                                                  && Helpers.Rogue.mHP <= 90 && !Helpers.Rogue.me.HasAura("Stealth")),
                                      new Decorator(
                                          ret =>

@@ -38,7 +38,9 @@ namespace RogueBT.Helpers
                         })),
                     new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.IsCasting
                         && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(150), 6f))
-                        && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0,
+                        && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0
+                        || Helpers.Rogue.mTarget.Distance2D < 2 && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2),
+                        
                         new Action(ret => {
 
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards"); 

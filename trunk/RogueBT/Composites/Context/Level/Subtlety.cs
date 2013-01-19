@@ -305,7 +305,8 @@ namespace RogueBT.Composites.Context.Level
 
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
-                Helpers.Movement.PullMoveToTarget()
+                Helpers.Movement.PullMoveToTarget(),
+                Helpers.Spells.CastSelf("Sprint", ret => Helpers.Aura.Stealth)
             );
         }
 
