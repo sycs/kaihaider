@@ -229,6 +229,7 @@ namespace RogueBT.Helpers
                                    } )
                                    ,new Action(ret =>
                                    {
+                                       Helpers.Rogue.CreateWaitForLagDuration();
                                        if( !Helpers.Rogue.me.MovementInfo.IsStrafing )
                                        Styx.Pathing.Navigator.PlayerMover.MoveStop();
                                        return RunStatus.Success;
