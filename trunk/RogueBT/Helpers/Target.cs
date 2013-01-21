@@ -216,12 +216,20 @@ namespace RogueBT.Helpers
                                             Styx.Pathing.Navigator.PlayerMover.MoveStop();
                                         return RunStatus.Success;
                                     }),
-                                    new Action(ret => 
+                                new Action(ret => 
                                     {
-                                        SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
-                                        Logging.Write(LogLevel.Normal, "Sapping Target, swithcing targets");
+                                        SpellManager.Cast("Pick Pocket", SapCCUnit);
+                                        return RunStatus.Success;
+                                    }),
+                                new Action(ret => 
+                                    {
+                                        Logging.Write(LogLevel.Normal, "Sapping Target, switching targets");
                                         SpellManager.Cast("Sap", Helpers.Rogue.mTarget);
                                         // Helpers.Spells.Cast("Sap", ret2 => true);
+                                        return RunStatus.Success;
+                                   } ),
+                                new Action(ret => 
+                                    {
                                         SapCCUnit.Target();
                                         Helpers.Rogue.mTarget = SapCCUnit;
                                         newTargetGUID = SapCCUnit.Guid;
@@ -262,15 +270,17 @@ namespace RogueBT.Helpers
                                 new Sequence(
                                     new Action(ret =>
                                     {
-
                                         if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
                                         Styx.Pathing.Navigator.PlayerMover.MoveStop();
                                         return RunStatus.Success;
                                     }),
                                 new Action(ret => 
                                     {
-
-                                    SpellManager.Cast("Pick Pocket", SapCCUnit);
+                                        SpellManager.Cast("Pick Pocket", SapCCUnit);
+                                        return RunStatus.Success;
+                                    }),
+                                new Action(ret => 
+                                    {
                                     Logging.Write(LogLevel.Normal, "Sapping Add");
                                     SpellManager.Cast("Sap", SapCCUnit);
                                     //Helpers.Spells.Cast("Sap", ret2 => true, ret2 => SapCCUnit);
