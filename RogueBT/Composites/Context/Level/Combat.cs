@@ -78,14 +78,9 @@ namespace RogueBT.Composites.Context.Level
                                 )
                             ),
 
-                new Decorator(ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) > 1 
-                                        && Helpers.Rogue.mHP < 85 && Helpers.Target.GetCCTarget(),
-                    new PrioritySelector(
-                        Helpers.Spells.Cast("Blind", ret => Helpers.Target.BlindCCUnit != null && Helpers.Target.BlindCCUnit.Distance > 10, ret => Helpers.Target.BlindCCUnit),
-                        
-                        Helpers.Spells.Cast("Gouge", ret => Helpers.Target.GougeCCUnit!=null, ret => Helpers.Target.GougeCCUnit)
-                    )
-                ),
+
+                Helpers.Target.BlindAdd(),
+                Helpers.Target.GougeAdd(),
 
                  new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented &&
                                         (Helpers.Rogue.mComboPoints > 3 || Helpers.Aura.FuryoftheDestroyer),
@@ -96,7 +91,9 @@ namespace RogueBT.Composites.Context.Level
                                     !Helpers.Aura.Rupture && Helpers.Movement.IsInSafeMeleeRange),
 
                         Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3
+                                       && (Helpers.Target.mNearbyEnemyUnits.Count(unit => (unit.HasAura("Blind") || unit.HasAura("Sap")) 
+                        && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach + 0.5333334f + unit.CombatReach)) == 0)),
 
                         Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Movement.IsInSafeMeleeRange)
 
@@ -112,26 +109,32 @@ namespace RogueBT.Composites.Context.Level
                     //Helpers.Rogue.mTarget.Distance <10
                  //   && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.AdrenalineRush),
 
-                Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry &&
-                                                               Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) > 1
-                                                               && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 3),
+                Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry
+                                                               && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) > 1
+                                                               && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 3
+                                                                && (Helpers.Target.mNearbyEnemyUnits.Count(
+                    unit => (unit.HasAura("Blind") || unit.HasAura("Gouge") ||  unit.HasAura("Sap")) 
+                        && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach + 1f + unit.CombatReach)) == 0)),
 
-                new Decorator(ret => Helpers.Rogue.IsAoeUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 && 
-                                     Helpers.Aura.BladeFlurry,
+                new Decorator(ret => Helpers.Rogue.IsAoeUsable()  &&  Helpers.Aura.BladeFlurry && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2
+                      || (Helpers.Target.mNearbyEnemyUnits.Count(unit => (unit.HasAura("Blind") || unit.HasAura("Gouge") || unit.HasAura("Sap")) 
+                        && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach + 1f + unit.CombatReach)) > 0)),
                     // Ugly. Find a way to cancel auras without Lua.
                     new Action(ret => Lua.DoString("RunMacroText('/cancelaura Blade Flurry');"))
                 ),
 
                 Helpers.Spells.Cast("Revealing Strike", ret => Helpers.Movement.IsInSafeMeleeRange && !Helpers.Aura.RevealingStrike && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1
+                                                            && (Helpers.Target.mNearbyEnemyUnits.Count(
+                    unit => (unit.HasAura("Blind") || unit.HasAura("Gouge")  || unit.HasAura("Sap")) && unit.Distance < 10) == 0)),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
-                    && !Helpers.Aura.Stealth
+                    && !Helpers.Aura.Stealth &&  Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                     && (Helpers.Rogue.mTarget.Distance > 10 && Helpers.Rogue.mTarget.Distance < 30
                     || !Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget.Distance < 30 && Helpers.Rogue.mComboPoints < 5),
                     new Sequence(
@@ -145,6 +148,23 @@ namespace RogueBT.Composites.Context.Level
                                 new Action(ret => RunStatus.Failure)
                     )
                 ),
+
+                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
+                    && Helpers.Rogue.mCurrentEnergy <= 30 && (Helpers.Target.mNearbyEnemyUnits.Count(
+                    unit => unit.HasAura("Blind") || unit.HasAura("Sap") && unit.Distance < 10) == 0)
+                    && !Helpers.Aura.AdrenalineRush && !Helpers.Rogue.mTarget.Name.Equals("Empyreal Focus")
+                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree")
+                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
+                    new Sequence(
+                        new Action(ret =>
+                        {
+                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
+                            return RunStatus.Failure;
+                        })
+                    )
+                ),
+
                 new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mHP < 75
                             && Helpers.Spells.CanCast("Dismantle"),
                             new Sequence(
@@ -156,24 +176,7 @@ namespace RogueBT.Composites.Context.Level
                                 new Action(ret => RunStatus.Failure)
 
                             )
-                        ),
-
-                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
-                                     && Helpers.Movement.IsInSafeMeleeRange
-                                     && Helpers.Rogue.mCurrentEnergy <= 30 &&
-
-                    !Helpers.Aura.AdrenalineRush && !Helpers.Rogue.mTarget.Name.Equals("Empyreal Focus")
-                    && Styx.CommonBot.SpellManager.HasSpell("Killing Spree")
-                    && ((Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.2) || (Styx.CommonBot.SpellManager.GlobalCooldown && Helpers.Spells.GetSpellCooldown("Killing Spree") < 0.5)),
-                    new Sequence(
-                        new Action(ret =>
-                        {
-                            Styx.CommonBot.SpellManager.Cast("Killing Spree", Helpers.Rogue.me);
-                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Killing Spree attempted");
-                            return RunStatus.Failure;
-                        })
-                    )
-                )
+                        )
             );
         }
 
@@ -183,17 +186,12 @@ namespace RogueBT.Composites.Context.Level
                 new Decorator(ret => Helpers.Rogue.me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
-                new Decorator(ret => !Helpers.Rogue.me.Combat,
-                    new Action(ret => { Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pulling"); return RunStatus.Failure; })
-                ),
                 Helpers.Movement.PleaseStopPull(),
-                new Decorator(ret => !Helpers.Rogue.me.Combat,
-                    new Action(ret => { Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pulling2"); return RunStatus.Failure; })
-                ),
+                Helpers.Target.SapAdd(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
                 //Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget)
+                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                     && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 3 && Helpers.Rogue.mTarget.InLineOfSight
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
 
@@ -208,7 +206,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                //Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
+                Helpers.Spells.Cast("Sap", ret => Settings.Mode.mSap.Equals(Helpers.Enum.Saps.Target) && Helpers.Target.IsSappable(Helpers.Rogue.mTarget)),
 
                 new Decorator(ret => Settings.Mode.mPickPocket 
                     && Helpers.Aura.Stealth && Helpers.Movement.IsInAttemptMeleeRange 
@@ -266,7 +264,8 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
                 Helpers.Movement.PullMoveToTarget(),
-                Helpers.Spells.CastSelf("Sprint", ret => Helpers.Aura.Stealth)
+                Helpers.Spells.CastSelf("Sprint", ret => Helpers.Aura.Stealth),
+                 new Action(ret => RunStatus.Success)
 
 
             );
@@ -274,7 +273,7 @@ namespace RogueBT.Composites.Context.Level
 
         public static Composite BuildBuffBehavior()
         {
-            return new Decorator(ret => !Helpers.Rogue.me.Mounted,
+            return new Decorator(ret => !Helpers.Rogue.me.Mounted && !Helpers.Rogue.me.InVehicle,
                 new PrioritySelector(
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),

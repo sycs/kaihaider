@@ -43,11 +43,11 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.PullMoveToTarget()
             );
         }
-
+        
 
         static public Composite BuildBuffBehavior()
         {
-            return new Decorator(ret => false,
+            return new Decorator(ret => !Helpers.Rogue.me.InVehicle,
                 new PrioritySelector(
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),

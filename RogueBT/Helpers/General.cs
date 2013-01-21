@@ -26,18 +26,16 @@ namespace RogueBT.Helpers
         static public void UpdateHelpers()
         {
 
-                    if(StyxWoW.Me != null)
-                    {
-                        Target.Pulse();
+            if (StyxWoW.Me != null && StyxWoW.IsInGame)
+            {
                         Area.Pulse();
+                        Target.Pulse();
                         Rogue.Pulse();
                         Focus.Pulse();
                         Specials.Pulse();
                         Aura.Pulse();
                         
                         Target.EnsureValidTarget();
-                        //Movement.ChkFace();
-                        //if (Movement.IsPVPSuiteEnabled) Settings.Mode.mUseMovement = false;
 
                     }
         }       

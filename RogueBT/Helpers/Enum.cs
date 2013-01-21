@@ -51,5 +51,12 @@ namespace RogueBT.Helpers
             OnlyOnBosses,
             Never
         }
+
+        public enum Saps
+        {
+            Adds = 0,
+            Target,
+            Never
+        }
     }
 }
