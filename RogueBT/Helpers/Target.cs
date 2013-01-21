@@ -323,14 +323,26 @@ namespace RogueBT.Helpers
         {
             return new Action(ret =>
                 {
-                    var nextUnit = mNearbyEnemyUnits.FirstOrDefault();
+                    var nextUnit = mNearbyEnemyUnits.Where(unit => !(unit.HasAura("Sap") || unit.HasAura("Blind"))).FirstOrDefault();
 
                     if (nextUnit != null && nextUnit.IsAlive)
                     {
                         Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
                         nextUnit.Target();
                     }
-                    else Helpers.Rogue.me.ClearTarget();
+                    else
+                    {
+                        nextUnit = mNearbyEnemyUnits.FirstOrDefault();
+
+                        if (nextUnit != null && nextUnit.IsAlive)
+                        {
+                            Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
+                            nextUnit.Target();
+                        }
+                        else
+                        Helpers.Rogue.me.ClearTarget();
+
+                    }
                 }
             );
         }
