@@ -127,7 +127,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1
                                                             && (Helpers.Target.mNearbyEnemyUnits.Count(
-                    unit => (unit.HasAura("Blind") || unit.HasAura("Gouge")  || unit.HasAura("Sap")) && unit.Distance < 10) == 0)),
+                    unit => (unit.HasAura("Blind") || unit.HasAura("Gouge")  || unit.HasAura("Sap")) && unit.Distance < 11) == 0)),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),

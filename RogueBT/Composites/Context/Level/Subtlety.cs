@@ -81,7 +81,10 @@ namespace RogueBT.Composites.Context.Level
                     new PrioritySelector(
                         Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Aura.TimeSliceandDice < 3),
                         Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2
+                                                            && (Helpers.Target.mNearbyEnemyUnits.Count(unit => (unit.HasAura("Blind") || unit.HasAura("Sap"))
+                        && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach + 0.5333334f + unit.CombatReach)) == 0)
+                                                            ),
                         Helpers.Spells.Cast("Rupture", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                     !Helpers.Aura.FindWeakness && !Helpers.Aura.Rupture && Helpers.Movement.IsInSafeMeleeRange),
                         Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && !Helpers.Aura.IsTargetSapped &&
@@ -154,7 +157,9 @@ namespace RogueBT.Composites.Context.Level
                         Helpers.Spells.CastCooldown("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange && (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                                              !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.Silenced),
                         Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 6),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 6
+                                                            && (Helpers.Target.mNearbyEnemyUnits.Count(
+                    unit => (unit.HasAura("Blind") || unit.HasAura("Gouge")  || unit.HasAura("Sap")) && unit.Distance < 11) == 0)),
                         Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                     && Helpers.Aura.TimeHemorrhage < 3),
                         Helpers.Spells.Cast("Backstab", ret => Helpers.Movement.IsInSafeMeleeRange && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
