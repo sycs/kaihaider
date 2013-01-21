@@ -37,7 +37,7 @@ namespace RogueBT.Helpers
                         })),
                     new Decorator(ret => Settings.Mode.mMoveBackwards && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.IsCasting
                         && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(150), 6f))
-                        && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0
+                        && (Helpers.Target.mNearbyEnemyUnits.Count(unit => !(unit.HasAura("Sap") || unit.HasAura("Blind")) && unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0
                         || Helpers.Rogue.mTarget.Distance2D < 2 && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2),
                         new Action(ret => {
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards"); 
@@ -241,7 +241,7 @@ namespace RogueBT.Helpers
         public static Composite ChkFace()
         { 
             return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
-                && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+                && ((!Rogue.mTarget.IsPlayer) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Sequence(
                                               new Action(ret =>
                                             {
