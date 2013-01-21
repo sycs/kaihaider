@@ -235,8 +235,8 @@ namespace RogueBT.Helpers
             {
                 return new PrioritySelector
                         (new Decorator
-                             (ret => Helpers.Rogue.me != null && !Helpers.Rogue.me.IsMoving && !Helpers.Rogue.me.Mounted 
-                                 && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) 
+                             (ret => Helpers.Rogue.me != null && !Helpers.Rogue.me.IsMoving && !Helpers.Rogue.me.Mounted
+                                 && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) && Helpers.Rogue.mHP > 40
                                      && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && 
                            SpellManager.HasSpell((int)Settings.Mode.mPoisonsMain[(int)Area.mLocation]),
                               new Sequence
@@ -252,7 +252,7 @@ namespace RogueBT.Helpers
                                    new WaitContinue(10, ret => !Helpers.Rogue.me.IsCasting, new ActionAlwaysSucceed()),
                                    new WaitContinue(1, ret => false, new ActionAlwaysSucceed()))),
                          new Decorator
-                             (ret => !Helpers.Rogue.me.Mounted
+                             (ret => Helpers.Rogue.me != null && !Helpers.Rogue.me.IsMoving && !Helpers.Rogue.me.Mounted && Helpers.Rogue.mHP > 30
                                  && Aura.NeedsPoison && !(Aura.MindNumbing || Aura.Crippling || Aura.Paralytic || Aura.Leeching)
                                  && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && Helpers.Rogue.me != null &&
                               SpellManager.HasSpell((int)Settings.Mode.mPoisonsOff[(int)Area.mLocation]),
