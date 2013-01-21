@@ -28,24 +28,20 @@ namespace RogueBT.Helpers
         {
             return new Sequence(
                 new PrioritySelector(
-                    new Decorator(ret => Helpers.Rogue.me.MovementInfo.MovingBackward
+                    new Decorator(ret => Settings.Mode.mMoveBackwards && Helpers.Rogue.me.MovementInfo.MovingBackward
                         && (!Helpers.Movement.IsInSafeMeleeRange || Helpers.Movement.IsInSafeMeleeRange && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
                         new Action(ret =>
                         {
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards, stop");
                             WoWMovement.MoveStop(WoWMovement.MovementDirection.Backwards);
-
                         })),
-                    new Decorator(ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.IsCasting
+                    new Decorator(ret => Settings.Mode.mMoveBackwards && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned && !Helpers.Rogue.mTarget.IsCasting
                         && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Helpers.Rogue.me.Location.RayCast(Helpers.Rogue.me.Rotation + WoWMathHelper.DegreesToRadians(150), 6f))
                         && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) > 0
                         || Helpers.Rogue.mTarget.Distance2D < 2 && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2),
-                        
                         new Action(ret => {
-
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards"); 
                             WoWMovement.Move(WoWMovement.MovementDirection.Backwards); 
-                        
                         }))
                     ),
                     new Action(ret => RunStatus.Failure)
@@ -98,7 +94,7 @@ namespace RogueBT.Helpers
 
         public static float SafeMeleeRange
         {
-            get { return System.Math.Max(MeleeRange - 1.9f, 2.5f); }
+            get { return System.Math.Max(MeleeRange - 1.7f, 3); }
         }
 
         public static bool IsInAttemptMeleeRange
@@ -211,7 +207,8 @@ namespace RogueBT.Helpers
 
         public static Composite PleaseStop()
         {
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange 
+                && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
                  && StopRunning() && directionChange,
                 new Action(ret => {
                     Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
@@ -245,13 +242,18 @@ namespace RogueBT.Helpers
         { 
             return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
                 && ((!Rogue.mTarget.IsPlayer && IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
-                                          new Sequence(new Action(ret =>
-                                          {
-                                              if (Helpers.Rogue.me.IsActuallyInCombat || Rogue.mTarget.IsPlayer)
-                                              Navigator.PlayerMover.MoveStop();
+                                          new Sequence(
+                                              new Action(ret =>
+                                            {
+                                                Navigator.PlayerMover.MoveStop();
+                                              return RunStatus.Success;
+                                            }),
+                                            new Action(ret =>
+                                            {
                                               Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "facing");
                                               Rogue.mTarget.Face();
-                                          }), new Action(ret => RunStatus.Failure)));
+                                          }), 
+                                          new Action(ret => RunStatus.Failure)));
         }
         public static Composite PullMoveToTarget()
         {
@@ -279,7 +281,8 @@ namespace RogueBT.Helpers
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
-                    new Decorator(ret => !Settings.Mode.mMoveBehind || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me,
+                    new Decorator(ret => !Settings.Mode.mMoveBehind 
+                        || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget != null && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me,
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => !IsInSafeMeleeRange,
@@ -292,7 +295,7 @@ namespace RogueBT.Helpers
                                       ,new Action(ret => RunStatus.Failure)
                                       )
                         ),
-                    new Decorator(ret => Rogue.mTarget.IsPlayer || Rogue.mTarget.CurrentTarget != Helpers.Rogue.me,
+                    new Decorator(ret => Rogue.mTarget.IsPlayer || Rogue.mTarget.CurrentTarget == null || Rogue.mTarget.CurrentTarget != Helpers.Rogue.me,
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
@@ -309,8 +312,8 @@ namespace RogueBT.Helpers
                                       new DecoratorContinue(
                                           ret => IsInSafeMeleeRange &&
                                           !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
-                                          new Action(ret => Rogue.mTarget.Face())),
-                                      new Action(ret => RunStatus.Failure)
+                                          new Action(ret => Rogue.mTarget.Face()))
+                                      ,new Action(ret => RunStatus.Failure)
                                       )
                  )));
         }

@@ -18,14 +18,103 @@ namespace RogueBT.UI
             InitializeComponent();
         }
 
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+
+            Settings.Mode.mUsePoisons[(int)Helpers.Enum.LocationContext.Raid] = checkBoxRaidPoison.Checked;
+            Settings.Mode.mUsePoisons[(int)Helpers.Enum.LocationContext.Arena] = checkBoxArenaPoison.Checked;
+            Settings.Mode.mUsePoisons[(int)Helpers.Enum.LocationContext.Dungeon] = checkBoxDungeonPoison.Checked;
+            Settings.Mode.mUsePoisons[(int)Helpers.Enum.LocationContext.Battleground] = checkBoxBgPoison.Checked;
+            Settings.Mode.mUsePoisons[(int)Helpers.Enum.LocationContext.World] = checkBoxLevelPoison.Checked;
+
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Raid] = (Helpers.Enum.LeathalPoisonSpellId)comboBoxRaidPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Raid] = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxRaidPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Arena] = (Helpers.Enum.LeathalPoisonSpellId)comboBoxArenaPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Arena] = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxArenaPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Dungeon] = (Helpers.Enum.LeathalPoisonSpellId)comboBoxDungeonPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Dungeon] = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxDungeonPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Battleground] = (Helpers.Enum.LeathalPoisonSpellId)comboBoxBgPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Battleground] = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxBgPoison2.SelectedItem;
+            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.World] = (Helpers.Enum.LeathalPoisonSpellId)comboBoxLevelPoison1.SelectedItem;
+            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.World] = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxLevelPoison2.SelectedItem;
+
+            Settings.Mode.mOverrideContext = !radioButtonAuto.Checked;
+
+            if (radioButtonRaid.Checked)
+            {
+                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Raid;
+            }
+            else if (radioButtonArena.Checked)
+            {
+                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Arena;
+            }
+            else if (radioButtonDungeon.Checked)
+            {
+                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Dungeon;
+            }
+            else if (radioButtonBattleground.Checked)
+            {
+                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Battleground;
+            }
+            else if (radioButtonLevel.Checked)
+            {
+                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.World;
+            }
+
+            if (radioCooldownAlways.Checked)
+            {
+                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.Always;
+            }
+            else if (radioCooldownByFocus.Checked)
+            {
+                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.ByFocus;
+            }
+            else if (radioCooldownByBoss.Checked)
+            {
+                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.OnlyOnBosses;
+            }
+            else
+            {
+                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.Never;
+            }
+
+            if (radioSapAdds.Checked)
+            {
+                Settings.Mode.mSap = Helpers.Enum.Saps.Adds;
+            }
+            else if (radioSapTarget.Checked)
+            {
+                Settings.Mode.mSap = Helpers.Enum.Saps.Target;
+            }
+            else
+            {
+                Settings.Mode.mSap = Helpers.Enum.Saps.Never;
+            }
+
+
+            Settings.Mode.mTargeting = targeting.Checked;
+            Settings.Mode.mUseMovement = movement.Checked;
+            Settings.Mode.mMoveBehind = moveBehind.Checked;
+            Settings.Mode.mMoveBackwards = moveBackwards.Checked;
+            Settings.Mode.mAlwaysStealth = alwaysStealth.Checked;
+            Settings.Mode.mUseAoe = aoe.Checked;
+            Settings.Mode.mCrowdControl = crowdControl.Checked;
+            Settings.Mode.mPickPocket = pickPocket.Checked;
+
+
+            Close();
+        }
         private void Config_Load(object sender, EventArgs e)
         {
+
+            targeting.Checked = Settings.Mode.mTargeting;
             movement.Checked = Settings.Mode.mUseMovement;
-            aoe.Checked = Settings.Mode.mUseAoe;
             moveBehind.Checked = Settings.Mode.mMoveBehind;
+            moveBackwards.Checked = Settings.Mode.mMoveBackwards;
             alwaysStealth.Checked = Settings.Mode.mAlwaysStealth;
-            pickPocket.Checked = Settings.Mode.mPickPocket;
+            aoe.Checked = Settings.Mode.mUseAoe;
             crowdControl.Checked = Settings.Mode.mCrowdControl;
+            pickPocket.Checked = Settings.Mode.mPickPocket;
 
             comboBoxRaidPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
             comboBoxRaidPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
@@ -123,80 +212,26 @@ namespace RogueBT.UI
                     radioCooldownNever.Checked = true;
                     break;
             }
+
+            switch (Settings.Mode.mSap)
+            {
+                case Helpers.Enum.Saps.Never:
+
+                    radioSapNever.Checked = true;
+                    break;
+
+                case Helpers.Enum.Saps.Adds:
+
+                    radioSapAdds.Checked = true;
+                    break;
+
+                case Helpers.Enum.Saps.Target:
+
+                    radioSapTarget.Checked = true;
+                    break;
+            }
         }
 
-        private void buttonApply_Click(object sender, EventArgs e)
-        {
-            //if (checkBoxRaidPoison.Checked || checkBoxArenaPoison.Checked)
-            //{
-            //    var input = MessageBox.Show("WARNING: You have enabled poisons for Raid mode or Arena mode. Using Apoc's Raid Bot as your botbase will result in RogueBT being " +
-            //                                 "unable to apply poisons, regardless of context, due to a design limitation with Raid Bot. ",
-            //                                 "Warning",
-            //                                 MessageBoxButtons.OKCancel,
-            //                                 MessageBoxIcon.Exclamation);
-
-            //    if (input == DialogResult.Cancel) return;
-            //}
-
-            Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Raid]          = checkBoxRaidPoison.Checked;
-            Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Arena]         = checkBoxArenaPoison.Checked;
-            Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Dungeon]       = checkBoxDungeonPoison.Checked;
-            Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.Battleground]  = checkBoxBgPoison.Checked;
-            Settings.Mode.mUsePoisons[(int) Helpers.Enum.LocationContext.World]         = checkBoxLevelPoison.Checked;
-
-            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Raid]          = (Helpers.Enum.LeathalPoisonSpellId)comboBoxRaidPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Raid]           = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxRaidPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Arena]         = (Helpers.Enum.LeathalPoisonSpellId)comboBoxArenaPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Arena]          = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxArenaPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Dungeon]       = (Helpers.Enum.LeathalPoisonSpellId)comboBoxDungeonPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Dungeon]        = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxDungeonPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.Battleground]  = (Helpers.Enum.LeathalPoisonSpellId)comboBoxBgPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.Battleground]   = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxBgPoison2.SelectedItem;
-            Settings.Mode.mPoisonsMain[(int)Helpers.Enum.LocationContext.World]         = (Helpers.Enum.LeathalPoisonSpellId)comboBoxLevelPoison1.SelectedItem;
-            Settings.Mode.mPoisonsOff[(int)Helpers.Enum.LocationContext.World]          = (Helpers.Enum.NonLeathalPoisonSpellId)comboBoxLevelPoison2.SelectedItem;
-
-            Settings.Mode.mOverrideContext = !radioButtonAuto.Checked;
-
-            if (radioButtonRaid.Checked)
-            {
-                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Raid;
-            }
-            else if (radioButtonArena.Checked)
-            {
-                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Arena;
-            }
-            else if (radioButtonDungeon.Checked)
-            {
-                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Dungeon;
-            }
-            else if (radioButtonBattleground.Checked)
-            {
-                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.Battleground;
-            }
-            else if (radioButtonLevel.Checked)
-            {
-                Settings.Mode.mLocationSettings = Helpers.Enum.LocationContext.World;
-            }
-
-            if (radioCooldownAlways.Checked)
-            {
-                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.Always;
-            }
-            else if (radioCooldownByFocus.Checked)
-            {
-                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.ByFocus;
-            }
-            else if (radioCooldownByBoss.Checked)
-            {
-                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.OnlyOnBosses;  
-            }
-            else
-            {
-                Settings.Mode.mCooldownUse = Helpers.Enum.CooldownUse.Never;
-            }
-
-            Close();
-        }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
@@ -222,19 +257,16 @@ namespace RogueBT.UI
         private void checkAoe_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Mode.mUseAoe = aoe.Checked;
-
         }
 
         private void checkMoveBehind_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Mode.mMoveBehind = moveBehind.Checked;
-
         }
 
         private void checkAlwaysStealth_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Mode.mAlwaysStealth = alwaysStealth.Checked;
-
         }
 
         private void checkPickPocket_CheckedChanged(object sender, EventArgs e)

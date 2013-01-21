@@ -20,21 +20,39 @@ namespace RogueBT.Helpers
     {
         static public Enum.LocationContext mLocation { get; private set; }
 
-        static public void Pulse()
+        static public void Pulse()     //if (Movement.IsPVPSuiteEnabled) Settings.Mode.mUseMovement = false;
         {
+
+            Helpers.Rogue.me = StyxWoW.Me;
+
             Enum.LocationContext curLocation = !Settings.Mode.mOverrideContext ? GetCurrentLocation() : Settings.Mode.mLocationSettings;
 
             if (mLocation != curLocation)
             {
+                if (curLocation.Equals(Enum.LocationContext.Dungeon))
+                {
+                    Settings.Mode.mTargeting = false;
+                    Settings.Mode.mMoveBackwards = false;
+                    Logging.Write(LogLevel.Normal, "Instance Detected: Disabling Targeting");
+                    Logging.Write(LogLevel.Normal, "Instance Detected: Disabling Move Backwards");
+                }
+
+                if (curLocation.Equals(Enum.LocationContext.Battleground))
+                {
+                    Settings.Mode.mMoveBackwards = false;
+                    Logging.Write(LogLevel.Normal, "Battleground Detected: Disabling Move Backwards");
+                }
+
                 if (mLocation.Equals(Enum.LocationContext.Battleground) && curLocation.Equals(Enum.LocationContext.World)
                     && Helpers.Rogue.me != null && !Helpers.Rogue.me.Mounted)
-                    if (Helpers.Rogue.me.Combat && Styx.CommonBot.SpellManager.HasSpell("Vanish") && Helpers.Spells.CanCast("Vanish")) Styx.CommonBot.SpellManager.Cast("Vanish", Helpers.Rogue.mTarget);
+                    if (Helpers.Rogue.me.Combat && Styx.CommonBot.SpellManager.HasSpell("Vanish") && Helpers.Spells.CanCast("Vanish")) Styx.CommonBot.SpellManager.Cast("Vanish", Helpers.Rogue.me);
                     else if (!Helpers.Rogue.me.Combat && !Helpers.Aura.Stealth)
                     {
                         Styx.Pathing.Navigator.PlayerMover.MoveStop();
                         Styx.CommonBot.SpellManager.Cast("Stealth", Helpers.Rogue.mTarget);
                     }
                     else Styx.Pathing.Navigator.PlayerMover.MoveStop();
+
                 mLocation = curLocation;
 
                 Logging.Write(LogLevel.Normal, "");

@@ -13,6 +13,7 @@ namespace RogueBT.Settings
     {
         static public Helpers.Enum.CooldownUse mCooldownUse { get; set; }
         static public Helpers.Enum.LocationContext mLocationSettings { get; set; }
+        static public Helpers.Enum.Saps mSap { get; set; }
 
         static public Helpers.Enum.LeathalPoisonSpellId[] mPoisonsMain { get; set; }
         static public Helpers.Enum.NonLeathalPoisonSpellId[] mPoisonsOff { get; set; }
@@ -21,15 +22,17 @@ namespace RogueBT.Settings
 
         static public bool mOverrideContext { get; set; }
 
-        static public bool mUseMovement { get; set; }
         static public bool mUseCooldowns { get; set; }
-        static public bool mUseAoe { get; set; }
         static public bool mUseCombat { get; set; }
         static public bool mForceBehind { get; set; }
+        static public bool mTargeting { get; set; }
+        static public bool mUseMovement { get; set; }
         static public bool mMoveBehind { get; set; }
+        static public bool mMoveBackwards { get; set; }
         static public bool mAlwaysStealth { get; set; }
-        static public bool mPickPocket { get; set; }
+        static public bool mUseAoe { get; set; }
         static public bool mCrowdControl { get; set; }
+        static public bool mPickPocket { get; set; }
 
         static Mode()
         {
@@ -50,19 +53,21 @@ namespace RogueBT.Settings
             }
 
             mCooldownUse = Helpers.Enum.CooldownUse.Always;
+            mSap = Helpers.Enum.Saps.Adds;
 
             mOverrideContext = false;
 
-            mUseMovement = true;
             mUseCooldowns = true;
-            mUseAoe = true;
             mUseCombat = true;
             mForceBehind = false;
-
+            mTargeting = true;
+            mUseMovement = true;
             mMoveBehind = true;
+            mMoveBackwards = true;
             mAlwaysStealth = false;
-            mPickPocket = true;
+            mUseAoe = true;
             mCrowdControl = true;
+            mPickPocket = true;
         }
     }
 }

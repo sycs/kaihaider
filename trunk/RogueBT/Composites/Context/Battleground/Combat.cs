@@ -62,14 +62,8 @@ namespace RogueBT.Composites.Context.Battleground
                                 )
                             ),
 
-                new Decorator(ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1 
-                                      && Helpers.Target.GetCCTarget(),
-                    new PrioritySelector(
-                        Helpers.Spells.Cast("Blind", ret => Helpers.Rogue.mHP < 65 && Helpers.Target.BlindCCUnit != null, ret => Helpers.Target.BlindCCUnit),
-
-                        Helpers.Spells.Cast("Gouge", ret => Helpers.Target.GougeCCUnit != null, ret => Helpers.Target.GougeCCUnit)
-                    )
-                ),
+                Helpers.Target.BlindAdd(),
+                Helpers.Target.GougeAdd(),
 
                  new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented &&
                                         (Helpers.Rogue.mComboPoints > 3 || Helpers.Aura.FuryoftheDestroyer),

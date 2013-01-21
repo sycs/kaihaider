@@ -445,7 +445,8 @@ namespace RogueBT.Helpers
             }
             ShouldShiv = false;
 
-            // if (!Helpers.Rogue.me.Combat) 
+            //if (Rogue.mTarget != null && Rogue.mTarget.CurrentTarget != null && Rogue.mTarget.CurrentTarget.Guid == Helpers.Rogue.me.Guid)
+
             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, (Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) + " ");
             //Helpers.Spells.FindSpell  114014 Helpers.Spells.GetSpellCooldown("Evasion") Styx.CommonBot.SpellManager.Spells["Throw"].Id
             //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " ");

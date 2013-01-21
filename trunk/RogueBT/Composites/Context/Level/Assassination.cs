@@ -76,14 +76,9 @@ namespace RogueBT.Composites.Context.Level
                                 )
                             ),
 
-                new Decorator(ret => Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) > 1
-                                        && Helpers.Rogue.mHP < 85 && Helpers.Target.GetCCTarget(),
-                    new PrioritySelector(
-                        Helpers.Spells.Cast("Blind", ret => Helpers.Target.BlindCCUnit != null && Helpers.Target.BlindCCUnit.Distance > 10, ret => Helpers.Target.BlindCCUnit),
 
-                        Helpers.Spells.Cast("Gouge", ret => Helpers.Target.GougeCCUnit != null, ret => Helpers.Target.GougeCCUnit)
-                    )
-                ),
+                Helpers.Target.BlindAdd(),
+                Helpers.Target.GougeAdd(),
 
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 &&
                                 Helpers.Aura.TimeRecuperate < 3), // Helpers.Spells.GetAuraTimeLeft(Helpers.Rogue.me, "Recuperate") 
@@ -117,7 +112,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
-                    && !Helpers.Aura.Stealth
+                    && !Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                     && (Helpers.Rogue.mTarget.Distance > 10 && Helpers.Rogue.mTarget.Distance < 30
                     || !Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mTarget.Distance < 30 && Helpers.Rogue.mComboPoints < 5),
                     new Sequence(
@@ -153,10 +148,11 @@ namespace RogueBT.Composites.Context.Level
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
                 Helpers.Movement.PleaseStopPull(),
+                Helpers.Target.SapAdd(),
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
                 //Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) 
+                Helpers.Spells.Cast("Throw", ret => Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                     && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 3 && Helpers.Rogue.mTarget.InLineOfSight
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30),
                 new Decorator(ret => !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
@@ -170,7 +166,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Shadowstep", ret => Helpers.Rogue.mTarget.Distance > 10
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-               //Helpers.Spells.Cast("Sap", ret => Helpers.Target.IsSappable()),
+               Helpers.Spells.Cast("Sap", ret => Settings.Mode.mSap.Equals(Helpers.Enum.Saps.Target) && Helpers.Target.IsSappable(Helpers.Rogue.mTarget)),
 
 
                 new Decorator(ret => Settings.Mode.mPickPocket
@@ -246,14 +242,15 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
                 Helpers.Movement.PullMoveToTarget(),
-                Helpers.Spells.CastSelf("Sprint", ret => Helpers.Aura.Stealth)
+                Helpers.Spells.CastSelf("Sprint", ret => Helpers.Aura.Stealth),
+                 new Action(ret => RunStatus.Success)
 
             );
         }
 
         static public Composite BuildBuffBehavior()
         {
-            return new Decorator(ret => !Helpers.Rogue.me.Mounted,
+            return new Decorator(ret => !Helpers.Rogue.me.Mounted && !Helpers.Rogue.me.InVehicle,
                 new PrioritySelector(
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
@@ -261,7 +258,7 @@ namespace RogueBT.Composites.Context.Level
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
                     Helpers.Spells.CastSelf("Burst of Speed", ret => !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90
                     && Helpers.Rogue.me.IsMoving),
-                     new Decorator(ret => Settings.Mode.mAlwaysStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
+                    new Decorator(ret => Settings.Mode.mAlwaysStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                         && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
                         new Sequence(
                             Helpers.Spells.CastSelf("Stealth", ret => true),
