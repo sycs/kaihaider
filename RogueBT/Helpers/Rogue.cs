@@ -33,8 +33,9 @@ namespace RogueBT.Helpers
         static public LocalPlayer me { get; set; }
         static public double mTargetHP { get; private set; }
         static public double mHP { get; private set; }
-
+        
         static public bool spamming { get; private set; }
+        static public bool haveSapped { get; private set; }
 
         public static WoWSpec mCurrentSpec { get; private set; }
 
@@ -117,8 +118,20 @@ namespace RogueBT.Helpers
             
         }
 
+        static public bool SapLock()
+        {
+            if (!haveSapped)
+            {
+                haveSapped = true;
+                return true;
+            }
+            return false;
+
+        }
+
         static public bool ReleaseSpamLock()
         {
+            haveSapped = false;
             spamming = false;
             return true;
         }
