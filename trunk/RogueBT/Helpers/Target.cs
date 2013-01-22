@@ -31,7 +31,7 @@ namespace RogueBT.Helpers
         static public WoWUnit BlindCCUnit { get; private set; }
         static public WoWUnit GougeCCUnit { get; private set; }
         static public WoWUnit SapCCUnit { get; private set; }
-        static public ulong newTargetGUID { get; private set; }
+        static public WoWUnit newTarget { get; private set; }
 
 
         static public void Pulse()
@@ -76,13 +76,13 @@ namespace RogueBT.Helpers
                                             && !unit.IsNonCombatPet
                                             && !unit.IsCritter
                                             && !unit.IsPetBattleCritter
-                                            && (unit.Guid == newTargetGUID
-                                               || unit.IsTargetingMeOrPet
+                                            && (unit.IsTargetingMeOrPet
                                                || unit.IsTargetingMyPartyMember
                                                || unit.IsTargetingMyRaidMember
                                                || unit.IsTargetingAnyMinion
                                                || unit == Styx.CommonBot.POI.BotPoi.Current.AsObject
                                                || unit.IsPlayer && unit.ToPlayer().IsHorde != Helpers.Rogue.me.IsHorde ///from singular
+                                               || unit == newTarget
                                                || unit == botBaseUnit
                                                || unit.TaggedByMe
                                                || unit.HasAura("Blind")
@@ -125,19 +125,7 @@ namespace RogueBT.Helpers
                 
         }
 
-        static public Composite EnsureValidTarget()
-        {
-          //  if (Helpers.Rogue.mTarget != null && Helpers.Rogue.me.Combat && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Hotspot)) 
-          //  Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
-            return new Decorator(ret => Settings.Mode.mTargeting 
-                && (Rogue.mTarget == null || !Rogue.mTarget.IsAlive
-                || mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
-                || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
-                || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
-                || Rogue.mTarget.IsFriendly || Rogue.mTarget.HasAura("Sap") && mNearbyEnemyUnits.Count() > 1),
-                GetNewTarget()
-            );
-        }
+        //cancel bladefury...
         static public Composite BlindAdd()
         {       
             return new Decorator(ret => Settings.Mode.mCrowdControl && Helpers.Spells.CanCast("Blind")
@@ -218,7 +206,7 @@ namespace RogueBT.Helpers
                                     }),
                                 new Action(ret => 
                                     {
-                                        SpellManager.Cast("Pick Pocket", SapCCUnit);
+                                        SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
                                         return RunStatus.Success;
                                     }),
                                 new Action(ret => 
@@ -232,7 +220,7 @@ namespace RogueBT.Helpers
                                     {
                                         SapCCUnit.Target();
                                         Helpers.Rogue.mTarget = SapCCUnit;
-                                        newTargetGUID = SapCCUnit.Guid;
+                                        newTarget = SapCCUnit;
                                         return RunStatus.Success;
                                    } )
                                    ,new Action(ret =>
@@ -319,6 +307,20 @@ namespace RogueBT.Helpers
             return new Action();
         }
 
+        static public Composite EnsureValidTarget()
+        {
+            //  if (Helpers.Rogue.mTarget != null && Helpers.Rogue.me.Combat && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Hotspot)) 
+            //  Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
+            return new Decorator(ret => Settings.Mode.mTargeting
+                && (Rogue.mTarget == null || !Rogue.mTarget.IsAlive
+                || mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
+                || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
+                || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
+                || Rogue.mTarget.IsFriendly || Rogue.mTarget.HasAura("Sap") && mNearbyEnemyUnits.Count() > 1),
+                GetNewTarget()
+            );
+        }
+
         static private Composite GetNewTarget()
         {
             return new Action(ret =>
@@ -334,7 +336,12 @@ namespace RogueBT.Helpers
                     {
                         nextUnit = mNearbyEnemyUnits.FirstOrDefault();
 
-                        if (nextUnit != null && nextUnit.IsAlive)
+
+                        if (nextUnit != null && nextUnit.HasAura("Sap") && mNearbyEnemyUnits.Count() == 1)
+                        {
+                            Helpers.Rogue.me.ClearTarget();
+                        }
+                        else if (nextUnit != null && nextUnit.IsAlive)
                         {
                             Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
                             nextUnit.Target();
