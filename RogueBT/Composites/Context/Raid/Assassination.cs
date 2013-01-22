@@ -31,43 +31,43 @@ namespace RogueBT.Composites.Context.Raid
                                                                  Helpers.Rogue.mComboPoints >= 1),
                 Helpers.Spells.Cast("Rupture", ret => (Helpers.Aura.TimeRupture < 3 || !Helpers.Aura.Rupture) &&
                     (Helpers.Rogue.mComboPoints >= 4 && Helpers.Rogue.mTargetHP > 35 || Helpers.Rogue.mComboPoints == 5)
-                                                                 && Helpers.Movement.IsInSafeMeleeRange),
+                                                                 && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.mComboPoints >= 4 &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 4),
-                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer && Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() &&
-                                     Helpers.Aura.SliceandDice &&
-                                     Helpers.Aura.Rupture,
+                                     Helpers.Aura.SliceandDice && Helpers.Aura.Rupture && Helpers.Movement.IsInSafeMeleeRange,
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(ret => Helpers.Aura.Vendetta ||
                                                                     Helpers.Aura.TimeVendetta > 0),
                         Helpers.Spells.CastCooldown("Vendetta"),
-                        Helpers.Spells.CastCooldown("Shadow Blades"),
+                        Helpers.Spells.CastSelf("Shadow Blades"),
 
                         new Decorator(ret => Helpers.Spells.CanCast("Vanish")  &&
-                                             Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 && 
-                                             Helpers.Rogue.mComboPoints != 5,
+                                             Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 &&
+                                             Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
-                                Helpers.Spells.Cast("Garrote", ret => Helpers.Movement.IsInSafeMeleeRange)
+                                Helpers.Spells.Cast("Ambush", ret => !Helpers.Aura.IsBehind),
+                                Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsBehind)
                                 )
                             )
                     )
                 ),
 
-                Helpers.Spells.Cast("Envenom", ret =>  Helpers.Aura.DeadlyPoison && Helpers.Movement.IsInSafeMeleeRange
+                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
                                                        && (Helpers.Rogue.mComboPoints >= 4 && Helpers.Rogue.mTargetHP >= 35 && !Helpers.Aura.Blindside
                                                        || (Helpers.Rogue.mCurrentEnergy >= 55 && Helpers.Rogue.mComboPoints == 5 && Helpers.Rogue.mTargetHP < 35)
                                 && (!Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 90 || Helpers.Aura.TimeSliceandDice <= 3 && Helpers.Rogue.mComboPoints >= 1))),
                 Helpers.Spells.Cast("Dispatch", ret => (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside) 
                                                         && ((!Helpers.Aura.Rupture || (Helpers.Rogue.mCurrentEnergy >= 80 || Helpers.Aura.Envenom)))
-                                                       && Helpers.Movement.IsInSafeMeleeRange),
+                                                       && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable()
                                                             && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                 Helpers.Spells.Cast("Mutilate", ret => !Helpers.Aura.Rupture
-                                             || (Helpers.Rogue.mComboPoints < 5 && (Helpers.Rogue.mCurrentEnergy >= 90 || Helpers.Aura.Envenom)) 
-                                                       && Helpers.Movement.IsInSafeMeleeRange),
+                                             || (Helpers.Rogue.mComboPoints < 5 && (Helpers.Rogue.mCurrentEnergy >= 90 || Helpers.Aura.Envenom))
+                                                       && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20

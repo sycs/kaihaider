@@ -33,6 +33,8 @@ namespace RogueBT.Helpers
                 {
                     Settings.Mode.mTargeting = false;
                     Settings.Mode.mMoveBackwards = false;
+                    Settings.Mode.mCrowdControl = false;
+                    Logging.Write(LogLevel.Normal, "Instance Detected: Disabling Crowd Control");
                     Logging.Write(LogLevel.Normal, "Instance Detected: Disabling Targeting");
                     Logging.Write(LogLevel.Normal, "Instance Detected: Disabling Move Backwards");
                 }
@@ -41,6 +43,16 @@ namespace RogueBT.Helpers
                 {
                     Settings.Mode.mMoveBackwards = false;
                     Logging.Write(LogLevel.Normal, "Battleground Detected: Disabling Move Backwards");
+                }
+
+                if (curLocation.Equals(Enum.LocationContext.World))
+                {
+                    Settings.Mode.mTargeting = true;
+                    Settings.Mode.mCrowdControl = true;
+                    Settings.Mode.mMoveBackwards = true;
+                    Logging.Write(LogLevel.Normal, "World Detected: Enabling Targeting");
+                    Logging.Write(LogLevel.Normal, "World Detected: Enabling Crowd Control");
+                    Logging.Write(LogLevel.Normal, "World Detected: Enabling Move Backwards");
                 }
 
                 if (mLocation.Equals(Enum.LocationContext.Battleground) && curLocation.Equals(Enum.LocationContext.World)
