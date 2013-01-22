@@ -87,7 +87,7 @@ namespace RogueBT.Helpers
                                                || unit.TaggedByMe
                                                || unit.HasAura("Blind")
                                                || unit.HasAura("Gouge")
-                                               || unit.HasAura("Sap"))
+                                               || unit == SapCCUnit)
                                             && unit.Distance <= 40
                                             && unit.Attackable
                                             && unit.CanSelect
@@ -215,16 +215,18 @@ namespace RogueBT.Helpers
                                         SpellManager.Cast("Sap", Helpers.Rogue.mTarget);
                                         // Helpers.Spells.Cast("Sap", ret2 => true);
                                    } ),
-                                new Action(ret => 
-                                    {
+                                new Action(ret =>
+                                {
+                                    Helpers.Rogue.CreateWaitForLagDuration();
+                                    Helpers.Rogue.CreateWaitForLagDuration();
+                                    newTarget = Helpers.Rogue.mTarget;
                                         SapCCUnit.Target();
                                         Helpers.Rogue.mTarget = SapCCUnit;
-                                        newTarget = SapCCUnit;
+                                        SapCCUnit = newTarget;
+                                        newTarget = Helpers.Rogue.mTarget;
                                    } )
                                    ,new Action(ret =>
                                    {
-                                       Helpers.Rogue.CreateWaitForLagDuration();
-                                       Helpers.Rogue.CreateWaitForLagDuration();
                                        if( !Helpers.Rogue.me.MovementInfo.IsStrafing )
                                        Styx.Pathing.Navigator.PlayerMover.MoveStop();
                                        return RunStatus.Success;
@@ -232,7 +234,8 @@ namespace RogueBT.Helpers
                                    //,new Action(ret =>RunStatus.Failure)
                                    )),
                             new Decorator(ret => SapCCUnit != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
-                                    && SapCCUnit.Distance > System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + SapCCUnit.CombatReach),
+                                    && SapCCUnit.Distance > System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + SapCCUnit.CombatReach)
+                                    && Helpers.Rogue.SapLock(),
                                 new Action(ret =>
                                 {
                                     Styx.Pathing.Navigator.MoveTo(SapCCUnit.Location);
@@ -243,10 +246,9 @@ namespace RogueBT.Helpers
                                 new Sequence(
                                     new Action(ret =>
                                     {
-
                                         if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
-                                    Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                    return RunStatus.Success;
+                                            Styx.Pathing.Navigator.PlayerMover.MoveStop();
+                                        return RunStatus.Success;
                                     }),
                                     new Action(ret =>
                                     {
@@ -271,15 +273,14 @@ namespace RogueBT.Helpers
                                     Logging.Write(LogLevel.Normal, "Sapping Add");
                                     SpellManager.Cast("Sap", SapCCUnit);
                                     //Helpers.Spells.Cast("Sap", ret2 => true, ret2 => SapCCUnit);
-                                    SapCCUnit = null;
                                     //return RunStatus.Failure;
                                     })
                                    ,new Action(ret =>
                                    {
                                        if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
                                            Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                           return RunStatus.Failure;
-                                       })
+                                       return RunStatus.Failure;
+                                   })
                                    ))
                                 ),
 
