@@ -36,8 +36,8 @@ namespace RogueBT.Composites.Context.Level
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
 
 
-                Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint &&
-                    Helpers.Rogue.mTarget.IsWithinMeleeRange),
+                Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && ! Helpers.Aura.Stealth
+                            && Helpers.Rogue.mTarget.IsWithinMeleeRange),
 
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 85 &&
                                 Helpers.Aura.TimeRecuperate < 3), 
@@ -188,6 +188,8 @@ namespace RogueBT.Composites.Context.Level
                 ),
                 Helpers.Movement.PleaseStopPull(),
                 Helpers.Target.SapAdd(),
+
+
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.ChkFace(),
                 //Helpers.Movement.MoveToLos(),

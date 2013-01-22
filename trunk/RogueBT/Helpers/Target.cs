@@ -214,17 +214,16 @@ namespace RogueBT.Helpers
                                         Logging.Write(LogLevel.Normal, "Sapping Target, switching targets");
                                         SpellManager.Cast("Sap", Helpers.Rogue.mTarget);
                                         // Helpers.Spells.Cast("Sap", ret2 => true);
-                                        return RunStatus.Success;
                                    } ),
                                 new Action(ret => 
                                     {
                                         SapCCUnit.Target();
                                         Helpers.Rogue.mTarget = SapCCUnit;
                                         newTarget = SapCCUnit;
-                                        return RunStatus.Success;
                                    } )
                                    ,new Action(ret =>
                                    {
+                                       Helpers.Rogue.CreateWaitForLagDuration();
                                        Helpers.Rogue.CreateWaitForLagDuration();
                                        if( !Helpers.Rogue.me.MovementInfo.IsStrafing )
                                        Styx.Pathing.Navigator.PlayerMover.MoveStop();
@@ -274,7 +273,6 @@ namespace RogueBT.Helpers
                                     //Helpers.Spells.Cast("Sap", ret2 => true, ret2 => SapCCUnit);
                                     SapCCUnit = null;
                                     //return RunStatus.Failure;
-                                    return RunStatus.Success;
                                     })
                                    ,new Action(ret =>
                                    {
@@ -288,7 +286,7 @@ namespace RogueBT.Helpers
                         
                         new Action(ret =>
                         {
-                            SapCCUnit = null;
+                            //SapCCUnit = null;
                             return RunStatus.Failure;
                         })
 
