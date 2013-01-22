@@ -41,9 +41,10 @@ namespace RogueBT.Composites.Context.Raid
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
 
                         Helpers.Spells.Cast("Rupture", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                    Helpers.Aura.TimeRupture < 3 && Helpers.Movement.IsInSafeMeleeRange),
+                                    Helpers.Aura.TimeRupture < 3 && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 //!Helpers.Aura.Sanguinary Vein 
-                        Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Movement.IsInSafeMeleeRange)
+                        Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish)
+                                        && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement))
                     )
 
                 ),
@@ -76,6 +77,7 @@ namespace RogueBT.Composites.Context.Raid
                                 Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.IsBehind)
                             )
                         ),
+                        Helpers.Spells.CastSelf("Shadow Blades"),
                         Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
                     )
                 ),
@@ -86,17 +88,19 @@ namespace RogueBT.Composites.Context.Raid
                                      Helpers.Aura.TimeRupture < 3 ||
                                      Helpers.Aura.ShadowDance))),
                     new PrioritySelector(
-                        Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                            Helpers.Aura.IsBehind),
+                        Helpers.Spells.Cast("Ambush", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                            && (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) && Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
-                        Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
+                        Helpers.Spells.Cast("Hemorrhage", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                            && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                     && Helpers.Aura.TimeHemorrhage < 3),
-                        Helpers.Spells.Cast("Backstab", ret => Helpers.Movement.IsInSafeMeleeRange && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                                    Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
-                        Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mCurrentEnergy > 70 &&
-                        !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                                                                 && !Helpers.Aura.IsBehind)
+                        Helpers.Spells.Cast("Backstab", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                            && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
+                                                   && Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
+                        Helpers.Spells.Cast("Hemorrhage", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                            && Helpers.Rogue.mCurrentEnergy > 70 && !Helpers.Aura.IsBehind
+                          && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) )
                     )
                 ),
 

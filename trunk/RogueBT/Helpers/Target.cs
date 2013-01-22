@@ -289,6 +289,7 @@ namespace RogueBT.Helpers
                         new Action(ret =>
                         {
                             SapCCUnit = null;
+                            return RunStatus.Failure;
                         })
 
                )

@@ -241,7 +241,7 @@ namespace RogueBT.Helpers
         public static Composite ChkFace()
         { 
             return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
-                && ((!Rogue.mTarget.IsPlayer) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+                && ((!Rogue.mTarget.IsPlayer && Helpers.Movement.IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Sequence(
                                               new Action(ret =>
                                             {
@@ -298,7 +298,7 @@ namespace RogueBT.Helpers
                     new Decorator(ret => Rogue.mTarget.IsPlayer || Rogue.mTarget.CurrentTarget == null || Rogue.mTarget.CurrentTarget != Helpers.Rogue.me,
                                   new Sequence(
                                       new DecoratorContinue(
-                                          ret => (!Helpers.Rogue.me.IsMoving || Rogue.mTarget.IsMoving)
+                                          ret => (!(Helpers.Rogue.me.IsMoving && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) || Rogue.mTarget.IsMoving)
                                          && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange ),
                                           new PrioritySelector(
                                               new Decorator(

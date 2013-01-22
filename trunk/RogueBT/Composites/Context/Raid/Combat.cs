@@ -27,46 +27,56 @@ namespace RogueBT.Composites.Context.Raid
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033) &&
                     Helpers.Rogue.mTarget.IsWithinMeleeRange),
 
-
                 Helpers.Spells.CastSelf("Blade Flurry", ret => Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.BladeFlurry
                                                                 && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.IsWithinMeleeRange) > 1
                                                                && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 4)),
 
-                new Decorator(ret => Helpers.Rogue.IsAoeUsable() &&  Helpers.Aura.BladeFlurry
+                new Decorator(ret => Helpers.Rogue.IsAoeUsable() &&  Helpers.Aura.BladeFlurry && !Helpers.Rogue.me.HasAura("Killing Spree")
                     && (Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) < 2 || Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 15) > 3)
                     , // Ugly. Find a way to cancel auras without Lua.
                     new Action(ret => Lua.DoString("RunMacroText('/cancelaura Blade Flurry');"))
                 ),
-
-
                 Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.mComboPoints > 4 &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
 
                 Helpers.Spells.CastSelf("Slice and Dice", ret => (Helpers.Rogue.mComboPoints >= 1 || 
                                                                  Helpers.Aura.FuryoftheDestroyer) && 
-                                                                 Helpers.Aura.TimeSliceandDice < 1),
+                                                                 Helpers.Aura.TimeSliceandDice < 2),
 
-		        Helpers.Spells.Cast("Rupture",         ret => Helpers.Rogue.mComboPoints > 4 && 
-								(Helpers.Aura.TimeRupture < 3|| !Helpers.Aura.Rupture)),
+                Helpers.Spells.Cast("Rupture", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                                 && Helpers.Aura.RevealingStrike && Helpers.Rogue.mComboPoints > 4 && !Helpers.Aura.BladeFlurry
+								 && (Helpers.Aura.TimeRupture < 3|| !Helpers.Aura.Rupture)),
 
-                Helpers.Spells.Cast("Eviscerate",         ret => (Helpers.Rogue.mComboPoints == 5 && (Helpers.Rogue.mCurrentEnergy >= 65 ||
-                                                                 Helpers.Aura.AdrenalineRush)) || 
-                                                                 Helpers.Aura.FuryoftheDestroyer),
+                Helpers.Spells.Cast("Eviscerate", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                                        && Helpers.Aura.RevealingStrike && (Helpers.Rogue.mComboPoints == 5 
+                                        && (Helpers.Rogue.mCurrentEnergy >= 65 || Helpers.Aura.AdrenalineRush))
+                                                                 ||  Helpers.Aura.FuryoftheDestroyer),
 
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice
-                                     && (Helpers.Aura.ModerateInsight || Helpers.Aura.DeepInsight) 
-                                     && Helpers.Movement.IsInSafeMeleeRange
+                                     && (Helpers.Aura.ModerateInsight || Helpers.Aura.DeepInsight)
+                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
                                      && Helpers.Rogue.mCurrentEnergy <= 30,
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(),
-                        Helpers.Spells.CastSelf("Adrenaline Rush")
+                        Helpers.Spells.CastSelf("Adrenaline Rush"),
+                        Helpers.Spells.CastSelf("Shadow Blades"),
+                        new Decorator(ret => Helpers.Spells.CanCast("Vanish") && ! Helpers.Aura.AdrenalineRush
+                                             && Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100
+                                             && Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange,
+                            new Sequence(
+                                Helpers.Spells.CastSelf("Vanish"),
+                                Helpers.Rogue.CreateWaitForLagDuration(),
+                                Helpers.Spells.Cast("Ambush", ret => !Helpers.Aura.IsBehind),
+                                Helpers.Spells.Cast("Garrote", ret => Helpers.Aura.IsBehind)
+                                )
+                            )
                     )
                 ),
 
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable()  &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
-                Helpers.Spells.Cast("Revealing Strike", ret => !Helpers.Aura.RevealingStrike && Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Rogue.mComboPoints < 5 && Helpers.Movement.IsInSafeMeleeRange),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
+                Helpers.Spells.Cast("Revealing Strike", ret => !Helpers.Aura.RevealingStrike && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
+                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Rogue.mComboPoints < 5 && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
 
                 Helpers.Movement.MoveToTarget(),
 
