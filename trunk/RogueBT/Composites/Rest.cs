@@ -51,7 +51,7 @@ namespace RogueBT.Composites
                                                                                       Helpers.Rogue.me, "Recuperate") &&
                                                                                   Helpers.Rogue.CheckSpamLock()),
                                      new Decorator(
-                                         ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 70,
+                                         ret => Consumable.GetBestFood(true) != null && Helpers.Rogue.mHP <= 70 && !Helpers.Rogue.me.MovementInfo.IsStrafing,
                                          new PrioritySelector(
                                              new Decorator(ret => Helpers.Rogue.me.IsMoving,
                                                            new Action(ret => Navigator.PlayerMover.MoveStop())

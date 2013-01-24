@@ -18,6 +18,7 @@ namespace RogueBT.Helpers
         static public bool Paralytic { get; private set; }
         static public bool Leeching { get; private set; }
         //Rogue
+        static public bool Evasion { get; private set; }
         static public bool Feint { get; private set; }
         static public bool Stealth { get; private set; }
         static public bool Vanish { get; private set; }
@@ -99,7 +100,7 @@ namespace RogueBT.Helpers
             DeadlyPoison = false; Vendetta = false; Blindside = false; RevealingStrike = false;//MasterOfSubtlety = false;  
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false; AdrenalineRush = false;
             CripplingPoison = false; LeechingPoison = false; Feint = false; ShouldBurst = false;
-            DeadlyThrow = false;
+            DeadlyThrow = false; Evasion = false;
             FaerieFire = false;
 
             HealingGhost = false;
@@ -164,6 +165,11 @@ namespace RogueBT.Helpers
                     switch (aura.Name) //goto case ; 
                     {
 
+                        case "Evasion":
+                            {
+                                Evasion = true;
+                                break;
+                            }
                         case "Feint": 
                             {
                                 Feint = true;
@@ -225,6 +231,7 @@ namespace RogueBT.Helpers
 
                         case "Stealth":
                             {
+                                if(aura.CreatorGuid == Helpers.Rogue.me.Guid)
                                 Stealth = true;
                                 break;
                             }

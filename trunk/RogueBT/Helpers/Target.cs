@@ -33,6 +33,12 @@ namespace RogueBT.Helpers
         static public WoWUnit SapCCUnit { get; private set; }
         static public WoWUnit newTarget { get; private set; }
 
+        static public bool aoeSafe { get; private set; }
+
+        static public ulong BlindCCUnitGUID { get; private set; }
+        static public ulong GougeCCUnitGUID { get; private set; }
+        static public ulong SapCCUnitGUID { get; private set; }
+        static public ulong newTargetGUID { get; private set; }
 
         static public void Pulse()
         {
@@ -41,7 +47,6 @@ namespace RogueBT.Helpers
             //SapCCUnit = null;
             botBaseUnit = Targeting.Instance.FirstUnit;
             mHostileUnits = null;
-
 
             switch (Helpers.Area.mLocation)
             {
@@ -82,12 +87,17 @@ namespace RogueBT.Helpers
                                                || unit.IsTargetingAnyMinion
                                                || unit == Styx.CommonBot.POI.BotPoi.Current.AsObject
                                                || unit.IsPlayer && unit.ToPlayer().IsHorde != Helpers.Rogue.me.IsHorde ///from singular
-                                               || unit == newTarget
                                                || unit == botBaseUnit
                                                || unit.TaggedByMe
-                                               || unit.HasAura("Blind")
-                                               || unit.HasAura("Gouge")
-                                               || unit == SapCCUnit)
+                                               || unit.Guid == newTargetGUID
+                                               || unit.Guid == BlindCCUnitGUID
+                                               || unit.Guid == GougeCCUnitGUID
+                                               || unit.Guid == SapCCUnitGUID
+                                               //|| unit == newTarget
+                                               //|| unit.HasAura("Blind")
+                                               //|| unit.HasAura("Gouge")
+                                               //|| unit == SapCCUnit
+                                               )
                                             && unit.Distance <= 40
                                             && unit.Attackable
                                             && unit.CanSelect
@@ -95,6 +105,13 @@ namespace RogueBT.Helpers
                                             && !(System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 3 && Helpers.Movement.IsAboveTheGround(unit))
                                             && !unit.IsFriendly)
                                         .OrderBy(unit => unit.Distance).ToList();
+                        
+                        aoeSafe = mNearbyEnemyUnits.Count(unit =>
+                            (unit.Guid == Helpers.Target.BlindCCUnitGUID && unit.HasAura("Blind")
+                                || unit.Guid == Helpers.Target.GougeCCUnitGUID && unit.HasAura("Gouge")
+                                || unit.Guid == Helpers.Target.SapCCUnitGUID && unit.HasAura("Sap"))
+                            && unit.Distance < 11) == 0;
+
                         break;
                     }
                 default:
@@ -127,8 +144,8 @@ namespace RogueBT.Helpers
 
         //cancel bladefury...
         static public Composite BlindAdd()
-        {       
-            return new Decorator(ret => Settings.Mode.mCrowdControl && Helpers.Spells.CanCast("Blind")
+        {
+            return new Decorator(ret => Settings.Mode.mCrowdControl && Helpers.Spells.CanCast("Blind") && Helpers.Rogue.me != null
                                         && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) > 1
                                         && Helpers.Rogue.mHP < 85,
                 new Sequence(
@@ -138,11 +155,14 @@ namespace RogueBT.Helpers
                                     unit != Helpers.Rogue.mTarget
                                     && unit.IsTargetingMeOrPet
                                     && unit.CurrentHealth >= (Helpers.Rogue.me.MaxHealth * 0.3)
-                                    && unit.Distance <= 15 && (unit.Distance > 10 || Helpers.Rogue.mHP < 45)
-                                    && !unit.HasAura("Gouge") && !unit.HasAura("Sap"));
+                                    && unit.Distance <= 15 && (unit.Distance > 10 || Helpers.Rogue.mHP < 35)
+                                    //&& !unit.HasAura("Gouge") && !unit.HasAura("Sap")
+                                    && !(unit.Guid == GougeCCUnitGUID && unit.HasAura("Gouge")) && !(unit.Guid == SapCCUnitGUID && unit.HasAura("Sap"))
+                                    );
 
                         BlindCCUnit = AddsOnMe.FirstOrDefault();
-
+                        if (BlindCCUnit != null)
+                        BlindCCUnitGUID = BlindCCUnit.Guid;
                         Logging.Write(LogLevel.Diagnostic, "Setting Blind target");
                     }),
 
@@ -151,7 +171,7 @@ namespace RogueBT.Helpers
         }
         static public Composite GougeAdd()
         {
-            return new Decorator(ret => Settings.Mode.mCrowdControl && Helpers.Spells.CanCast("Gouge")
+            return new Decorator(ret => Settings.Mode.mCrowdControl && Helpers.Spells.CanCast("Gouge") && Helpers.Rogue.me != null
                                         && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1
                                         && Helpers.Rogue.mHP < 85,
                 new Sequence(
@@ -161,12 +181,15 @@ namespace RogueBT.Helpers
                                     unit != Helpers.Rogue.mTarget
                                     && unit.IsTargetingMeOrPet
                                     && unit.CurrentHealth >= (Helpers.Rogue.me.MaxHealth * 0.3)
-                                    && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + Helpers.Rogue.mTarget.CombatReach)
                                     && Helpers.Rogue.me.IsFacing(unit.Location)
-                                    && !unit.HasAura("Blind") && !unit.HasAura("Sap"));
+                                    //&& !unit.HasAura("Blind") && !unit.HasAura("Sap")
+                                    && !(unit.Guid == BlindCCUnitGUID && unit.HasAura("Blind"))
+                                    && !(unit.Guid == SapCCUnitGUID && unit.HasAura("Sap"))
+                                    && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + unit.CombatReach));
 
                                 GougeCCUnit = AddsOnMe.FirstOrDefault();
-
+                                if (GougeCCUnit != null)
+                                GougeCCUnitGUID = GougeCCUnit.Guid;
                                Logging.Write(LogLevel.Diagnostic, "Setting Gouge target");
                             }),
 
@@ -179,8 +202,8 @@ namespace RogueBT.Helpers
         {
             return new Decorator(ret => Settings.Mode.mSap.Equals(Helpers.Enum.Saps.Adds) && Helpers.Spells.CanCast("Sap")
                 && !Rogue.me.IsActuallyInCombat && Aura.Stealth && Rogue.mTarget.Distance < 25
-                && mHostileUnits != null && mNearbyEnemyUnits.Count(unit => unit.HasAura("Sap")) == 0
-                && mHostileUnits.Count(unit => unit.Location.Distance(Rogue.mTarget.Location) <= 25 && IsSappable(unit) && unit.InLineOfSight) > 1,
+                && mHostileUnits != null && mNearbyEnemyUnits.Count(unit => unit.Guid == SapCCUnitGUID && unit.HasAura("Sap")) == 0
+                && mHostileUnits.Count(unit => unit.Location.Distance(Rogue.mTarget.Location) <= 25 && IsSappable(unit)) > 1,
                 new Sequence(
                        new Action(ret =>
                             {
@@ -217,9 +240,14 @@ namespace RogueBT.Helpers
                                    } ),
                                 new Action(ret =>
                                 {
-                                    Helpers.Rogue.CreateWaitForLagDuration();
-                                    Helpers.Rogue.CreateWaitForLagDuration();
+                                    newTargetGUID = Helpers.Rogue.mTarget.Guid;
+                                    SapCCUnitGUID = Helpers.Rogue.mTarget.Guid;
                                     newTarget = Helpers.Rogue.mTarget;
+                                    SapCCUnit.Target(); 
+                                   } ),
+                                new WaitContinue(System.TimeSpan.FromMilliseconds(2000), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
+                                new Action(ret =>
+                                {
                                         SapCCUnit.Target();
                                         Helpers.Rogue.mTarget = SapCCUnit;
                                         SapCCUnit = newTarget;
@@ -272,6 +300,7 @@ namespace RogueBT.Helpers
                                     {
                                     Logging.Write(LogLevel.Normal, "Sapping Add");
                                     SpellManager.Cast("Sap", SapCCUnit);
+                                    SapCCUnitGUID = SapCCUnit.Guid;
                                     //Helpers.Spells.Cast("Sap", ret2 => true, ret2 => SapCCUnit);
                                     //return RunStatus.Failure;
                                     })
@@ -297,7 +326,7 @@ namespace RogueBT.Helpers
 
         static public bool IsSappable(WoWUnit unit) //Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(unit) && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + Rogue.mTarget.CombatReach)
         {
-            return unit != null  && !unit.HasAura("Sap") && !unit.Combat
+            return unit != null && !(unit.Guid == SapCCUnitGUID && unit.HasAura("Sap")) && !unit.Combat
                    && (unit.IsBeast || unit.IsDemon || unit.IsDragon || unit.IsHumanoid);
 
         }
@@ -315,8 +344,9 @@ namespace RogueBT.Helpers
                 && (Rogue.mTarget == null || !Rogue.mTarget.IsAlive
                 || mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
                 || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
-                || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
-                || Rogue.mTarget.IsFriendly || Rogue.mTarget.HasAura("Sap") && mNearbyEnemyUnits.Count() > 1),
+                || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) 
+                            && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
+                || Rogue.mTarget.IsFriendly || (Rogue.mTarget.Guid == SapCCUnitGUID && Rogue.mTarget.HasAura("Sap")) && mNearbyEnemyUnits.Count() > 1),
                 GetNewTarget()
             );
         }
@@ -325,7 +355,8 @@ namespace RogueBT.Helpers
         {
             return new Action(ret =>
                 {
-                    var nextUnit = mNearbyEnemyUnits.Where(unit => !(unit.HasAura("Sap") || unit.HasAura("Blind"))).FirstOrDefault();
+                    var nextUnit = mNearbyEnemyUnits.Where(unit => 
+                        !(unit.Guid == SapCCUnitGUID && unit.HasAura("Sap") || unit.Guid == BlindCCUnitGUID && unit.HasAura("Blind"))).FirstOrDefault();
 
                     if (nextUnit != null && nextUnit.IsAlive)
                     {
@@ -337,7 +368,7 @@ namespace RogueBT.Helpers
                         nextUnit = mNearbyEnemyUnits.FirstOrDefault();
 
 
-                        if (nextUnit != null && nextUnit.HasAura("Sap") && mNearbyEnemyUnits.Count() == 1)
+                        if (nextUnit != null && nextUnit.Guid == SapCCUnitGUID && nextUnit.HasAura("Sap") && mNearbyEnemyUnits.Count() == 1)
                         {
                             Helpers.Rogue.me.ClearTarget();
                         }

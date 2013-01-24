@@ -36,12 +36,14 @@ namespace RogueBT.Helpers
         
         static public bool spamming { get; private set; }
         static public bool haveSapped { get; private set; }
+        static public int pickCount { get; set; }
 
         public static WoWSpec mCurrentSpec { get; private set; }
 
 
         static Rogue()
         {
+            pickCount = 3;
             if (Helpers.Rogue.me == null && StyxWoW.Me != null)
                 Helpers.Rogue.me = StyxWoW.Me;
             if (Helpers.Rogue.me != null)
@@ -106,7 +108,32 @@ namespace RogueBT.Helpers
 
 
         }
-        
+
+        static public Composite PickPocket()
+        {
+            return new Decorator(ret => Settings.Mode.mPickPocket
+                    && Helpers.Aura.Stealth && Helpers.Movement.IsInAttemptMeleeRange  //Helpers.Rogue.mTarget.Distance < 10 
+                    && Styx.CommonBot.SpellManager.HasSpell("Pick Pocket"),
+                    new Sequence(
+                        new DecoratorContinue(ret => Settings.Mode.mSWPick && Helpers.Rogue.mTarget.Distance < 10 && !Helpers.Rogue.me.MovementInfo.IsStrafing,
+                            new Action(ret => Styx.Pathing.Navigator.PlayerMover.MoveStop())),
+                //Pick Pocket's Window - Is Avoiding Wait Possible?
+                //Styx.CommonBot.LootTargeting.LootFrameIsOpen,
+                //new Action(ret => Styx.CommonBot.Frames.LootFrame.Instance.LootAll())),
+                        new Action(ret =>
+                        {
+                            Helpers.Rogue.pickCount--;
+                            Styx.CommonBot.SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
+                            return RunStatus.Success;
+                        }),
+                        new Decorator(ret => Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
+                            new WaitContinue(System.TimeSpan.FromMilliseconds(2500), ret => false, new ActionAlwaysSucceed()))
+                    )
+                );
+
+        }
+
         static public bool CheckSpamLock()
         {
             if(!spamming)
@@ -131,6 +158,7 @@ namespace RogueBT.Helpers
 
         static public bool ReleaseSpamLock()
         {
+            pickCount = 3;
             haveSapped = false;
             spamming = false;
             return true;
@@ -158,7 +186,6 @@ namespace RogueBT.Helpers
                     new Decorator(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast ,
                         new PrioritySelector(
                             Helpers.Spells.CastCooldown("Kick", ret => true)
-
                                 )),
 
                     new Decorator(ret => !Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast,
@@ -169,7 +196,11 @@ namespace RogueBT.Helpers
                                 )),
 
                     Helpers.Spells.CastCooldown("Gouge", ret => 
-                                Helpers.Rogue.mTarget.IsSafelyFacing(Helpers.Rogue.me)))
+                                Helpers.Rogue.mTarget.IsSafelyFacing(Helpers.Rogue.me)),
+                                
+                    Helpers.Spells.CastCooldown("Deadly Throw", ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast
+                               && Helpers.Rogue.mComboPoints > 4 && Helpers.Rogue.mTarget.Distance > 5)
+                                )
             );
         }
 
@@ -200,7 +231,7 @@ namespace RogueBT.Helpers
         static public bool IsCloakUsable()
         {
             return Target.mNearbyEnemyUnits.Any(unit => unit.CurrentTarget != null &&
-                                                        unit.CurrentTarget.Guid == Helpers.Rogue.me.Guid &&
+                                                        unit.CurrentTargetGuid == Helpers.Rogue.me.Guid &&
                                                         unit.IsCasting &&
                                                         unit.CurrentCastTimeLeft.TotalSeconds <= 0.5 &&
                                                         (!unit.IsWithinMeleeRange ||
@@ -249,6 +280,7 @@ namespace RogueBT.Helpers
                 return new PrioritySelector
                         (new Decorator
                              (ret => Helpers.Rogue.me != null && !Helpers.Rogue.me.IsMoving && !Helpers.Rogue.me.Mounted
+                                 
                                  && Aura.NeedsPoison && !(Aura.Wound || Aura.Deadly) && Helpers.Rogue.mHP > 40
                                      && (bool)Settings.Mode.mUsePoisons[(int)Area.mLocation] && 
                            SpellManager.HasSpell((int)Settings.Mode.mPoisonsMain[(int)Area.mLocation]),

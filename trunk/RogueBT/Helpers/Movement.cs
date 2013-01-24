@@ -207,27 +207,21 @@ namespace RogueBT.Helpers
 
         public static Composite PleaseStop()
         {
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && IsInSafeMeleeRange 
+            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && Rogue.mTarget.Distance < 10 
                 && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
                  && StopRunning() && directionChange,
-                new Action(ret => {
-                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
-                directionChange = false;
-                Navigator.PlayerMover.MoveStop();
+                new Action(ret => 
+                {
+                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "please stop");
+                    directionChange = false;
+                    Navigator.PlayerMover.MoveStop();
                 }));
         }
         public static Composite PleaseStopPull()
         {
-            return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && Rogue.mTarget.Distance < 10 
-                && !Helpers.Rogue.me.MovementInfo.IsStrafing && !Helpers.Rogue.me.MovementInfo.MovingBackward
-                 && StopRunning() && directionChange,
-                new Sequence(new Action(ret =>
-                {
-                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "please stop");
-                    directionChange = false;
-                    Navigator.PlayerMover.MoveStop();
-                })
-                ,new Action(ret => RunStatus.Failure))
+            return new Sequence(
+                PleaseStop(),
+                new CommonBehaviors.Actions.ActionAlwaysFail()
                 );
         }
 

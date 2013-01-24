@@ -17,7 +17,7 @@ using Styx.Helpers;
 using Styx.TreeSharp;
 
 
-[assembly: System.Reflection.AssemblyVersion("0.3.2.10")]
+[assembly: System.Reflection.AssemblyVersion("0.3.3.1")]
 
 namespace RogueBT
 {
@@ -41,7 +41,7 @@ namespace RogueBT
             Logging.Write(LogLevel.Normal, "RogueBT is now operational.");
             Logging.Write(LogLevel.Normal, "");
             Logging.Write(LogLevel.Normal, "Your feedback is appreciated. Please leave some in the forum thread at:");
-            Logging.Write(LogLevel.Normal, "http://www.thebuddyforum.com/honorbuddy-forum/classes/rogue/...");
+            Logging.Write(LogLevel.Normal, "http://www.thebuddyforum.com/honorbuddy-forum/combat-routines/rogue/100780-roguebt.html");
             Logging.Write(LogLevel.Normal, "");
             Logging.Write(LogLevel.Normal, "");
         }

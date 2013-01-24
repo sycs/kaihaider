@@ -100,6 +100,8 @@ namespace RogueBT.UI
             Settings.Mode.mUseAoe = aoe.Checked;
             Settings.Mode.mCrowdControl = crowdControl.Checked;
             Settings.Mode.mPickPocket = pickPocket.Checked;
+            Settings.Mode.mSWPick = swPick.Checked;
+            Settings.Mode.mFeint = feint.Checked;
 
 
             Close();
@@ -115,6 +117,8 @@ namespace RogueBT.UI
             aoe.Checked = Settings.Mode.mUseAoe;
             crowdControl.Checked = Settings.Mode.mCrowdControl;
             pickPocket.Checked = Settings.Mode.mPickPocket;
+            swPick.Checked = Settings.Mode.mSWPick;
+            feint.Checked = Settings.Mode.mFeint;
 
             comboBoxRaidPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
             comboBoxRaidPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));
@@ -244,14 +248,10 @@ namespace RogueBT.UI
             combatControl.Show();
         }
 
-        private void checkCrowdControl_CheckedChanged(object sender, EventArgs e)
+
+        private void checkAlwaysStealth_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Mode.mCrowdControl = crowdControl.Checked;
-        }
-        
-        private void checkMovement_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Mode.mUseMovement = movement.Checked;
+            Settings.Mode.mAlwaysStealth = alwaysStealth.Checked;
         }
 
         private void checkAoe_CheckedChanged(object sender, EventArgs e)
@@ -259,14 +259,9 @@ namespace RogueBT.UI
             Settings.Mode.mUseAoe = aoe.Checked;
         }
 
-        private void checkMoveBehind_CheckedChanged(object sender, EventArgs e)
+        private void checkCrowdControl_CheckedChanged(object sender, EventArgs e)
         {
-            Settings.Mode.mMoveBehind = moveBehind.Checked;
-        }
-
-        private void checkAlwaysStealth_CheckedChanged(object sender, EventArgs e)
-        {
-            Settings.Mode.mAlwaysStealth = alwaysStealth.Checked;
+            Settings.Mode.mCrowdControl = crowdControl.Checked;
         }
 
         private void checkPickPocket_CheckedChanged(object sender, EventArgs e)
@@ -274,6 +269,29 @@ namespace RogueBT.UI
             Settings.Mode.mPickPocket = pickPocket.Checked;
 
         }
+
+        private void checkSWPick_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mSWPick = swPick.Checked;
+
+        }
+
+        private void checkFeint_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mFeint = pickPocket.Checked;
+
+        }
+        
+        private void checkMovement_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mUseMovement = movement.Checked;
+        }
+
+        private void checkMoveBehind_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Mode.mMoveBehind = moveBehind.Checked;
+        }
+
         private void checkBoxRaidPoison_CheckedChanged(object sender, EventArgs e)
         {
             panelRaidPoison.Enabled = checkBoxRaidPoison.Checked;

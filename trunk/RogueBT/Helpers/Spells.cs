@@ -215,8 +215,6 @@ namespace RogueBT.Helpers
             return new Decorator(ret => target != null && cond(ret) && CanCast(spellId),
                 new Action(ret =>
                     {
-                        if (Helpers.Focus.mFocusTarget != null)
-                            Logging.Write(LogLevel.Diagnostic, Colors.White, "" + Focus.mFocusTarget.Name);
                         SpellManager.Cast(spellId, target(ret));
                         Logging.Write(LogLevel.Diagnostic, Colors.White, "" + WoWSpell.FromId(spellId).Name);
                         string temp;
@@ -235,6 +233,28 @@ namespace RogueBT.Helpers
             );
         }
 
+        static public Composite CastFail(string spellName, CanRunDecoratorDelegate cond, WoWUnitDelegate target)
+        {
+            if (spellName.Equals("Hemorrhage")) spellName = "Sinister Strike";
+            if (spellName.Equals("Dispatch")) spellName = "Sinister Strike";
+            if (spellName.Equals("Envenom")) spellName = "Eviscerate";
+            return new Decorator(ret => target(ret) != null && cond(ret) && SpellManager.HasSpell(spellName),
+                new Action(ret =>
+                {
+                    SpellManager.Cast(spellName, target(ret));
+                    if (target(ret).IsPlayer)
+                        Logging.Write(LogLevel.Normal, "Attempting " + spellName + " on Player at " +
+                                             Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.mComboPoints + "CP and " +
+                                             Rogue.mCurrentEnergy + " energy");
+                    else
+                        Logging.Write(LogLevel.Normal, "Attempting " + spellName + " on " + target(ret).Name + " at " +
+                                         Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.mComboPoints + "CP and " +
+                                         Rogue.mCurrentEnergy + " energy");
+                    return RunStatus.Failure;
+                })
+            );
+        }
+
         static public Composite Cast(string spellName, CanRunDecoratorDelegate cond,  WoWUnitDelegate target)
         {
                 if (spellName.Equals("Hemorrhage")) spellName = "Sinister Strike";
@@ -242,12 +262,7 @@ namespace RogueBT.Helpers
                 if (spellName.Equals("Envenom")) spellName = "Eviscerate"; 
             return new Decorator(ret => target(ret) != null && cond(ret) && CanCast(spellName),
                 new Action(ret =>
-                               {
-
-                                   
-                        //Logging.Write(color, Helpers.Rogue.CheckSpamLock().ToString());
-                        if (Helpers.Focus.mFocusTarget != null)
-                            Logging.Write(LogLevel.Diagnostic, Colors.White, "" + Focus.mFocusTarget.Name);
+                     {
                         SpellManager.Cast(spellName, target(ret));
                         if (target(ret).IsPlayer)
                             Logging.Write(LogLevel.Normal, "Casting " + spellName + " on Player at " +
@@ -257,8 +272,7 @@ namespace RogueBT.Helpers
                             Logging.Write(LogLevel.Normal , "Casting " + spellName + " on " + target(ret).Name + " at " +
                                              Math.Round(target(ret).HealthPercent, 0) + "% with " + Helpers.Rogue.mComboPoints + "CP and " +
                                              Rogue.mCurrentEnergy + " energy");
-                    }
-                )
+                    })
             );
         }
 

@@ -98,9 +98,11 @@ namespace RogueBT.UI
             this.moveBackwards = new System.Windows.Forms.CheckBox();
             this.radioSapNever = new System.Windows.Forms.RadioButton();
             this.panelSap = new System.Windows.Forms.Panel();
+            this.radioSapTarget = new System.Windows.Forms.RadioButton();
             this.radioSapAdds = new System.Windows.Forms.RadioButton();
             this.label11 = new System.Windows.Forms.Label();
-            this.radioSapTarget = new System.Windows.Forms.RadioButton();
+            this.feint = new System.Windows.Forms.CheckBox();
+            this.swPick = new System.Windows.Forms.CheckBox();
             this.panelCooldowns.SuspendLayout();
             this.radioButtonHolderPanel.SuspendLayout();
             this.panelRaidPoison.SuspendLayout();
@@ -697,6 +699,17 @@ namespace RogueBT.UI
             this.panelSap.Size = new System.Drawing.Size(62, 69);
             this.panelSap.TabIndex = 31;
             // 
+            // radioSapTarget
+            // 
+            this.radioSapTarget.AutoSize = true;
+            this.radioSapTarget.Location = new System.Drawing.Point(3, 48);
+            this.radioSapTarget.Name = "radioSapTarget";
+            this.radioSapTarget.Size = new System.Drawing.Size(56, 17);
+            this.radioSapTarget.TabIndex = 32;
+            this.radioSapTarget.TabStop = true;
+            this.radioSapTarget.Text = "Target";
+            this.radioSapTarget.UseVisualStyleBackColor = true;
+            // 
             // radioSapAdds
             // 
             this.radioSapAdds.AutoSize = true;
@@ -718,22 +731,33 @@ namespace RogueBT.UI
             this.label11.TabIndex = 32;
             this.label11.Text = "Sap";
             // 
-            // radioSapTarget
+            // feint
             // 
-            this.radioSapTarget.AutoSize = true;
-            this.radioSapTarget.Location = new System.Drawing.Point(3, 48);
-            this.radioSapTarget.Name = "radioSapTarget";
-            this.radioSapTarget.Size = new System.Drawing.Size(56, 17);
-            this.radioSapTarget.TabIndex = 32;
-            this.radioSapTarget.TabStop = true;
-            this.radioSapTarget.Text = "Target";
-            this.radioSapTarget.UseVisualStyleBackColor = true;
+            this.feint.AutoSize = true;
+            this.feint.Location = new System.Drawing.Point(404, 131);
+            this.feint.Name = "feint";
+            this.feint.Size = new System.Drawing.Size(49, 17);
+            this.feint.TabIndex = 33;
+            this.feint.Text = "Feint";
+            this.feint.UseVisualStyleBackColor = true;
+            // 
+            // swPick
+            // 
+            this.swPick.AutoSize = true;
+            this.swPick.Location = new System.Drawing.Point(271, 131);
+            this.swPick.Name = "swPick";
+            this.swPick.Size = new System.Drawing.Size(114, 17);
+            this.swPick.TabIndex = 34;
+            this.swPick.Text = "Stop/Wait for Pick";
+            this.swPick.UseVisualStyleBackColor = true;
             // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(502, 403);
+            this.Controls.Add(this.swPick);
+            this.Controls.Add(this.feint);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.panelSap);
             this.Controls.Add(this.moveBackwards);
@@ -854,5 +878,7 @@ namespace RogueBT.UI
         private System.Windows.Forms.RadioButton radioSapTarget;
         private System.Windows.Forms.RadioButton radioSapAdds;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox feint;
+        private System.Windows.Forms.CheckBox swPick;
     }
 }

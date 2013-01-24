@@ -33,6 +33,8 @@ namespace RogueBT.Settings
         static public bool mUseAoe { get; set; }
         static public bool mCrowdControl { get; set; }
         static public bool mPickPocket { get; set; }
+        static public bool mSWPick { get; set; }
+        static public bool mFeint { get; set; }
 
         static Mode()
         {
