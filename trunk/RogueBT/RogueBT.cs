@@ -17,7 +17,7 @@ using Styx.Helpers;
 using Styx.TreeSharp;
 
 
-[assembly: System.Reflection.AssemblyVersion("0.3.3.1")]
+[assembly: System.Reflection.AssemblyVersion("0.3.3.2")]
 
 namespace RogueBT
 {

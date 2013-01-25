@@ -208,8 +208,10 @@ namespace RogueBT.Helpers
                        new Action(ret =>
                             {
                                 var SapAdds = mHostileUnits.Where(unit => unit != Rogue.mTarget
+                                    && unit.CurrentHealth >= (Helpers.Rogue.me.MaxHealth * 0.4)
                                     && unit.Location.Distance(Rogue.mTarget.Location) <= 25 && IsSappable(unit) && unit.InLineOfSight)
                                     .OrderBy(unit => unit.Location.Distance(Rogue.mTarget.Location)).ToList();
+
                                SapCCUnit = SapAdds.FirstOrDefault();
 
                                Logging.Write(LogLevel.Diagnostic, "Setting sap target");
@@ -221,12 +223,8 @@ namespace RogueBT.Helpers
                             new Decorator(ret => SapCCUnit != null && Helpers.Rogue.me.IsFacing(Helpers.Rogue.mTarget)
                                     && Helpers.Rogue.mTarget.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + Helpers.Rogue.mTarget.CombatReach),
                                 new Sequence(
-                                    new Action(ret =>
-                                    {
-                                        if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
-                                            Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                        return RunStatus.Success;
-                                    }),
+                                    new DecoratorContinue(ret => !Helpers.Rogue.me.MovementInfo.IsStrafing,
+                                        new Action(ret => Styx.Pathing.Navigator.PlayerMover.MoveStop())),
                                 new Action(ret => 
                                     {
                                         SpellManager.Cast("Pick Pocket", Helpers.Rogue.mTarget);
@@ -246,19 +244,19 @@ namespace RogueBT.Helpers
                                     SapCCUnit.Target(); 
                                    } ),
                                 new WaitContinue(System.TimeSpan.FromMilliseconds(2000), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
-                                new Action(ret =>
-                                {
+                                new DecoratorContinue(ret => Helpers.Rogue.me.Combat,
+                                    new Action(ret => Helpers.Target.GetNewTarget())),
+                                new DecoratorContinue(ret => !Helpers.Rogue.me.Combat,
+                                    new Action(ret =>
+                                    {
                                         SapCCUnit.Target();
                                         Helpers.Rogue.mTarget = SapCCUnit;
                                         SapCCUnit = newTarget;
                                         newTarget = Helpers.Rogue.mTarget;
-                                   } )
-                                   ,new Action(ret =>
-                                   {
-                                       if( !Helpers.Rogue.me.MovementInfo.IsStrafing )
-                                       Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                       return RunStatus.Success;
-                                   })
+                                   } ))
+                                   ,
+                                    new DecoratorContinue(ret => !Helpers.Rogue.me.MovementInfo.IsStrafing,
+                                        new Action(ret => Styx.Pathing.Navigator.PlayerMover.MoveStop()))
                                    //,new Action(ret =>RunStatus.Failure)
                                    )),
                             new Decorator(ret => SapCCUnit != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
@@ -272,54 +270,37 @@ namespace RogueBT.Helpers
                             new Decorator(ret => SapCCUnit != null && !Helpers.Rogue.me.IsFacing(SapCCUnit) && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
                                     && SapCCUnit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + SapCCUnit.CombatReach),
                                 new Sequence(
-                                    new Action(ret =>
-                                    {
-                                        if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
-                                            Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                        return RunStatus.Success;
-                                    }),
-                                    new Action(ret =>
-                                    {
-                                    SapCCUnit.Face();
-                                    }))),
+                                    new Action(ret =>Styx.Pathing.Navigator.PlayerMover.MoveStop()),
+                                    new Action(ret => SapCCUnit.Face()))),
                             new Decorator(ret => SapCCUnit != null && Helpers.Rogue.me.IsFacing(SapCCUnit)
                                     && SapCCUnit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + SapCCUnit.CombatReach),
                                 new Sequence(
-                                    new Action(ret =>
-                                    {
-                                        if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
-                                        Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                        return RunStatus.Success;
-                                    }),
-                                new Action(ret => 
+                                    new DecoratorContinue(ret => !Helpers.Rogue.me.MovementInfo.IsStrafing,
+                                        new Action(ret => Styx.Pathing.Navigator.PlayerMover.MoveStop())),
+                                    new Action(ret => 
                                     {
                                         SpellManager.Cast("Pick Pocket", SapCCUnit);
                                         return RunStatus.Success;
                                     }),
-                                new Action(ret => 
+                                    new Action(ret => 
                                     {
                                     Logging.Write(LogLevel.Normal, "Sapping Add");
                                     SpellManager.Cast("Sap", SapCCUnit);
                                     SapCCUnitGUID = SapCCUnit.Guid;
                                     //Helpers.Spells.Cast("Sap", ret2 => true, ret2 => SapCCUnit);
                                     //return RunStatus.Failure;
-                                    })
-                                   ,new Action(ret =>
-                                   {
-                                       if (!Helpers.Rogue.me.MovementInfo.IsStrafing)
-                                           Styx.Pathing.Navigator.PlayerMover.MoveStop();
-                                       return RunStatus.Failure;
-                                   })
+                                    }),
+                                    new DecoratorContinue(ret => Helpers.Rogue.me.Combat,
+                                        new Action(ret => Helpers.Target.GetNewTarget())),
+                                    new DecoratorContinue(ret => !Helpers.Rogue.me.MovementInfo.IsStrafing,
+                                        new Action(ret => Styx.Pathing.Navigator.PlayerMover.MoveStop()))
                                    ))
                                 ),
-
-                        
                         new Action(ret =>
                         {
                             //SapCCUnit = null;
                             return RunStatus.Failure;
                         })
-
                )
            );
         }
@@ -361,6 +342,7 @@ namespace RogueBT.Helpers
                     if (nextUnit != null && nextUnit.IsAlive)
                     {
                         Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
+                        Helpers.Rogue.mTarget = nextUnit;
                         nextUnit.Target();
                     }
                     else
@@ -371,15 +353,19 @@ namespace RogueBT.Helpers
                         if (nextUnit != null && nextUnit.Guid == SapCCUnitGUID && nextUnit.HasAura("Sap") && mNearbyEnemyUnits.Count() == 1)
                         {
                             Helpers.Rogue.me.ClearTarget();
+                            Helpers.Rogue.mTarget = null;
                         }
                         else if (nextUnit != null && nextUnit.IsAlive)
                         {
                             Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
+                            Helpers.Rogue.mTarget = nextUnit;
                             nextUnit.Target();
                         }
                         else
-                        Helpers.Rogue.me.ClearTarget();
-
+                        {
+                            Helpers.Rogue.me.ClearTarget();
+                            Helpers.Rogue.mTarget = null;
+                        }
                     }
                 }
             );
