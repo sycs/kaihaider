@@ -218,6 +218,7 @@ namespace RogueBT.Composites.Context.Level
                     )
                 ),
                 Helpers.Spells.Cast("Shadow Walk", ret => Helpers.Aura.Stealth && Helpers.Rogue.mTarget.Distance < 25),
+                Helpers.Rogue.Distract(),
                 Helpers.Spells.Cast("Shadowstep", ret => Helpers.Rogue.mTarget.Distance > 10
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
