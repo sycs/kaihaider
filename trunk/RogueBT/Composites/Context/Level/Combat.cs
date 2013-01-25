@@ -60,7 +60,7 @@ namespace RogueBT.Composites.Context.Level
                                                     || unit.Guid == Helpers.Target.SapCCUnitGUID && unit.HasAura("Sap")) && unit.Distance > 10) > 0),
                         Helpers.Spells.Cast("Preparation", ret => Helpers.Rogue.mHP < 50 && !Helpers.Aura.Evasion
                             && !Helpers.Rogue.me.HasAura("Combat Readiness")  && !Helpers.Rogue.me.HasAura("Combat Insight")
-                    && Helpers.Spells.GetSpellCooldown("Evasion") > 150 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 2)
+                    && Helpers.Spells.GetSpellCooldown("Evasion") > 60 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 2)
 
                     )
                 ),
@@ -112,7 +112,7 @@ namespace RogueBT.Composites.Context.Level
 
                 Helpers.Spells.Cast("Revealing Strike", ret => Helpers.Movement.IsInSafeMeleeRange && !Helpers.Aura.RevealingStrike && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() && Helpers.Target.aoeSafe
-                                                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
+                                                            && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
                 Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),

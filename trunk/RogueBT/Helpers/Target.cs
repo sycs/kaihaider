@@ -155,7 +155,7 @@ namespace RogueBT.Helpers
                                     unit != Helpers.Rogue.mTarget
                                     && unit.IsTargetingMeOrPet
                                     && unit.CurrentHealth >= (Helpers.Rogue.me.MaxHealth * 0.3)
-                                    && unit.Distance <= 15 && (unit.Distance > 10 || Helpers.Rogue.mHP < 35)
+                                    && unit.Distance <= 15 && (unit.Distance > 10 || Helpers.Rogue.mHP < 35 && Helpers.Target.mNearbyEnemyUnits.Count(units => units.Distance <= 20) > 3)
                                     //&& !unit.HasAura("Gouge") && !unit.HasAura("Sap")
                                     && !(unit.Guid == GougeCCUnitGUID && unit.HasAura("Gouge")) && !(unit.Guid == SapCCUnitGUID && unit.HasAura("Sap"))
                                     );
@@ -243,7 +243,10 @@ namespace RogueBT.Helpers
                                     newTarget = Helpers.Rogue.mTarget;
                                     SapCCUnit.Target(); 
                                    } ),
-                                new WaitContinue(System.TimeSpan.FromMilliseconds(2000), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
+                                new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
+                                new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
+                                new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
+                                new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret2 => false, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                                 new DecoratorContinue(ret => Helpers.Rogue.me.Combat,
                                     new Action(ret => Helpers.Target.GetNewTarget())),
                                 new DecoratorContinue(ret => !Helpers.Rogue.me.Combat,

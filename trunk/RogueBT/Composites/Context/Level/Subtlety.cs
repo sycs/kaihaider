@@ -59,7 +59,7 @@ namespace RogueBT.Composites.Context.Level
                                                     || unit.Guid == Helpers.Target.SapCCUnitGUID && unit.HasAura("Sap")) && unit.Distance > 10) > 0),
                         Helpers.Spells.Cast("Preparation", ret => Helpers.Rogue.mHP < 50 && !Helpers.Rogue.me.HasAura("Evasion")
                             && !Helpers.Rogue.me.HasAura("Combat Readiness") && !Helpers.Rogue.me.HasAura("Combat Insight")
-                            && Helpers.Spells.GetSpellCooldown("Evasion") > 150 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 2)
+                            && Helpers.Spells.GetSpellCooldown("Evasion") > 60 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance > 10) > 2)
 
                     )
                 ),
