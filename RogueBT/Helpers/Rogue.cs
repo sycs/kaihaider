@@ -128,7 +128,7 @@ namespace RogueBT.Helpers
                             return RunStatus.Success;
                         }),
                         new Decorator(ret => Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
-                            new WaitContinue(System.TimeSpan.FromMilliseconds(2500), ret => false, new ActionAlwaysSucceed()))
+                            new WaitContinue(System.TimeSpan.FromMilliseconds(2000), ret => false, new ActionAlwaysSucceed()))
                     )
                 );
 

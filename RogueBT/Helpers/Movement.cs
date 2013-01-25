@@ -236,7 +236,7 @@ namespace RogueBT.Helpers
         public static Composite ChkFace()
         { 
             return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
-                && ((!Rogue.mTarget.IsPlayer && Helpers.Movement.IsInSafeMeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+                && ((!Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < MeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Sequence(
                                               new Action(ret =>
                                             {
