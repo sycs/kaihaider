@@ -37,6 +37,7 @@ namespace RogueBT.Helpers
         static public bool spamming { get; private set; }
         static public bool haveSapped { get; private set; }
         static public int pickCount { get; set; }
+        static public int running { get; set; }
 
         public static WoWSpec mCurrentSpec { get; private set; }
 
@@ -109,6 +110,26 @@ namespace RogueBT.Helpers
 
         }
 
+        static public Composite Distract()
+        {
+            return new Decorator(ret => Helpers.Rogue.mTarget.Distance < 10 && Helpers.Spells.CanCast("Distract") && CheckRunning(),
+                    new Sequence(
+                //Pick Pocket's Window - Is Avoiding Wait Possible?
+                //Styx.CommonBot.LootTargeting.LootFrameIsOpen,
+                //new Action(ret => Styx.CommonBot.Frames.LootFrame.Instance.LootAll())),
+                        new Action(ret =>
+                        {
+                            
+                            Styx.CommonBot.SpellManager.Cast("Distract", Helpers.Rogue.mTarget);
+                            ///Styx.CommonBot.SpellManager.ClickRemoteLocation(Helpers.Rogue.mTarget.Location);
+                            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Distract");
+                        }),
+                        new Action(ret =>Styx.CommonBot.SpellManager.ClickRemoteLocation(Helpers.Rogue.mTarget.Location))
+                    )
+                );
+
+        }
+
         static public Composite PickPocket()
         {
             return new Decorator(ret => Settings.Mode.mPickPocket
@@ -127,8 +148,14 @@ namespace RogueBT.Helpers
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Pick Pocket attempted");
                             return RunStatus.Success;
                         }),
-                        new Decorator(ret => Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
-                            new WaitContinue(System.TimeSpan.FromMilliseconds(2000), ret => false, new ActionAlwaysSucceed()))
+                        new Decorator(ret => !Helpers.Rogue.me.Combat && Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
+                            new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret => false, new ActionAlwaysSucceed())),
+                        new Decorator(ret => !Helpers.Rogue.me.Combat && Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
+                            new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret => false, new ActionAlwaysSucceed())),
+                        new Decorator(ret => !Helpers.Rogue.me.Combat && Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
+                            new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret => false, new ActionAlwaysSucceed())),
+                        new Decorator(ret => !Helpers.Rogue.me.Combat && Settings.Mode.mSWPick && Helpers.Rogue.pickCount > 0,
+                            new WaitContinue(System.TimeSpan.FromMilliseconds(500), ret => false, new ActionAlwaysSucceed()))
                     )
                 );
 
@@ -156,8 +183,20 @@ namespace RogueBT.Helpers
 
         }
 
+        static public bool CheckRunning()
+        {
+            if (running > 0)
+            {
+                running--;
+                return false;
+            }
+            return true;
+
+        }
+
         static public bool ReleaseSpamLock()
         {
+            running = 30;
             pickCount = 3;
             haveSapped = false;
             spamming = false;
