@@ -131,15 +131,16 @@ namespace RogueBT.Helpers
 
         static public Composite ToggleAutoAttack()
         { 
-             if ( Helpers.Rogue.mTarget != null && !Helpers.Aura.Stealth && !Helpers.Aura.Vanish && 
-                 !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.me.IsAutoAttacking)
-            {
-                Helpers.Rogue.me.ToggleAttack();
-                Logging.Write(LogLevel.Normal, "Auto-attack");
-            }
-
-             return new Decorator(ret => true,
-                 new Action(ret => RunStatus.Failure));
+             return new Sequence(
+                 new Decorator(ret => Helpers.Rogue.mTarget != null && !Helpers.Aura.Stealth && !Helpers.Aura.Vanish && 
+                 !Helpers.Aura.IsTargetDisoriented && !Helpers.Aura.IsTargetSapped && !Helpers.Rogue.me.IsAutoAttacking,
+                    new Action(ret => 
+                    {
+                        Helpers.Rogue.me.ToggleAttack();
+                        Logging.Write(LogLevel.Normal, "Auto-attack");
+                    })),
+                 new Decorator(ret => true,
+                    new CommonBehaviors.Actions.ActionAlwaysFail()));
         }
 
         static public bool CanCast(int spellId)
