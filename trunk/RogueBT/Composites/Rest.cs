@@ -31,7 +31,7 @@ namespace RogueBT.Composites
                                         && Helpers.Area.mLocation != Helpers.Enum.LocationContext.HeroicDungeon,
                                  new PrioritySelector(
 
-                                     new Decorator(ret => Helpers.Aura.Stealth && Helpers.Rogue.mHP < 20 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) < 0,
+                                     new Decorator(ret => Helpers.Aura.Stealth && Helpers.Rogue.mHP < 25 && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 20) > 0,
                                                    new PrioritySelector(
                                                        new Action(
                                                            ret =>{
