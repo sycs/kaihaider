@@ -41,7 +41,9 @@ namespace RogueBT.Helpers
 
                 if (curLocation.Equals(Enum.LocationContext.Battleground))
                 {
+                    Settings.Mode.mTargeting = false;
                     Settings.Mode.mMoveBackwards = false;
+                    Logging.Write(LogLevel.Normal, "World Detected: Disabling Targeting");
                     Logging.Write(LogLevel.Normal, "Battleground Detected: Disabling Move Backwards");
                 }
 

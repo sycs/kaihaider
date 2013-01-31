@@ -165,6 +165,7 @@ namespace RogueBT.Helpers
         {
             if(!spamming)
             {
+                mRawComboPoints = 0;
                 spamming = true;
                 return true;
             }

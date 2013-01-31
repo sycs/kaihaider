@@ -22,14 +22,15 @@ namespace RogueBT.Composites.Context.Raid
             return new PrioritySelector(
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
-                Helpers.Movement.MoveToLos(),
+                //Helpers.Movement.MoveToLos(),
                 //Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
+                Helpers.Movement.MoveToTarget(),
 
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033) &&
                     Helpers.Movement.IsInSafeMeleeRange),
 
-                    Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
+                Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2 ),
 
                 new Decorator(ret => Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer,
@@ -55,10 +56,12 @@ namespace RogueBT.Composites.Context.Raid
                 Helpers.Specials.UseSpecialAbilities(ret => Helpers.Aura.ShadowDance ||
                                                             Helpers.Spells.GetSpellCooldown("Shadow Dance") >= 10),
 
-                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && 
-                                     Helpers.Rogue.mComboPoints < 3 &&
-                                     Helpers.Rogue.mCurrentEnergy >= 50 &&
-                                     !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
+                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable()
+                            && !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness
+                            && Helpers.Aura.TimeRupture > 10 && Helpers.Aura.TimeSliceandDice > 10
+                                     && Helpers.Rogue.mComboPoints < 3
+                                     && Helpers.Rogue.mCurrentEnergy >= 50
+                                     && !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
                     new PrioritySelector(
                         new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance"),
                             new Sequence(
@@ -67,18 +70,20 @@ namespace RogueBT.Composites.Context.Raid
                             )
                         ),
 
-                        new Decorator(ret => !Helpers.Aura.ShadowDance &&
-                                             Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
-                                             Helpers.Spells.CanCast("Vanish"),
+                        new Decorator(ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                            && Helpers.Aura.TimeRupture > 16 && Helpers.Aura.TimeSliceandDice > 16
+                                             && Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0
+                                             && Helpers.Spells.CanCast("Vanish"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
-                                Helpers.Spells.CastCooldown("Premeditation"),
+                                Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Aura.ShadowDance || Helpers.Aura.Stealth || Helpers.Aura.Vanish),
+                                Helpers.Movement.MoveToTarget(),
                                 Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.IsBehind)
                             )
                         ),
-                        Helpers.Spells.CastSelf("Shadow Blades"),
-                        Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
+                        Helpers.Spells.CastSelf("Shadow Blades", ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness)
+                        ,Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
                     )
                 ),
 
@@ -91,7 +96,7 @@ namespace RogueBT.Composites.Context.Raid
                         Helpers.Spells.Cast("Ambush", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
                             && (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) && Helpers.Aura.IsBehind),
                         Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
                         Helpers.Spells.Cast("Hemorrhage", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
                             && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                     && Helpers.Aura.TimeHemorrhage < 3),
@@ -104,7 +109,6 @@ namespace RogueBT.Composites.Context.Raid
                     )
                 ),
 
-                Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
                     && !Helpers.Aura.Stealth

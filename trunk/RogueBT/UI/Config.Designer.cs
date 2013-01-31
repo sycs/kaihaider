@@ -103,6 +103,7 @@ namespace RogueBT.UI
             this.label11 = new System.Windows.Forms.Label();
             this.feint = new System.Windows.Forms.CheckBox();
             this.swPick = new System.Windows.Forms.CheckBox();
+            this.FoKPull = new System.Windows.Forms.CheckBox();
             this.panelCooldowns.SuspendLayout();
             this.radioButtonHolderPanel.SuspendLayout();
             this.panelRaidPoison.SuspendLayout();
@@ -751,11 +752,22 @@ namespace RogueBT.UI
             this.swPick.Text = "Stop/Wait for Pick";
             this.swPick.UseVisualStyleBackColor = true;
             // 
+            // FoKPull
+            // 
+            this.FoKPull.AutoSize = true;
+            this.FoKPull.Location = new System.Drawing.Point(404, 154);
+            this.FoKPull.Name = "FoKPull";
+            this.FoKPull.Size = new System.Drawing.Size(65, 17);
+            this.FoKPull.TabIndex = 35;
+            this.FoKPull.Text = "FoK Pull";
+            this.FoKPull.UseVisualStyleBackColor = true;
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(502, 403);
+            this.Controls.Add(this.FoKPull);
             this.Controls.Add(this.swPick);
             this.Controls.Add(this.feint);
             this.Controls.Add(this.label11);
@@ -880,5 +892,6 @@ namespace RogueBT.UI
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox feint;
         private System.Windows.Forms.CheckBox swPick;
+        private System.Windows.Forms.CheckBox FoKPull;
     }
 }
