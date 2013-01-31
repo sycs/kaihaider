@@ -65,7 +65,7 @@ namespace RogueBT.Composites.Context.Battleground
 
                     )
                 ),
-                Helpers.Spells.CastSelf("Slice and Dice", ret =>  Helpers.Rogue.mCurrentEnergy < 100 && Helpers.Rogue.mComboPoints > 0 && Helpers.Aura.TimeSliceandDice < 3),
+                Helpers.Spells.CastSelf("Slice and Dice", ret =>  Helpers.Rogue.mComboPoints > 0 && Helpers.Aura.TimeSliceandDice < 3),
                 new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented &&
                                         (Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer),
                     new PrioritySelector(
