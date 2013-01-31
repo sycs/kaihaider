@@ -182,7 +182,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
-                     && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
+                     && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && (Helpers.Aura.ShouldBurst)),
                 Helpers.Movement.PullMoveToTarget(),
                 Helpers.Spells.CastSelf("Sprint", ret => Helpers.Aura.Stealth),
                 new Action(ret => RunStatus.Success)
