@@ -29,7 +29,7 @@ namespace RogueBT.Helpers
             return new Sequence(
                 new PrioritySelector(
                     new Decorator(ret => Settings.Mode.mMoveBackwards && Helpers.Rogue.me.MovementInfo.MovingBackward
-                        && (!Helpers.Movement.IsInSafeMeleeRange || Helpers.Movement.IsInSafeMeleeRange && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
+                        && (!Helpers.Rogue.me.Combat || !Helpers.Movement.IsInSafeMeleeRange || Helpers.Movement.IsInSafeMeleeRange && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
                         new Action(ret =>
                         {
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards, stop");
@@ -44,7 +44,7 @@ namespace RogueBT.Helpers
                             WoWMovement.Move(WoWMovement.MovementDirection.Backwards); 
                         }))
                     ),
-                    new Action(ret => RunStatus.Failure)
+                    new CommonBehaviors.Actions.ActionAlwaysFail()
             );
         }
 
@@ -121,27 +121,6 @@ namespace RogueBT.Helpers
 
         public static void Pulse()
         {
-        }
-        public static bool OldStopRunning()
-        {
-            if (System.Math.Abs(System.Math.Abs(Helpers.Rogue.me.RenderFacing) - System.Math.Abs(Helpers.Aura.LastRenderFacing)) > 1)
-            {
-                if (!Aura.LastDirection)
-                {
-                    directionChange = true;
-                    Aura.LastDirection = true;
-                }
-            }
-            else
-            {
-                if (Aura.LastDirection)
-                {
-                    directionChange = true;
-                    Aura.LastDirection = false;
-                }
-            }
-            Helpers.Aura.LastRenderFacing = Helpers.Rogue.me.RenderFacing;
-            return true;
         }
 
         public static bool FNorth { get; private set; }
@@ -247,8 +226,8 @@ namespace RogueBT.Helpers
                                             {
                                               Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "facing");
                                               Rogue.mTarget.Face();
-                                          }), 
-                                          new Action(ret => RunStatus.Failure)));
+                                          }),
+                                          new CommonBehaviors.Actions.ActionAlwaysFail()));
         }
         public static Composite PullMoveToTarget()
         {
@@ -277,7 +256,8 @@ namespace RogueBT.Helpers
                 ,
                 new PrioritySelector(
                     new Decorator(ret => !Settings.Mode.mMoveBehind
-                        || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget != null && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me,
+                        || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget != null
+                            && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me && !Rogue.mTarget.Stunned,
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => !IsInSafeMeleeRange,
@@ -291,10 +271,11 @@ namespace RogueBT.Helpers
                                           IsInSafeMeleeRange &&
                                           !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Action(ret => Rogue.mTarget.Face()))
-                                      , new Action(ret => RunStatus.Failure)
+                                      , new CommonBehaviors.Actions.ActionAlwaysFail()
                                       )
                         ),
-                    new Decorator(ret => Rogue.mTarget.IsPlayer || Rogue.mTarget.CurrentTarget == null || Rogue.mTarget.CurrentTarget != Helpers.Rogue.me,
+                    new Decorator(ret => Settings.Mode.mMoveBehind
+                        && (Rogue.mTarget.IsPlayer || Rogue.mTarget.CurrentTarget == null || Rogue.mTarget.CurrentTarget != Helpers.Rogue.me || Rogue.mTarget.Stunned),
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => (!(Helpers.Rogue.me.IsMoving && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) || Rogue.mTarget.IsMoving)
@@ -316,7 +297,7 @@ namespace RogueBT.Helpers
                                           ret => IsInSafeMeleeRange &&
                                           !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Action(ret => Rogue.mTarget.Face()))
-                                      , new Action(ret => RunStatus.Failure)
+                                      , new CommonBehaviors.Actions.ActionAlwaysFail()
                                       )
                  )));
         }

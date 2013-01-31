@@ -102,6 +102,7 @@ namespace RogueBT.UI
             Settings.Mode.mPickPocket = pickPocket.Checked;
             Settings.Mode.mSWPick = swPick.Checked;
             Settings.Mode.mFeint = feint.Checked;
+            Settings.Mode.mFoKPull = FoKPull.Checked;
 
 
             Close();
@@ -119,6 +120,7 @@ namespace RogueBT.UI
             pickPocket.Checked = Settings.Mode.mPickPocket;
             swPick.Checked = Settings.Mode.mSWPick;
             feint.Checked = Settings.Mode.mFeint;
+            FoKPull.Checked = Settings.Mode.mFoKPull;
 
             comboBoxRaidPoison1.DataSource = Enum.GetValues(typeof(Helpers.Enum.LeathalPoisonSpellId));
             comboBoxRaidPoison2.DataSource = Enum.GetValues(typeof(Helpers.Enum.NonLeathalPoisonSpellId));

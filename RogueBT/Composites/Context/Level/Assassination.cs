@@ -75,26 +75,22 @@ namespace RogueBT.Composites.Context.Level
 
                 Helpers.Target.BlindAdd(),
                 Helpers.Target.GougeAdd(),
-
-                Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Aura.SliceandDice && Helpers.Rogue.mComboPoints == 5 &&
-                    Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2 ||
-                    Helpers.Rogue.mComboPoints == 2 && Helpers.Aura.TimeSliceandDice < 3),
                 Helpers.Spells.Cast("Envenom", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) && Helpers.Aura.SliceandDice &&
                             Helpers.Aura.TimeSliceandDice < 3 && Helpers.Movement.IsInSafeMeleeRange),
+                Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Rogue.mComboPoints == 2 && Helpers.Aura.TimeSliceandDice < 3),
                 new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented &&
                                         (Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer),
                     new PrioritySelector(
                         Helpers.Spells.Cast("Rupture", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                     !Helpers.Aura.Rupture && Helpers.Movement.IsInSafeMeleeRange),
-                        Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3
-                                       && (Helpers.Target.mNearbyEnemyUnits.Count(unit =>
-                                           (unit.Guid == Helpers.Target.BlindCCUnitGUID && unit.HasAura("Blind")
-                                                    || unit.Guid == Helpers.Target.SapCCUnitGUID && unit.HasAura("Sap"))
-                        && unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach + 0.5333334f + unit.CombatReach)) == 0)),
+                        //Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
+                        //                                    Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3
+                        //               && (Helpers.Target.mNearbyEnemyUnits.Count(unit =>
+                        //                   (unit.Guid == Helpers.Target.BlindCCUnitGUID && unit.HasAura("Blind")
+                        //                            || unit.Guid == Helpers.Target.SapCCUnitGUID && unit.HasAura("Sap"))
+                        //&& unit.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach + 0.5333334f + unit.CombatReach)) == 0)),
                         Helpers.Spells.Cast("Envenom", ret => Helpers.Movement.IsInSafeMeleeRange 
-                                    && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)),
-                        Helpers.Spells.Cast("Eviscerate", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Movement.IsInSafeMeleeRange)
+                                    && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance))
                     )
                 ), 
 
@@ -102,8 +98,11 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.CastCooldown("Vendetta", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
                 Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.IsCooldownsUsable()),
                 Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() && Helpers.Rogue.ReleaseSpamLock() && Helpers.Target.aoeSafe
+                                        && (Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 80)
                                                             && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
-                Helpers.Spells.Cast("Dispatch", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock() && (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside)),
+                Helpers.Spells.Cast("Dispatch", ret => (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside)
+                                                        && ((!Helpers.Aura.Rupture || (Helpers.Rogue.mCurrentEnergy >= 80 || Helpers.Aura.Envenom || Helpers.Aura.Blindside)))
+                                                       && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
@@ -124,7 +123,7 @@ namespace RogueBT.Composites.Context.Level
                                 new Action(ret => RunStatus.Failure)
                     )
                 ),
-                new Decorator(ret => !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mHP < 75
+                new Decorator(ret => Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mHP < 75
                             && Helpers.Spells.CanCast("Dismantle"),
                             new Sequence(
                                 new Action(ret =>
@@ -178,7 +177,7 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Spells.CastFail("Cheap Shot", ret => Helpers.Movement.IsInAttemptMeleeRange && Helpers.Aura.Stealth, ret => Helpers.Rogue.mTarget),
 
                 //Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.CastFail("Sinister Strike", ret => Helpers.Movement.IsInAttemptMeleeRange && !Helpers.Aura.Stealth, ret => Helpers.Rogue.mTarget),
+                Helpers.Spells.CastFail("Mutilate", ret => Helpers.Movement.IsInAttemptMeleeRange && !Helpers.Aura.Stealth, ret => Helpers.Rogue.mTarget),
 
                 Helpers.Spells.Cast("Fan of Knives", ret => (Helpers.Rogue.mTarget == null || Helpers.Rogue.mTarget.IsFriendly)
                     && Helpers.Rogue.IsAoeUsable() && !Helpers.Aura.Stealth),
