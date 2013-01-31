@@ -139,8 +139,7 @@ namespace RogueBT.Helpers
                         Helpers.Rogue.me.ToggleAttack();
                         Logging.Write(LogLevel.Normal, "Auto-attack");
                     })),
-                 new Decorator(ret => true,
-                    new CommonBehaviors.Actions.ActionAlwaysFail()));
+                    new CommonBehaviors.Actions.ActionAlwaysFail());
         }
 
         static public bool CanCast(int spellId)
