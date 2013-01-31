@@ -27,7 +27,7 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
-                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Movement.IsInSafeMeleeRange
+                Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
                 Helpers.Spells.CastCooldown("Sap", ret => (Helpers.Aura.ShadowDance || Helpers.Aura.Stealth) && !Helpers.Aura.IsTargetSapped
@@ -41,11 +41,11 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 80 && Helpers.Aura.TimeRecuperate < 3),
                 new Decorator(ret => Helpers.Rogue.mHP < 75,
                     new PrioritySelector(
-                        Helpers.Spells.CastCooldown("Kidney Shot", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish)
+                        Helpers.Spells.CastCooldown("Kidney Shot", ret => !(Helpers.Aura.IsTargetInvulnerable || Helpers.Aura.Stealth || Helpers.Aura.Vanish)
                              && Helpers.Rogue.mComboPoints > 3
                              && !Helpers.Rogue.mTarget.Silenced && !Helpers.Rogue.mTarget.Stunned
                              && !Helpers.Aura.IsTargetImmuneStun && Helpers.Movement.IsInSafeMeleeRange),
-                        Helpers.Spells.Cast("Shiv", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching),
+                        Helpers.Spells.Cast("Shiv", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.Leeching),
                         Helpers.Spells.CastSelf("Evasion", ret => Helpers.Rogue.mTarget != null && !Helpers.Rogue.mTarget.Stunned),
                         Helpers.Spells.Cast("Combat Readiness", ret => !Helpers.Rogue.me.HasAura("Evasion") && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                         Helpers.Spells.CastSelf("Cloak of Shadows", ret => !Helpers.Rogue.me.HasAura("Evasion") && Helpers.Rogue.IsCloakUsable()),
@@ -105,7 +105,7 @@ namespace RogueBT.Composites.Context.Battleground
                             )
                         ),
 
-                        new Decorator(ret => !Helpers.Aura.ShadowDance &&
+                        new Decorator(ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.IsTargetInvulnerable &&
                                              Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
                                              Helpers.Spells.CanCast("Vanish") && !Helpers.Rogue.IsAoeUsable() &&
                                              Helpers.Aura.KidneyTime > 4,
@@ -117,9 +117,9 @@ namespace RogueBT.Composites.Context.Battleground
                             )
                         ),
 
-                        Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30),
+                        Helpers.Spells.CastSelf("Preparation", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Spells.GetSpellCooldown("Vanish") > 30),
 
-                        Helpers.Spells.CastSelf("Shadow Blades", ret => true)
+                        Helpers.Spells.CastSelf("Shadow Blades", ret => !Helpers.Aura.IsTargetInvulnerable)
                     )
                 ),
 
@@ -158,9 +158,9 @@ namespace RogueBT.Composites.Context.Battleground
 
 
 
-                Helpers.Spells.Cast("Sinister Strike", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
+                Helpers.Spells.Cast("Sinister Strike", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed") && !Helpers.Aura.Stealth
-                     && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInSafeMeleeRange)),
+                     && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 && Helpers.Rogue.mTarget.IsMoving || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInSafeMeleeRange)),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
                     && !Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)

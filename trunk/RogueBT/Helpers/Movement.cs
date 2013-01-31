@@ -282,7 +282,8 @@ namespace RogueBT.Helpers
                                          && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange),
                                           new PrioritySelector(
                                               new Decorator(
-                                                  ret => Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange))
+                                                  ret => !(Rogue.mTarget.MovementInfo.MovingForward && Rogue.mTarget.IsPlayer)
+                                                     && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange))
                                                      && System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange))) < 3,
                                                 new Action(ret =>
                                                     {
@@ -291,7 +292,11 @@ namespace RogueBT.Helpers
                                                     })),
                                               new Decorator(
                                                   ret => true,
-                                                  new Action(ret => Navigator.MoveTo(Rogue.mTarget.Location))))
+                                                  new Action(ret =>
+                                                  {
+                                                      Navigator.MoveTo(Rogue.mTarget.Location);
+                                                      return RunStatus.Success;
+                                                  })))
                                      ),
                                       new DecoratorContinue(
                                           ret => IsInSafeMeleeRange &&
