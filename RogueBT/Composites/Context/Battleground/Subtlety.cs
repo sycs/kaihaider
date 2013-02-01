@@ -24,6 +24,7 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 //Helpers.Movement.MoveToLos(),
+                new Decorator(ret => Helpers.Rogue.mTarget == null, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
@@ -160,7 +161,7 @@ namespace RogueBT.Composites.Context.Battleground
 
                 Helpers.Spells.Cast("Sinister Strike", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed") && !Helpers.Aura.Stealth
-                     && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 && Helpers.Rogue.mTarget.IsMoving || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInSafeMeleeRange)),
+                     && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 && Helpers.Rogue.mTarget.IsMoving || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInAttemptMeleeRange)),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
                     && !Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
@@ -189,6 +190,7 @@ namespace RogueBT.Composites.Context.Battleground
             return new PrioritySelector(
                 Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.EnsureValidTarget(),
+                new Decorator(ret => Helpers.Rogue.mTarget == null, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Movement.ChkFace(),
                 //Helpers.Movement.MoveToLos(),
