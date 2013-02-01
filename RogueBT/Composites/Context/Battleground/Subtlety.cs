@@ -151,15 +151,12 @@ namespace RogueBT.Composites.Context.Battleground
                                                     && Helpers.Aura.TimeHemorrhage < 3),
                         Helpers.Spells.Cast("Backstab", ret => Helpers.Movement.IsInSafeMeleeRange && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                                     Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
-                        Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mCurrentEnergy > 70 &&
+                        Helpers.Spells.Cast("Hemorrhage", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.mCurrentEnergy > 85 &&
                         !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                                  && !Helpers.Aura.IsBehind)
                     )
                 ),
 
-
-
-                Helpers.Spells.Cast("Sinister Strike", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed") && !Helpers.Aura.Stealth
                      && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 && Helpers.Rogue.mTarget.IsMoving || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInAttemptMeleeRange)),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
