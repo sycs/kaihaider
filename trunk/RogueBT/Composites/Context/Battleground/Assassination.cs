@@ -21,8 +21,9 @@ namespace RogueBT.Composites.Context.Battleground
         {
             return new PrioritySelector(
                 Helpers.Movement.PleaseStop(),
-                //Helpers.Target.EnsureValidTarget(),
+                //Helpers.Target.EnsureValidTarget(),  
                 //Helpers.Movement.MoveToLos(),
+                new Decorator(ret => Helpers.Rogue.mTarget == null, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Rogue.mTarget.Distance > 15
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
@@ -91,8 +92,8 @@ namespace RogueBT.Composites.Context.Battleground
                                         && (Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 80)
                                                             && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 1),
                 Helpers.Spells.Cast("Mutilate", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Movement.IsInAttemptMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
-                Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed") && !Helpers.Aura.Stealth
-                     && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 && Helpers.Rogue.mTarget.IsMoving || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInSafeMeleeRange)),
+                Helpers.Spells.CastSelf("Burst of Speed", ret =>Styx.CommonBot.SpellManager.HasSpell("Burst of Speed") && !Helpers.Aura.Stealth
+                     && (Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Rogue.mTarget.Distance > 8 && Helpers.Rogue.mTarget.IsMoving || Helpers.Aura.ShouldBurst && !Helpers.Movement.IsInAttemptMeleeRange)),
                 Helpers.Spells.Cast("Redirect", ret => Helpers.Rogue.mComboPoints < Helpers.Rogue.me.RawComboPoints),
                 new Decorator(ret => Helpers.Spells.FindSpell(114014) && Helpers.Rogue.mCurrentEnergy > 20
                     && !Helpers.Aura.Stealth && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
@@ -120,6 +121,7 @@ namespace RogueBT.Composites.Context.Battleground
                 new Decorator(ret => Helpers.Rogue.me.Mounted,
                     new Action(ret => Lua.DoString("Dismount()"))
                 ),
+                new Decorator(ret => Helpers.Rogue.mTarget == null, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                 Helpers.Movement.PleaseStopPull(),
                 //Helpers.Target.SapAdd(),
                 //Helpers.Target.EnsureValidTarget(),
