@@ -86,7 +86,7 @@ namespace RogueBT.Helpers
                     return 0f;
 
                 if (Rogue.mTarget.IsPlayer)
-                    return 3.5f;
+                    return 6.3333334f;
 
                 return System.Math.Max(5f, Helpers.Rogue.me.CombatReach + 1.3333334f + Rogue.mTarget.CombatReach);
             }
