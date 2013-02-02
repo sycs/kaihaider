@@ -94,7 +94,15 @@ namespace RogueBT.Helpers
 
         public static float SafeMeleeRange
         {
-            get { return System.Math.Max(MeleeRange - 1.7f, 3); }
+            get {
+                if (Rogue.mTarget == null)
+                    return 0f;
+
+                if (Rogue.mTarget.IsPlayer)
+                    return 3f;
+                return System.Math.Max(MeleeRange - 1.7f, 3f); 
+            
+            }
         }
 
         public static bool IsInAttemptMeleeRange
