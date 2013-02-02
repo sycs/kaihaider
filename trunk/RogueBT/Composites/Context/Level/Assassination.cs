@@ -103,7 +103,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Spells.Cast("Dispatch", ret => (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside)
                                                         && ((!Helpers.Aura.Rupture || (Helpers.Rogue.mCurrentEnergy >= 80 || Helpers.Aura.Envenom || Helpers.Aura.Blindside)))
                                                        && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
-                Helpers.Spells.Cast("Mutilate", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.ReleaseSpamLock()),
+                Helpers.Spells.Cast("Mutilate", ret => (Helpers.Movement.IsInAttemptMeleeRange || !Settings.Mode.mUseMovement) && Helpers.Rogue.ReleaseSpamLock()),
                 Helpers.Spells.CastSelf("Burst of Speed", ret => Styx.CommonBot.SpellManager.HasSpell("Burst of Speed")
                      && !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90 && Helpers.Aura.ShouldBurst),
                 Helpers.Movement.MoveToTarget(),
