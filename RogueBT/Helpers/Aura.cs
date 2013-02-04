@@ -447,8 +447,8 @@ namespace RogueBT.Helpers
                 }
                 if (IsTargetInvulnerable) Logging.Write(LogLevel.Diagnostic, Colors.White, "Invulnerable!!!");
 
-                
-                //Logging.Write(LogLevel.Normal, Movement.IsInSafeMeleeRange + " " + IsBehind);
+
+                //Logging.Write(LogLevel.Normal, Movement.IsInSafeMeleeRange + " " + IsBehind);  || Rogue.mTarget.IsPlayer && !Rogue.mTarget.MeIsBehind
             }
             ShouldShiv = false;
 

@@ -104,6 +104,7 @@ namespace RogueBT.UI
             this.feint = new System.Windows.Forms.CheckBox();
             this.swPick = new System.Windows.Forms.CheckBox();
             this.FoKPull = new System.Windows.Forms.CheckBox();
+            this.neverStealth = new System.Windows.Forms.CheckBox();
             this.panelCooldowns.SuspendLayout();
             this.radioButtonHolderPanel.SuspendLayout();
             this.panelRaidPoison.SuspendLayout();
@@ -602,7 +603,7 @@ namespace RogueBT.UI
             // pickPocket
             // 
             this.pickPocket.AutoSize = true;
-            this.pickPocket.Location = new System.Drawing.Point(404, 108);
+            this.pickPocket.Location = new System.Drawing.Point(403, 131);
             this.pickPocket.Name = "pickPocket";
             this.pickPocket.Size = new System.Drawing.Size(84, 17);
             this.pickPocket.TabIndex = 23;
@@ -622,7 +623,7 @@ namespace RogueBT.UI
             // aoe
             // 
             this.aoe.AutoSize = true;
-            this.aoe.Location = new System.Drawing.Point(404, 62);
+            this.aoe.Location = new System.Drawing.Point(403, 85);
             this.aoe.Name = "aoe";
             this.aoe.Size = new System.Drawing.Size(45, 17);
             this.aoe.TabIndex = 21;
@@ -652,7 +653,7 @@ namespace RogueBT.UI
             // crowdControl
             // 
             this.crowdControl.AutoSize = true;
-            this.crowdControl.Location = new System.Drawing.Point(404, 85);
+            this.crowdControl.Location = new System.Drawing.Point(403, 108);
             this.crowdControl.Name = "crowdControl";
             this.crowdControl.Size = new System.Drawing.Size(92, 17);
             this.crowdControl.TabIndex = 26;
@@ -735,7 +736,7 @@ namespace RogueBT.UI
             // feint
             // 
             this.feint.AutoSize = true;
-            this.feint.Location = new System.Drawing.Point(404, 131);
+            this.feint.Location = new System.Drawing.Point(403, 154);
             this.feint.Name = "feint";
             this.feint.Size = new System.Drawing.Size(49, 17);
             this.feint.TabIndex = 33;
@@ -755,18 +756,29 @@ namespace RogueBT.UI
             // FoKPull
             // 
             this.FoKPull.AutoSize = true;
-            this.FoKPull.Location = new System.Drawing.Point(404, 154);
+            this.FoKPull.Location = new System.Drawing.Point(403, 177);
             this.FoKPull.Name = "FoKPull";
             this.FoKPull.Size = new System.Drawing.Size(65, 17);
             this.FoKPull.TabIndex = 35;
             this.FoKPull.Text = "FoK Pull";
             this.FoKPull.UseVisualStyleBackColor = true;
             // 
+            // neverStealth
+            // 
+            this.neverStealth.AutoSize = true;
+            this.neverStealth.Location = new System.Drawing.Point(403, 63);
+            this.neverStealth.Name = "neverStealth";
+            this.neverStealth.Size = new System.Drawing.Size(91, 17);
+            this.neverStealth.TabIndex = 36;
+            this.neverStealth.Text = "Never Stealth";
+            this.neverStealth.UseVisualStyleBackColor = true;
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(502, 403);
+            this.Controls.Add(this.neverStealth);
             this.Controls.Add(this.FoKPull);
             this.Controls.Add(this.swPick);
             this.Controls.Add(this.feint);
@@ -893,5 +905,6 @@ namespace RogueBT.UI
         private System.Windows.Forms.CheckBox feint;
         private System.Windows.Forms.CheckBox swPick;
         private System.Windows.Forms.CheckBox FoKPull;
+        private System.Windows.Forms.CheckBox neverStealth;
     }
 }
