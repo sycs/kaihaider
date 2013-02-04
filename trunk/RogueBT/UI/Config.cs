@@ -97,6 +97,7 @@ namespace RogueBT.UI
             Settings.Mode.mMoveBehind = moveBehind.Checked;
             Settings.Mode.mMoveBackwards = moveBackwards.Checked;
             Settings.Mode.mAlwaysStealth = alwaysStealth.Checked;
+            Settings.Mode.mNeverStealth = neverStealth.Checked;
             Settings.Mode.mUseAoe = aoe.Checked;
             Settings.Mode.mCrowdControl = crowdControl.Checked;
             Settings.Mode.mPickPocket = pickPocket.Checked;
@@ -115,6 +116,7 @@ namespace RogueBT.UI
             moveBehind.Checked = Settings.Mode.mMoveBehind;
             moveBackwards.Checked = Settings.Mode.mMoveBackwards;
             alwaysStealth.Checked = Settings.Mode.mAlwaysStealth;
+            neverStealth.Checked = Settings.Mode.mNeverStealth;
             aoe.Checked = Settings.Mode.mUseAoe;
             crowdControl.Checked = Settings.Mode.mCrowdControl;
             pickPocket.Checked = Settings.Mode.mPickPocket;

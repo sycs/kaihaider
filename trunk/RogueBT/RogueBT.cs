@@ -17,7 +17,7 @@ using Styx.Helpers;
 using Styx.TreeSharp;
 
 
-[assembly: System.Reflection.AssemblyVersion("0.3.5.2")]
+[assembly: System.Reflection.AssemblyVersion("0.3.5.4")]
 
 namespace RogueBT
 {
@@ -37,7 +37,7 @@ namespace RogueBT
 
         public override void Initialize()
         {
-            Logging.Write(LogLevel.Normal, "Burst of Speed range change");
+            Logging.Write(LogLevel.Normal, "");
             Logging.Write(LogLevel.Normal, "RogueBT is now operational.");
             Logging.Write(LogLevel.Normal, "");
             Logging.Write(LogLevel.Normal, "Your feedback is appreciated. Please leave some in the forum thread at:");

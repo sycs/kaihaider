@@ -290,9 +290,7 @@ namespace RogueBT.Helpers
                                          && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange),
                                           new PrioritySelector(
                                               new Decorator(
-                                                  ret => !(Rogue.mTarget.MovementInfo.MovingForward && Rogue.mTarget.IsPlayer)
-                                                     && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange))
-                                                     && System.Math.Abs(HeightOffTheGround(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange))) < 3,
+                                                  ret => !(Rogue.mTarget.MovementInfo.MovingForward && Rogue.mTarget.IsPlayer),
                                                 new Action(ret =>
                                                     {
                                                         Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange));
