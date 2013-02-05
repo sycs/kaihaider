@@ -212,7 +212,8 @@ namespace RogueBT.Composites.Context.Level
                     Helpers.Spells.CastSelf("Burst of Speed", ret => !Helpers.Aura.Stealth && Helpers.Rogue.mCurrentEnergy > 90
                     && Helpers.Rogue.me.IsMoving ),
                      new Decorator(ret => Settings.Mode.mAlwaysStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
-                        && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
+                        && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat
+                        && Helpers.Rogue.alwaysStealthCheck && !Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Loot),
                         new Sequence(
                             Helpers.Spells.CastSelf("Stealth", ret => true),
                             Helpers.Rogue.CreateWaitForLagDuration()

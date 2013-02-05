@@ -62,6 +62,8 @@ namespace RogueBT.Helpers
 
                 case Enum.LocationContext.World:
                     {
+                        if (!Helpers.Rogue.alwaysStealthCheck && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Loot)) Helpers.Rogue.alwaysStealthCheck = true;
+
                         mHostileUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
                                                             .Where(unit =>
                                                                 unit.IsAlive
