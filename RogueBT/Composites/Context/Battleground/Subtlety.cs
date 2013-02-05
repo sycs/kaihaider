@@ -28,6 +28,12 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Movement.ChkFace(),
                 Helpers.Spells.ToggleAutoAttack(),
+                new Decorator(ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Rogue.mTarget.IsWithinMeleeRange,
+                    new PrioritySelector(
+                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind),
+                                Helpers.Spells.Cast("Garrote", ret => !Helpers.Aura.IsBehind && !Helpers.Rogue.mTarget.HasAura("Garrote"))
+                        )
+                ),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),

@@ -23,10 +23,15 @@ namespace RogueBT.Composites.Context.Raid
                 Helpers.Movement.PleaseStop(),
                 //Helpers.Target.EnsureValidTarget(),
                 //Helpers.Movement.MoveToLos(),
-                //Helpers.Movement.ChkFace(),
-                Helpers.Spells.ToggleAutoAttack(),
+                Helpers.Movement.ChkFace(),
                 Helpers.Movement.MoveToTarget(),
-
+                Helpers.Spells.ToggleAutoAttack(),
+                new Decorator(ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Rogue.mTarget.IsWithinMeleeRange, //or shadow dance, check cp
+                    new PrioritySelector(
+                                Helpers.Spells.Cast("Garrote", ret =>!Helpers.Rogue.mTarget.HasAura("Garrote")),
+                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind)
+                        )
+                ),
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033) &&
                     Helpers.Movement.IsInSafeMeleeRange),
 
@@ -39,7 +44,8 @@ namespace RogueBT.Composites.Context.Raid
                         Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Aura.TimeSliceandDice < 3),
 
                         Helpers.Spells.Cast("Crimson Tempest", ret => Helpers.Rogue.IsAoeUsable() &&
-                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
+                                                            Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2
+                                                             && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
 
                         Helpers.Spells.Cast("Rupture", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
                                     Helpers.Aura.TimeRupture < 3 && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
@@ -50,18 +56,18 @@ namespace RogueBT.Composites.Context.Raid
 
                 ),
 
-                Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Rogue.mComboPoints <= 3 && (Helpers.Aura.Stealth || 
-                                                                    Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)),
+                Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Rogue.mComboPoints < 4
+                                            && (Helpers.Aura.Stealth || Helpers.Aura.ShadowDance || Helpers.Aura.Vanish)),
 
                 Helpers.Specials.UseSpecialAbilities(ret => Helpers.Aura.ShadowDance ||
                                                             Helpers.Spells.GetSpellCooldown("Shadow Dance") >= 10),
 
-                new Decorator(ret => Helpers.Rogue.IsCooldownsUsable()
-                            && !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness
+                new Decorator(ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
+                            && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.FindWeakness
                             && Helpers.Aura.TimeRupture > 10 && Helpers.Aura.TimeSliceandDice > 10
-                                     && Helpers.Rogue.mComboPoints < 3
-                                     && Helpers.Rogue.mCurrentEnergy >= 50
-                                     && !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
+                            && Helpers.Rogue.mComboPoints < 3 && Helpers.Rogue.mCurrentEnergy >= 50
+                            && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
+                            && !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
                     new PrioritySelector(
                         new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance"),
                             new Sequence(
@@ -70,42 +76,40 @@ namespace RogueBT.Composites.Context.Raid
                             )
                         ),
 
-                        new Decorator(ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                            && Helpers.Aura.TimeRupture > 16 && Helpers.Aura.TimeSliceandDice > 16
+                        new Decorator(ret => Helpers.Aura.TimeRupture > 16 && Helpers.Aura.TimeSliceandDice > 16 && !Helpers.Rogue.mTarget.HasAura("Garrote")
                                              && Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0
                                              && Helpers.Spells.CanCast("Vanish"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
-                                Helpers.Spells.CastCooldown("Premeditation", ret => Helpers.Aura.ShadowDance || Helpers.Aura.Stealth || Helpers.Aura.Vanish),
-                                Helpers.Movement.MoveToTarget(),
-                                Helpers.Spells.Cast("Ambush", ret => Helpers.Movement.IsInSafeMeleeRange && Helpers.Aura.IsBehind)
+                                new DecoratorContinue(ret => (Helpers.Aura.ShadowDance || Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Spells.CanCast("Premeditation") , 
+                                                Helpers.Spells.CastCooldown("Premeditation")),
+                                new Action(ret => {Helpers.Movement.MoveToTarget(); return RunStatus.Success; }),
+                                new DecoratorContinue(ret => Helpers.Aura.IsBehind, Helpers.Spells.Cast("Ambush")),
+                                Helpers.Spells.Cast("Garrote", ret => !Helpers.Aura.IsBehind)
                             )
                         ),
-                        Helpers.Spells.CastSelf("Shadow Blades", ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness)
-                        ,Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
+                        Helpers.Spells.CastSelf("Shadow Blades", ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness),
+                        Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
                     )
                 ),
 
                 // CP Builders
-                new Decorator(ret => Helpers.Rogue.mComboPoints != 5 && (Helpers.Rogue.mComboPoints < 4 ||
-                                     (Helpers.Rogue.mComboPoints == 4 && (Helpers.Rogue.mCurrentEnergy >= 90 ||
-                                     Helpers.Aura.TimeRupture < 3 ||
-                                     Helpers.Aura.ShadowDance))),
-                    new PrioritySelector(
-                        Helpers.Spells.Cast("Ambush", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                            && (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) && Helpers.Aura.IsBehind),
-                        Helpers.Spells.Cast("Fan of Knives", ret => Helpers.Rogue.IsAoeUsable() &&
+
+               Helpers.Spells.Cast("Fan of Knives", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Rogue.IsAoeUsable() &&
                                                             Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 3),
-                        Helpers.Spells.Cast("Hemorrhage", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                            && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
+                new Decorator(ret => Helpers.Rogue.mComboPoints != 5 && (Helpers.Rogue.mComboPoints < 4 ||
+                                     (Helpers.Rogue.mComboPoints == 4 && (Helpers.Rogue.mCurrentEnergy >= 90
+                                     || Helpers.Aura.TimeRupture < 3 || Helpers.Aura.ShadowDance)))
+                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement),
+                    new PrioritySelector(
+                        Helpers.Spells.Cast("Ambush", ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) && Helpers.Aura.IsBehind),
+                        Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
                                                     && Helpers.Aura.TimeHemorrhage < 3),
-                        Helpers.Spells.Cast("Backstab", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                            && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
+                        Helpers.Spells.Cast("Backstab", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) 
                                                    && Helpers.Rogue.mCurrentEnergy > 60 && Helpers.Aura.IsBehind),
-                        Helpers.Spells.Cast("Hemorrhage", ret => (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                            && Helpers.Rogue.mCurrentEnergy > 70 && !Helpers.Aura.IsBehind
-                          && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) )
+                        Helpers.Spells.Cast("Hemorrhage", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
+                                                   && Helpers.Rogue.mCurrentEnergy > 75 && !Helpers.Aura.IsBehind)
                     )
                 ),
 

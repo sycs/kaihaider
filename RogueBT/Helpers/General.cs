@@ -35,7 +35,6 @@ namespace RogueBT.Helpers
                         Specials.Pulse();
                         Aura.Pulse();
                         
-                        Target.EnsureValidTarget();
 
                     }
         }       
