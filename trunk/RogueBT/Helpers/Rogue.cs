@@ -112,7 +112,7 @@ namespace RogueBT.Helpers
 
         static public Composite Distract()
         {
-            return new Decorator(ret => Helpers.Rogue.mTarget.Distance < 10 && Helpers.Spells.CanCast("Distract") && CheckRunning(),
+            return new Decorator(ret => Helpers.Rogue.mTarget !=null && Helpers.Rogue.mTarget.Distance < 10 && Helpers.Spells.CanCast("Distract") && CheckRunning(),
                     new Sequence(
                 //Pick Pocket's Window - Is Avoiding Wait Possible?
                 //Styx.CommonBot.LootTargeting.LootFrameIsOpen,

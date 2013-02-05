@@ -26,10 +26,16 @@ namespace RogueBT.Composites.Context.Battleground
                 new Decorator(ret => Helpers.Rogue.mTarget == null, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                 Helpers.Movement.MoveToTarget(),
                 Helpers.Movement.ChkFace(),
+                Helpers.Spells.ToggleAutoAttack(),
+                new Decorator(ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Rogue.mTarget.IsWithinMeleeRange,
+                    new PrioritySelector(
+                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind),
+                                Helpers.Spells.Cast("Garrote", ret => !Helpers.Aura.IsBehind && !Helpers.Rogue.mTarget.HasAura("Garrote"))
+                        )
+                ),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Movement.IsInSafeMeleeRange
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                Helpers.Spells.ToggleAutoAttack(),
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),

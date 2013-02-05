@@ -25,16 +25,23 @@ namespace RogueBT.Composites.Context.Battleground
                 //Helpers.Movement.MoveToLos(),
                 new Decorator(ret => Helpers.Rogue.mTarget == null, new CommonBehaviors.Actions.ActionAlwaysSucceed()),
                 Helpers.Movement.MoveToTarget(),
+                Helpers.Movement.ChkFace(),
+                Helpers.Spells.ToggleAutoAttack(),
+                new Decorator(ret => (Helpers.Aura.Stealth || Helpers.Aura.Vanish) && Helpers.Rogue.mTarget.IsWithinMeleeRange,
+                    new PrioritySelector(
+                                Helpers.Spells.Cast("Ambush", ret => Helpers.Aura.IsBehind),
+                                Helpers.Spells.Cast("Mutilate", ret => !Helpers.Aura.IsBehind)
+                        )
+                ),
                 Helpers.Spells.Cast("Shadowstep", ret => !Helpers.Aura.IsTargetInvulnerable && Helpers.Rogue.mTarget.Distance > 15
                             && !Helpers.Aura.CripplingPoison && !Helpers.Aura.DeadlyThrow &&
                             Helpers.Rogue.mTarget.InLineOfSpellSight && Helpers.Rogue.mTarget.Distance < 25),
-                Helpers.Spells.ToggleAutoAttack(),
-                Helpers.Movement.ChkFace(),
-               // Helpers.Movement.WalkBackwards(),
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast &&
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
-                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                                    && (Helpers.Aura.TimeSliceandDice <= 4 && Helpers.Rogue.mComboPoints >= 1)),
+
+                Helpers.Spells.Cast("Dispatch", ret => Helpers.Aura.Blindside && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
+                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && (Helpers.Aura.TimeSliceandDice <= 3 && Helpers.Aura.SliceandDice && Helpers.Rogue.mComboPoints > 0)
+                                    && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 && Helpers.Aura.TimeRecuperate < 3),
                 new Decorator(ret => Helpers.Rogue.mHP <= 10 && Helpers.Spells.CanCast("Vanish"),
@@ -67,14 +74,13 @@ namespace RogueBT.Composites.Context.Battleground
                     )
                 ),
                 Helpers.Spells.CastSelf("Slice and Dice", ret =>  Helpers.Rogue.mComboPoints > 0 && Helpers.Aura.TimeSliceandDice < 3),
-                new Decorator(ret => !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented &&
-                                        (Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer),
+                new Decorator(ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
+                                        && (Helpers.Movement.IsInAttemptMeleeRange || !Settings.Mode.mUseMovement)
+                                        && !Helpers.Aura.IsTargetInvulnerable && !Helpers.Aura.IsTargetSapped && !Helpers.Aura.IsTargetDisoriented
+                                        && (Helpers.Rogue.mComboPoints == 5 || Helpers.Aura.FuryoftheDestroyer),
                     new PrioritySelector(
-                        Helpers.Spells.Cast("Rupture", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance) &&
-                                    !Helpers.Aura.Rupture && Helpers.Movement.IsInSafeMeleeRange),
-                        Helpers.Spells.Cast("Envenom", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                                                        && Helpers.Aura.DeadlyPoison && Helpers.Rogue.mComboPoints > 0
-                                                        && (Helpers.Movement.IsInAttemptMeleeRange || !Settings.Mode.mUseMovement)
+                        Helpers.Spells.Cast("Rupture", ret =>  !Helpers.Aura.Rupture),
+                        Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Rogue.mComboPoints > 0
                                                        && (Helpers.Rogue.mComboPoints == 4 && Helpers.Rogue.mTargetHP >= 35 && !Helpers.Aura.Blindside
                                                        || Helpers.Rogue.mComboPoints > 4 && Helpers.Rogue.mTargetHP >= 35
                                                        || (Helpers.Rogue.mCurrentEnergy >= 55 && Helpers.Rogue.mComboPoints == 5 && Helpers.Rogue.mTargetHP < 35))

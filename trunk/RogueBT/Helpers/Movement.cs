@@ -41,10 +41,10 @@ namespace RogueBT.Helpers
                         || Helpers.Rogue.mTarget.Distance2D < 2 && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2),
                         new Action(ret => {
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards"); 
-                            WoWMovement.Move(WoWMovement.MovementDirection.Backwards); 
+                            WoWMovement.Move(WoWMovement.MovementDirection.Backwards);
+                            return RunStatus.Failure;
                         }))
-                    ),
-                    new CommonBehaviors.Actions.ActionAlwaysFail()
+                    )
             );
         }
 
@@ -290,7 +290,8 @@ namespace RogueBT.Helpers
                                          && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange),
                                           new PrioritySelector(
                                               new Decorator(
-                                                  ret => !(Rogue.mTarget.MovementInfo.MovingForward && Rogue.mTarget.IsPlayer),
+                                                  ret => !(Rogue.mTarget.IsPlayer && Rogue.mTarget.MovementInfo.MovingForward) 
+                                                      && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange)),
                                                 new Action(ret =>
                                                     {
                                                         Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange));
