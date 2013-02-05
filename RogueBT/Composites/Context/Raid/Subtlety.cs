@@ -63,22 +63,22 @@ namespace RogueBT.Composites.Context.Raid
                                                             Helpers.Spells.GetSpellCooldown("Shadow Dance") >= 10),
 
                 new Decorator(ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish || Helpers.Aura.ShadowDance)
-                            && Helpers.Rogue.IsCooldownsUsable() && !Helpers.Aura.FindWeakness
+                            && Helpers.Rogue.IsCooldownsUsable() 
                             && Helpers.Aura.TimeRupture > 10 && Helpers.Aura.TimeSliceandDice > 10
                             && Helpers.Rogue.mComboPoints < 3 && Helpers.Rogue.mCurrentEnergy >= 50
                             && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
                             && !(Helpers.Spells.GetSpellCooldown("Premeditation") > 0),
                     new PrioritySelector(
-                        new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance"),
+                        new Decorator(ret => Helpers.Spells.CanCast("Shadow Dance") && !Helpers.Aura.FindWeakness,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Shadow Dance"),
                                 Helpers.Rogue.CreateWaitForLagDuration()
                             )
                         ),
 
-                        new Decorator(ret => Helpers.Aura.TimeRupture > 16 && Helpers.Aura.TimeSliceandDice > 16 && !Helpers.Rogue.mTarget.HasAura("Garrote")
-                                             && Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0
-                                             && Helpers.Spells.CanCast("Vanish"),
+                        new Decorator(ret => Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 && !Helpers.Aura.FindWeakness
+                                             && Helpers.Spells.CanCast("Vanish") && !Helpers.Rogue.mTarget.HasAura("Garrote")
+                                             && !Helpers.Rogue.me.HasAura("Shadow Blades"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
@@ -89,8 +89,8 @@ namespace RogueBT.Composites.Context.Raid
                                 Helpers.Spells.Cast("Garrote", ret => !Helpers.Aura.IsBehind)
                             )
                         ),
-                        Helpers.Spells.CastSelf("Shadow Blades", ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness),
-                        Helpers.Spells.CastSelf("Preparation", ret => Helpers.Spells.GetSpellCooldown("Vanish") > 30)
+                        Helpers.Spells.CastSelf("Shadow Blades", ret => !Helpers.Aura.ShadowDance),
+                        Helpers.Spells.CastSelf("Preparation", ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.FindWeakness && Helpers.Spells.GetSpellCooldown("Vanish") > 30)
                     )
                 ),
 

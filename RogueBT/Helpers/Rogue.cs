@@ -33,7 +33,8 @@ namespace RogueBT.Helpers
         static public LocalPlayer me { get; set; }
         static public double mTargetHP { get; private set; }
         static public double mHP { get; private set; }
-        
+
+        static public bool alwaysStealthCheck { get; set; }
         static public bool spamming { get; private set; }
         static public bool haveSapped { get; private set; }
         static public int pickCount { get; set; }
@@ -201,6 +202,7 @@ namespace RogueBT.Helpers
             pickCount = 3;
             haveSapped = false;
             spamming = false;
+            alwaysStealthCheck = false;
             return true;
         }
 

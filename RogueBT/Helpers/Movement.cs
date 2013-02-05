@@ -263,6 +263,7 @@ namespace RogueBT.Helpers
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
+
                     new Decorator(ret => !Settings.Mode.mMoveBehind
                         || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget != null
                             && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me && !Rogue.mTarget.Stunned,

@@ -36,7 +36,8 @@ namespace RogueBT.Composites.Context.Raid
                     && Helpers.Movement.IsInSafeMeleeRange),
                 Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && (Helpers.Aura.TimeSliceandDice <= 3 && Helpers.Aura.SliceandDice && Helpers.Rogue.mComboPoints > 0)
                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
-                Helpers.Spells.Cast("Dispatch", ret => Helpers.Rogue.mComboPoints != 5 && Helpers.Aura.Blindside && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
+                Helpers.Spells.Cast("Dispatch", ret => Helpers.Rogue.mComboPoints != 5 && Helpers.Aura.Blindside && Helpers.Rogue.mCurrentEnergy < 90
+                                        && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Rupture", ret => (Helpers.Aura.TimeRupture < 4 || !Helpers.Aura.Rupture) 
                                                  && (Helpers.Rogue.mComboPoints >= 4 && Helpers.Rogue.mTargetHP > 35 || Helpers.Rogue.mComboPoints == 5)
                                                                  && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
@@ -53,7 +54,7 @@ namespace RogueBT.Composites.Context.Raid
 
                         new Decorator(ret => Helpers.Spells.CanCast("Vanish") && Helpers.Aura.TimeSliceandDice > 6
                                              && Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 &&
-                                             Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange,
+                                             Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange && !Helpers.Rogue.me.HasAura("Shadow Blades"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
