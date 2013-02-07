@@ -117,29 +117,32 @@ namespace RogueBT.Helpers
                         break;
                     }
                 default:
-                    mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
-                                    .Where(unit =>
-                                        unit.IsAlive
-                                        && !unit.IsNonCombatPet
-                                        && !unit.IsCritter
-                                        && !unit.IsPetBattleCritter
-                                        && (unit.IsTargetingMeOrPet
-                                           || unit == Styx.CommonBot.POI.BotPoi.Current.AsObject
-                                           || unit.IsTargetingMyPartyMember
-                                           || unit.IsTargetingMyRaidMember
-                                           || unit.IsTargetingAnyMinion
-                                           || unit.IsPlayer && unit.ToPlayer().IsHorde != Helpers.Rogue.me.IsHorde ///from singular
-                                           || unit == botBaseUnit
-                                           || unit.TaggedByMe)
-                                       && unit.Distance <= 40
-                                        && unit.Attackable
-                                        && unit.CanSelect
-                                        && !unit.IsDead
-                                        && !(System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 4 && Helpers.Movement.IsAboveTheGround(unit))
-                                        && !unit.IsFriendly)
-                                    .OrderBy(unit => unit.Distance).ToList();
-                    break;
+                    {
 
+                        if (!Helpers.Rogue.IsAoeUsable()) break;
+                        mNearbyEnemyUnits = ObjectManager.GetObjectsOfType<WoWUnit>(true, false)
+                                        .Where(unit =>
+                                            unit.IsAlive
+                                            && !unit.IsNonCombatPet
+                                            && !unit.IsCritter
+                                            && !unit.IsPetBattleCritter
+                                            && (unit.IsTargetingMeOrPet
+                                               || unit == Styx.CommonBot.POI.BotPoi.Current.AsObject
+                                               || unit.IsTargetingMyPartyMember
+                                               || unit.IsTargetingMyRaidMember
+                                               || unit.IsTargetingAnyMinion
+                                               || unit.IsPlayer && unit.ToPlayer().IsHorde != Helpers.Rogue.me.IsHorde ///from singular
+                                               || unit == botBaseUnit
+                                               || unit.TaggedByMe)
+                                           && unit.Distance <= 40
+                                            && unit.Attackable
+                                            && unit.CanSelect
+                                            && !unit.IsDead
+                                            && !(System.Math.Abs(Helpers.Rogue.me.Z - unit.Z) >= 4 && Helpers.Movement.IsAboveTheGround(unit))
+                                            && !unit.IsFriendly)
+                                        .OrderBy(unit => unit.Distance).ToList();
+                        break;
+                    }
             }
                 
         }
