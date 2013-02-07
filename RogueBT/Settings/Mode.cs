@@ -50,11 +50,23 @@ namespace RogueBT.Settings
             mUsePoisons[(int)Helpers.Enum.LocationContext.Battleground] = true;
             mUsePoisons[(int)Helpers.Enum.LocationContext.World] = true;
 
+            if (Helpers.Spells.FindSpell(108211))
             for (int i = 1; i < 6; i++)
             {
                 mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
                 mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Leeching;
             }
+            else if (Helpers.Spells.FindSpell(108215))
+                for (int i = 1; i < 6; i++)
+                {
+                    mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                    mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Paralytic;
+                }
+            else for (int i = 1; i < 6; i++)
+                {
+                    mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                    mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.MindNumbing;
+                }
 
             mCooldownUse = Helpers.Enum.CooldownUse.Always;
             mSap = Helpers.Enum.Saps.Adds;

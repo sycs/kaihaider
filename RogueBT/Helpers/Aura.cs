@@ -452,12 +452,12 @@ namespace RogueBT.Helpers
             }
             ShouldShiv = false;
 
-
-            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, (Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) + " ");
+            Logging.Write(LogLevel.Normal, Styx.CommonBot.InactivityDetector.TimeUntilLogout.TotalMinutes + " ");
+            Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
 
             
             //Helpers.Spells.FindSpell  114014 Helpers.Spells.GetSpellCooldown("Evasion") Styx.CommonBot.SpellManager.Spells["Throw"].Id
-            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " ");
+            //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " "); 
             //if (Styx.CommonBot.InactivityDetector.TimeUntilLogout!=null)  && Rogue.mTarget.CurrentTarget != null && Rogue.mTarget.CurrentTarget.Guid == Helpers.Rogue.me.Guid
             //Logging.Write(LogLevel.Normal, Styx.CommonBot.InactivityDetector.TimeUntilLogout.TotalMinutes + " " );
             //if (Helpers.Target.mNearbyEnemyUnits != null && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) >0)
