@@ -29,7 +29,7 @@ namespace RogueBT.Helpers
             return new Sequence(
                 new PrioritySelector(
                     new Decorator(ret => Settings.Mode.mMoveBackwards && Helpers.Rogue.me.MovementInfo.MovingBackward
-                        && (!Helpers.Rogue.me.Combat || !Helpers.Movement.IsInSafeMeleeRange || Helpers.Movement.IsInSafeMeleeRange && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
+                        && (!Helpers.Rogue.me.Combat || !Helpers.Movement.IsInSafeMeleeRange || Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance < Helpers.Rogue.me.CombatReach + 0.3333334f + unit.CombatReach && unit.IsBehind(Helpers.Rogue.me)) == 0),
                         new Action(ret =>
                         {
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "walking backwards, stop");
@@ -100,7 +100,8 @@ namespace RogueBT.Helpers
 
                 if (Rogue.mTarget.IsPlayer)
                     return 3f;
-                return System.Math.Max(MeleeRange - 1.7f, 3f); 
+
+                return System.Math.Max(MeleeRange/2, 3f); 
             
             }
         }
@@ -254,7 +255,11 @@ namespace RogueBT.Helpers
         }
         public static Composite MoveToTarget()
         {
-            return new Decorator(
+            return new Sequence(
+                new DecoratorContinue(
+                ret => IsInSafeMeleeRange && Helpers.Rogue.me.MovementInfo.MovingBackward,
+                    new CommonBehaviors.Actions.ActionAlwaysFail()),
+                new Decorator(
                 ret => !Helpers.Rogue.me.IsCasting && Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted
                     && !Rogue.mTarget.IsFriendly && !Helpers.Rogue.me.MovementInfo.IsStrafing
                     && !(Rogue.mTarget.Distance < 10 && IsGlueEnabled)
@@ -263,6 +268,38 @@ namespace RogueBT.Helpers
                 //&& !Helpers.Aura.IsTargetInvulnerable 
                 ,
                 new PrioritySelector(
+
+                    new Decorator(ret => !Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location),
+                                  new Sequence(
+                                      new DecoratorContinue(
+                                          ret => !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
+                                          new Action(ret => Rogue.mTarget.Face())),
+                                      new DecoratorContinue(
+                                          ret => !IsInSafeMeleeRange && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) <= -4,
+                                          new Action(ret =>
+                                          {
+                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Ascending!");
+                                              WoWMovement.Move(WoWMovement.MovementDirection.JumpAscend);
+                                          })),
+                                      new DecoratorContinue(
+                                          ret => !IsInSafeMeleeRange && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4,
+                                          new Action(ret =>
+                                          {
+                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Descending!");
+                                              WoWMovement.Move(WoWMovement.MovementDirection.Descend);
+                                          })),
+                                      new DecoratorContinue(
+                                          ret => !IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.MovingForward,
+                                          new Action(ret =>
+                                          {
+                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Navigaion Failed!");
+                                              WoWMovement.Move(WoWMovement.MovementDirection.Forward);
+                                          })),
+                                      new DecoratorContinue(
+                                          ret => IsInSafeMeleeRange && Helpers.Rogue.me.MovementInfo.IsMoving,
+                                          new Action(ret => Navigator.PlayerMover.MoveStop()))
+                                      )
+                        ),
 
                     new Decorator(ret => !Settings.Mode.mMoveBehind
                         || !Rogue.mTarget.IsPlayer && Rogue.mTarget.CurrentTarget != null
@@ -312,7 +349,9 @@ namespace RogueBT.Helpers
                                           new Action(ret => Rogue.mTarget.Face()))
                                       , new CommonBehaviors.Actions.ActionAlwaysFail()
                                       )
-                 )));
+                 ))),
+                 
+                    new CommonBehaviors.Actions.ActionAlwaysFail());
         }
 
 
