@@ -21,6 +21,7 @@ namespace RogueBT.Composites.Context.Level
         public static Composite BuildCombatBehavior()
         {
             return new PrioritySelector(
+                RogueBT.Helpers.Target.EnsureValidTarget(),
                 //new Decorator(ret => Styx.CommonBot.LootTargeting.LootFrameIsOpen,
                 //        new Sequence(
                 //             new Action(ret => Styx.CommonBot.Frames.LootFrame.Instance.LootAll()),
@@ -205,7 +206,6 @@ namespace RogueBT.Composites.Context.Level
         {
             return new Decorator(ret => !Helpers.Rogue.me.Mounted && !Helpers.Rogue.me.InVehicle,
                 new PrioritySelector(
-                    RogueBT.Helpers.Target.EnsureValidTarget(),
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
                     Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Slice and Dice") &&
