@@ -73,7 +73,7 @@ namespace RogueBT.Settings
 
             mOverrideContext = false;
 
-            mUseCooldowns = true; mSWPick = true;
+            mUseCooldowns = true; //mSWPick = true;
             Helpers.Rogue.alwaysStealthCheck = true;
             mUseCombat = true;
             mForceBehind = false;

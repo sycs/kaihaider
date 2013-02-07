@@ -75,7 +75,7 @@ namespace RogueBT.Composites.Context.Raid
                                                         && ((!Helpers.Aura.Rupture || (Helpers.Rogue.mCurrentEnergy >= 80 || Helpers.Aura.Envenom || Helpers.Aura.Blindside)))
                                                        && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Fan of Knives", ret => !(Helpers.Aura.Stealth || Helpers.Aura.Vanish)
-                                                        && Helpers.Rogue.IsAoeUsable() && (Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 80)
+                                                        && Helpers.Rogue.IsAoeUsable() && (Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 80) && Helpers.Target.mNearbyEnemyUnits != null
                                                             && Helpers.Target.mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 2),
                 Helpers.Spells.Cast("Mutilate", ret => (!Helpers.Aura.Rupture || (Helpers.Rogue.mComboPoints < 5 && (Helpers.Rogue.mCurrentEnergy >= 85 || Helpers.Aura.Envenom)))
                                                        && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
