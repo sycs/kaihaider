@@ -259,6 +259,7 @@ namespace RogueBT.Composites.Context.Level
         {
             return new Decorator(ret => !Helpers.Rogue.me.Mounted && !Helpers.Rogue.me.InVehicle,
                 new PrioritySelector(
+                    RogueBT.Helpers.Target.EnsureValidTarget(),
 
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
