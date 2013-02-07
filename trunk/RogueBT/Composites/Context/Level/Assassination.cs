@@ -150,9 +150,17 @@ namespace RogueBT.Composites.Context.Level
                 //Helpers.Target.EnsureValidTarget(),
                 Helpers.Movement.PullMoveToTarget(),
                 //Helpers.Movement.MoveToLos(),
-                Helpers.Spells.Cast("Throw", ret => System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2 && Helpers.Rogue.mTarget.InLineOfSight
+                
+                new Decorator(ret => System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2 && Helpers.Rogue.mTarget.InLineOfSight
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30 && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
-                    && Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget)),
+                    && Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget),
+                            new Sequence(
+                                new Action(ret => Styx.Pathing.Navigator.PlayerMover.MoveStop()),
+                                Helpers.Spells.Cast("Throw")
+
+                            )),
+
+                
                 new Decorator(ret => !Settings.Mode.mNeverStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire
                     && Helpers.Rogue.me.IsAlive && !Helpers.Rogue.me.Combat,
                     new Sequence(
@@ -195,6 +203,7 @@ namespace RogueBT.Composites.Context.Level
         {
             return new Decorator(ret => !Helpers.Rogue.me.Mounted && !Helpers.Rogue.me.InVehicle,
                 new PrioritySelector(
+                    RogueBT.Helpers.Target.EnsureValidTarget(),
                     Helpers.Spells.CastSelf("Recuperate", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Recuperate") &&
                                                                      Helpers.Rogue.mRawComboPoints >= 1 && Helpers.Rogue.CheckSpamLock()),
                     Helpers.Spells.CastSelf("Slice and Dice", ret => !Helpers.Spells.IsAuraActive(Helpers.Rogue.me, "Slice and Dice") &&

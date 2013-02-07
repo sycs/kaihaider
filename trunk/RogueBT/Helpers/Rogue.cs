@@ -125,6 +125,8 @@ namespace RogueBT.Helpers
                             ///Styx.CommonBot.SpellManager.ClickRemoteLocation(Helpers.Rogue.mTarget.Location);
                             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "Distract");
                         }),
+
+                        Helpers.Rogue.CreateWaitForLagDuration(),
                         new Action(ret =>Styx.CommonBot.SpellManager.ClickRemoteLocation(Helpers.Rogue.mTarget.Location))
                     )
                 );

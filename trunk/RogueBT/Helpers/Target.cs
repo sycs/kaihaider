@@ -458,7 +458,7 @@ namespace RogueBT.Helpers
             //  Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
             return new Decorator(ret => Settings.Mode.mTargeting
                 && (Rogue.mTarget == null || !Rogue.mTarget.IsAlive || Rogue.mTarget.IsDead
-                || mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
+                //|| mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
                 || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
                 || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) 
                             && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
@@ -474,7 +474,6 @@ namespace RogueBT.Helpers
                     var nextUnit = mNearbyEnemyUnits.Where(unit => 
                         !(unit.Guid == SapCCUnitGUID && unit.HasAura("Sap") || unit.Guid == BlindCCUnitGUID && unit.HasAura("Blind"))).FirstOrDefault();
 
-                    Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Targeting... ");
                     if (nextUnit != null && nextUnit.IsAlive)
                     {
                         Logging.Write(LogLevel.Normal, "Changing target to " + nextUnit.Name);
