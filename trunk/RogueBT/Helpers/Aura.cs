@@ -452,7 +452,7 @@ namespace RogueBT.Helpers
             }
             ShouldShiv = false;
 
-            Logging.Write(LogLevel.Normal, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
+            //Logging.Write(LogLevel.Normal, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, (Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) + " ");
 
             
