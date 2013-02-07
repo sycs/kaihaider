@@ -62,6 +62,24 @@ namespace RogueBT.Helpers
                     Helpers.Rogue.CreateWaitForLagDuration();
                     Helpers.Rogue.CreateWaitForLagDuration();
                     mCurrentSpec = Helpers.Rogue.me.Specialization;
+
+                    if (Helpers.Spells.FindSpell(108211))
+                        for (int i = 1; i < 6; i++)
+                        {
+                            Settings.Mode.mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                            Settings.Mode.mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Leeching;
+                        }
+                    else if (Helpers.Spells.FindSpell(108215))
+                        for (int i = 1; i < 6; i++)
+                        {
+                            Settings.Mode.mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                            Settings.Mode.mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Paralytic;
+                        }
+                    else for (int i = 1; i < 6; i++)
+                        {
+                            Settings.Mode.mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                            Settings.Mode.mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.MindNumbing;
+                        }
                 }
                 );
 
@@ -74,12 +92,30 @@ namespace RogueBT.Helpers
                     Helpers.Rogue.CreateWaitForLagDuration();
                     mCurrentSpec = Helpers.Rogue.me.Specialization;
 
+
+                    if (Helpers.Spells.FindSpell(108211))
+                        for (int i = 1; i < 6; i++)
+                        {
+                            Settings.Mode.mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                            Settings.Mode.mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Leeching;
+                        }
+                    else if (Helpers.Spells.FindSpell(108215))
+                        for (int i = 1; i < 6; i++)
+                        {
+                            Settings.Mode.mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                            Settings.Mode.mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.Paralytic;
+                        }
+                    else for (int i = 1; i < 6; i++)
+                        {
+                            Settings.Mode.mPoisonsMain[i] = Helpers.Enum.LeathalPoisonSpellId.Deadly;
+                            Settings.Mode.mPoisonsOff[i] = Helpers.Enum.NonLeathalPoisonSpellId.MindNumbing;
+                        }
+
                     if (Helpers.Rogue.me.Inventory.Equipped.MainHand != null && !Helpers.Rogue.me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !Helpers.Rogue.me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
                 }
                 );
 
 
-                if (Helpers.Rogue.me.Inventory.Equipped.MainHand != null && !Helpers.Rogue.me.Inventory.Equipped.MainHand.ItemInfo.WeaponClass.Equals(WoWItemWeaponClass.Dagger) && !Helpers.Rogue.me.Specialization.Equals(Styx.WoWSpec.RogueCombat)) Logging.Write(LogLevel.Normal, "No dagger in MainHand!!! Only Combat supports none dagger weapons!");
             }
         }
 

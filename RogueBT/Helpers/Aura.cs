@@ -454,7 +454,7 @@ namespace RogueBT.Helpers
 
             //Logging.Write(LogLevel.Normal, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, (Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) + " ");
-
+            //Logging.Write(LogLevel.Normal, "Blindside: " + Blindside);
             
             //Helpers.Spells.FindSpell  114014 Helpers.Spells.GetSpellCooldown("Evasion") Styx.CommonBot.SpellManager.Spells["Throw"].Id
             //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " "); 
