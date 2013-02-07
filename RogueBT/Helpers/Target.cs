@@ -462,7 +462,7 @@ namespace RogueBT.Helpers
                 || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
                 || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) 
                             && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
-                || Rogue.mTarget.IsFriendly || (Rogue.mTarget.Guid == SapCCUnitGUID && Rogue.mTarget.HasAura("Sap")) && mNearbyEnemyUnits.Count() > 1),
+                || Rogue.mTarget.IsFriendly && Helpers.Rogue.me.Combat || (Rogue.mTarget.Guid == SapCCUnitGUID && Rogue.mTarget.HasAura("Sap")) && mNearbyEnemyUnits.Count() > 1),
                 GetNewTarget()
             );
         }
