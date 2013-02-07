@@ -487,6 +487,7 @@ namespace RogueBT.Helpers
 
                         if (nextUnit != null && nextUnit.Guid == SapCCUnitGUID && nextUnit.HasAura("Sap") && mNearbyEnemyUnits.Count() == 1)
                         {
+                            Logging.Write(LogLevel.Normal, "Clearing Target");
                             Helpers.Rogue.me.ClearTarget();
                             Helpers.Rogue.mTarget = null;
                         }
@@ -498,6 +499,7 @@ namespace RogueBT.Helpers
                         }
                         else
                         {
+                            Logging.Write(LogLevel.Normal, "Clearing Target");
                             Helpers.Rogue.me.ClearTarget();
                             Helpers.Rogue.mTarget = null;
                         }
