@@ -456,12 +456,12 @@ namespace RogueBT.Helpers
         {
             //  if (Helpers.Rogue.mTarget != null && Helpers.Rogue.me.Combat && Styx.CommonBot.POI.BotPoi.Current.Type.Equals(Styx.CommonBot.POI.PoiType.Hotspot)) 
             //  Styx.CommonBot.POI.BotPoi.Current = new Styx.CommonBot.POI.BotPoi(Helpers.Rogue.mTarget, Styx.CommonBot.POI.PoiType.Kill);
-            return new Decorator(ret => Settings.Mode.mTargeting
-                && (Rogue.mTarget == null || !Rogue.mTarget.IsAlive || Rogue.mTarget.IsDead
+            return new Decorator(ret => Settings.Mode.mTargeting && Rogue.mTarget != Styx.CommonBot.POI.BotPoi.Current.AsObject
+                && (Rogue.mTarget == null || !Rogue.mTarget.IsAlive //|| Rogue.mTarget.IsDead
                 //|| mNearbyEnemyUnits != null && !mNearbyEnemyUnits.Contains(Rogue.mTarget)
-                || Rogue.mTarget.Distance > 25 && Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0
-                || Rogue.mTarget.Distance > 30 && Helpers.Rogue.mHP > 60 && Movement.IsAboveTheGround(Rogue.mTarget) 
-                            && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me
+                || Helpers.Rogue.mHP < 60 && mNearbyEnemyUnits != null && mNearbyEnemyUnits.Count(unit => unit.Distance <= 10) > 0 && Rogue.mTarget.Distance > 25
+                || Helpers.Rogue.mHP > 60 && Rogue.mTarget.Distance > 30 && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4 && Helpers.Rogue.mTarget.CurrentTarget != Helpers.Rogue.me 
+                            && Movement.IsAboveTheGround(Rogue.mTarget) 
                 || Rogue.mTarget.IsFriendly && Helpers.Rogue.me.Combat || (Rogue.mTarget.Guid == SapCCUnitGUID && Rogue.mTarget.HasAura("Sap")) && mNearbyEnemyUnits.Count() > 1),
                 GetNewTarget()
             );
