@@ -258,7 +258,11 @@ namespace RogueBT.Helpers
             return new Sequence(
                 new DecoratorContinue(
                 ret => IsInSafeMeleeRange && Helpers.Rogue.me.MovementInfo.MovingBackward,
-                    new CommonBehaviors.Actions.ActionAlwaysFail()),
+                    new Action(ret =>
+                    {
+                        Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Movement Haulted ");
+                        return RunStatus.Failure;
+                    })),
                 new Decorator(
                 ret => !Helpers.Rogue.me.IsCasting && Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted
                     && !Rogue.mTarget.IsFriendly && !Helpers.Rogue.me.MovementInfo.IsStrafing
@@ -306,7 +310,7 @@ namespace RogueBT.Helpers
                             && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me && !Rogue.mTarget.Stunned,
                                   new Sequence(
                                       new DecoratorContinue(
-                                          ret => Helpers.Rogue.mTarget.Distance < SafeMeleeRange,
+                                          ret => !IsInSafeMeleeRange || Helpers.Rogue.mTarget.Distance > SafeMeleeRange,
                                           new Action(ret =>
                                           {
                                               Navigator.MoveTo(Rogue.mTarget.Location);
