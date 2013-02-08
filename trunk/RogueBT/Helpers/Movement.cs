@@ -101,7 +101,7 @@ namespace RogueBT.Helpers
                 if (Rogue.mTarget.IsPlayer)
                     return 3f;
 
-                return System.Math.Max(MeleeRange/2, 3f); 
+                return System.Math.Max(MeleeRange*0.65f, 3f); 
             
             }
         }
@@ -112,7 +112,7 @@ namespace RogueBT.Helpers
             {
                 if (Helpers.Rogue.mTarget == null) return false;
 
-                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1.2f, 2.5f);
+                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1.1f, 2.5f);
             }
         }
 
@@ -122,7 +122,7 @@ namespace RogueBT.Helpers
             {
                 if (Helpers.Rogue.mTarget == null) return false;
                 
-                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1.4f, 2.5f); 
+                return Helpers.Rogue.mTarget.Distance < System.Math.Max(MeleeRange - 1.35f, 2.5f); 
             }
         }
 
@@ -262,7 +262,7 @@ namespace RogueBT.Helpers
                     {
                         Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Movement Haulted ");
                         return RunStatus.Failure;
-                    })),
+                    })),//WoWMovement.MoveStop(WoWMovement.MovementDirection.Backwards);
                 new Decorator(
                 ret => !Helpers.Rogue.me.IsCasting && Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.Mounted
                     && !Rogue.mTarget.IsFriendly && !Helpers.Rogue.me.MovementInfo.IsStrafing
