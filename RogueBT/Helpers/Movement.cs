@@ -310,7 +310,7 @@ namespace RogueBT.Helpers
                             && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me && !Rogue.mTarget.Stunned,
                                   new Sequence(
                                       new DecoratorContinue(
-                                          ret => !IsInSafeMeleeRange || Helpers.Rogue.mTarget.Distance > SafeMeleeRange,
+                                          ret => Helpers.Rogue.mTarget.Distance > SafeMeleeRange,
                                           new Action(ret =>
                                           {
                                               Navigator.MoveTo(Rogue.mTarget.Location);
