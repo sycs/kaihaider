@@ -140,11 +140,14 @@ namespace RogueBT.Helpers
         {
             return new PrioritySelector(
                 UseItem(ret => mTrinket1, ret => cond(ret) && mTrinket1Usable),
-                UseItem(ret => mTrinket2, ret => cond(ret) && mTrinket2Usable)
-                //UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable)//,
+                UseItem(ret => mTrinket2, ret => cond(ret) && mTrinket2Usable),
+                UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable),
 
-                //new Decorator(ret => mRacialName != null,
-                //    Spells.Cast(mRacialName))
+                new Decorator(ret => mRacialName != null && Helpers.Rogue.mCurrentEnergy < 65 && mRacialName.Equals("Arcane Torrent"),
+                    Spells.Cast(mRacialName)),
+
+                new Decorator(ret => mRacialName != null && !mRacialName.Equals("Arcane Torrent"),
+                    Spells.Cast(mRacialName))
             );
         }
 
@@ -160,6 +163,7 @@ namespace RogueBT.Helpers
                     {
                         item(ret).Use();
                         Logging.Write(LogLevel.Normal, item(ret).Name);
+                        return RunStatus.Failure;
                     }
                 )
             );

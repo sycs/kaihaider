@@ -29,6 +29,7 @@ namespace RogueBT.Helpers
         static public bool Tricks { get; private set; }
         static public bool DeadlyThrow { get; private set; }
         static public bool ShouldShiv { get; private set; }
+        static public uint AnticipationStacks { get; private set; }
 
         //Legendary
         static public bool FuryoftheDestroyer { get; private set; }
@@ -100,13 +101,13 @@ namespace RogueBT.Helpers
             DeadlyPoison = false; Vendetta = false; Blindside = false; RevealingStrike = false;//MasterOfSubtlety = false;  
             ModerateInsight = false; DeepInsight = false; BladeFlurry = false; AdrenalineRush = false;
             CripplingPoison = false; LeechingPoison = false; Feint = false; ShouldBurst = false;
-            DeadlyThrow = false; Evasion = false;
+            DeadlyThrow = false; Evasion = false; 
             FaerieFire = false;
 
             HealingGhost = false;
 
             TimeRecuperate = 0; TimeSliceandDice = 0; TimeRupture = 0; TimeHemorrhage = 0; IsTargetCasting = 0;
-            TimeVendetta = 0;
+            TimeVendetta = 0; AnticipationStacks = 0;
 
             Deadly = false; Wound = false; MindNumbing = false; Crippling = false; Paralytic = false; Leeching = false;
 
@@ -221,6 +222,11 @@ namespace RogueBT.Helpers
                         case "Faerie Fire":
                             {
                                 FaerieFire = true;
+                                break;
+                            }
+                        case "Anticipation":
+                            {
+                                AnticipationStacks = aura.StackCount;
                                 break;
                             }
                     }
@@ -455,7 +461,7 @@ namespace RogueBT.Helpers
             //Logging.Write(LogLevel.Normal, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));" Range: " + Helpers.Movement.IsInSafeMeleeRange
             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, (Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) + " ");
             //Logging.Write(LogLevel.Normal, "Shadow Focus: " + Helpers.Spells.FindSpell(108209) + " Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
-            
+            //Logging.Write(LogLevel.Normal, Helpers.Rogue.mComboPoints + "");
             //Helpers.Spells.FindSpell  114014 Helpers.Spells.GetSpellCooldown("Evasion") Styx.CommonBot.SpellManager.Spells["Throw"].Id
             //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " "); 
             //if (Styx.CommonBot.InactivityDetector.TimeUntilLogout!=null)  && Rogue.mTarget.CurrentTarget != null && Rogue.mTarget.CurrentTarget.Guid == Helpers.Rogue.me.Guid

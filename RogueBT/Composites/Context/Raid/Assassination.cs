@@ -34,7 +34,8 @@ namespace RogueBT.Composites.Context.Raid
                 ),
                 Helpers.Spells.CastCooldown("Feint", ret => (Helpers.Aura.IsTargetCasting == 109034 || Helpers.Aura.IsTargetCasting == 109033)
                     && Helpers.Movement.IsInSafeMeleeRange),
-                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && (Helpers.Aura.TimeSliceandDice <= 3 && Helpers.Aura.SliceandDice && Helpers.Rogue.mComboPoints > 0)
+                Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Rogue.mComboPoints > 0 
+                    && (Helpers.Aura.TimeSliceandDice <= 3 && Helpers.Aura.SliceandDice || Helpers.Aura.AnticipationStacks == 5)
                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Dispatch", ret => Helpers.Rogue.mComboPoints != 5 && Helpers.Aura.Blindside && Helpers.Rogue.mCurrentEnergy < 90
                                         && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
@@ -68,7 +69,7 @@ namespace RogueBT.Composites.Context.Raid
                 Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Rogue.mComboPoints > 0
                                                        && (Helpers.Rogue.mComboPoints == 4 && Helpers.Rogue.mTargetHP >= 35 && !Helpers.Aura.Blindside
                                                        || Helpers.Rogue.mComboPoints > 4 && Helpers.Rogue.mTargetHP >= 35
-                                                       || (Helpers.Rogue.mCurrentEnergy >= 55 && Helpers.Rogue.mComboPoints == 5 && Helpers.Rogue.mTargetHP < 35))
+                                                       || (Helpers.Rogue.mCurrentEnergy >= 55 && Helpers.Rogue.mComboPoints > 4 && Helpers.Rogue.mTargetHP < 35))
                                                         && (!Helpers.Aura.Envenom || Helpers.Rogue.mCurrentEnergy > 90)
                                                         && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.Cast("Dispatch", ret => (Helpers.Rogue.mTargetHP < 35 || Helpers.Aura.Blindside)
