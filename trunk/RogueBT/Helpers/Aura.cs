@@ -452,9 +452,9 @@ namespace RogueBT.Helpers
             }
             ShouldShiv = false;
 
-            //Logging.Write(LogLevel.Normal, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
+            //Logging.Write(LogLevel.Normal, "Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));" Range: " + Helpers.Movement.IsInSafeMeleeRange
             Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, (Helpers.Movement.IsInSafeMeleeRange && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) + " ");
-            //Logging.Write(LogLevel.Normal, "Blindside: " + Blindside + " Range: " + Helpers.Movement.IsInSafeMeleeRange);
+            //Logging.Write(LogLevel.Normal, "Shadow Focus: " + Helpers.Spells.FindSpell(108209) + " Leeching: " + Helpers.Spells.FindSpell(108211) + "Paralytic: " + Helpers.Spells.FindSpell(108215));
             
             //Helpers.Spells.FindSpell  114014 Helpers.Spells.GetSpellCooldown("Evasion") Styx.CommonBot.SpellManager.Spells["Throw"].Id
             //Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, " "); 

@@ -214,7 +214,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.PleaseStopPull(),
                 Helpers.Target.SapAdd(),
                 Helpers.Movement.PullMoveToTarget(),
-                Helpers.Spells.Cast("Throw", ret => System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2 && Helpers.Rogue.mTarget.InLineOfSight
+                Helpers.Spells.Cast("Throw", ret => System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2 && Helpers.Rogue.mTarget.InLineOfSight && !Helpers.Rogue.me.IsCasting
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30 && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                     && Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget)),
                 new Decorator(ret => !Settings.Mode.mNeverStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire

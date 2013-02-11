@@ -92,7 +92,7 @@ namespace RogueBT.Helpers
             }
         }
 
-        public static float SafeMeleeRange
+        public static float MovementRange
         {
             get {
                 if (Rogue.mTarget == null)
@@ -226,11 +226,11 @@ namespace RogueBT.Helpers
             return new Decorator(ret => Rogue.mTarget != null && Settings.Mode.mUseMovement && !Helpers.Rogue.me.MovementInfo.IsStrafing
                 && ((!Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < MeleeRange) || Rogue.mTarget.IsPlayer && Helpers.Rogue.mTarget.Distance < 10) && !Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget),
                                           new Sequence(
-                                              new Action(ret =>
-                                            {
-                                                Navigator.PlayerMover.MoveStop();
-                                              return RunStatus.Success;
-                                            }),
+                                              //new Action(ret =>
+                                            //{
+                                            //    Navigator.PlayerMover.MoveStop();
+                                            //  return RunStatus.Success;
+                                           // }),
                                             new Action(ret =>
                                             {
                                               Styx.Common.Logging.Write(Styx.Common.LogLevel.Diagnostic, "facing");
@@ -300,7 +300,7 @@ namespace RogueBT.Helpers
                                               WoWMovement.Move(WoWMovement.MovementDirection.Forward);
                                           })),
                                       new DecoratorContinue(
-                                          ret => Helpers.Rogue.mTarget.Distance < SafeMeleeRange && Helpers.Rogue.me.MovementInfo.IsMoving,
+                                          ret => Helpers.Rogue.mTarget.Distance < MovementRange && Helpers.Rogue.me.MovementInfo.IsMoving,
                                           new Action(ret => Navigator.PlayerMover.MoveStop()))
                                       )
                         ),
@@ -310,7 +310,7 @@ namespace RogueBT.Helpers
                             && Rogue.mTarget.CurrentTarget == Helpers.Rogue.me && !Rogue.mTarget.Stunned,
                                   new Sequence(
                                       new DecoratorContinue(
-                                          ret => Helpers.Rogue.mTarget.Distance > SafeMeleeRange,
+                                          ret => Helpers.Rogue.mTarget.Distance > MovementRange,
                                           new Action(ret =>
                                           {
                                               Navigator.MoveTo(Rogue.mTarget.Location);
@@ -329,14 +329,14 @@ namespace RogueBT.Helpers
                                   new Sequence(
                                       new DecoratorContinue(
                                           ret => (!(Helpers.Rogue.me.IsMoving && Helpers.Rogue.me.IsSafelyFacing(Rogue.mTarget)) || Rogue.mTarget.IsMoving)
-                                         && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > SafeMeleeRange),
+                                         && (!Aura.IsBehind || Helpers.Rogue.mTarget.Distance > MovementRange),
                                           new PrioritySelector(
                                               new Decorator(
                                                   ret => !(Rogue.mTarget.IsPlayer && Rogue.mTarget.MovementInfo.MovingForward) 
-                                                      && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange)),
+                                                      && Navigator.CanNavigateFully(Helpers.Rogue.me.Location, Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), MovementRange)),
                                                 new Action(ret =>
                                                     {
-                                                        Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), SafeMeleeRange));
+                                                        Navigator.MoveTo(Rogue.mTarget.Location.RayCast(Rogue.mTarget.Rotation + WoWMathHelper.DegreesToRadians(150), MovementRange));
                                                         return RunStatus.Success;
                                                     })),
                                               new Decorator(

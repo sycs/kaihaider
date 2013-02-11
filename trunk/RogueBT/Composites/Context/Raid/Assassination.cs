@@ -44,17 +44,17 @@ namespace RogueBT.Composites.Context.Raid
                 Helpers.Spells.CastSelf("Slice and Dice", ret => Helpers.Aura.TimeSliceandDice < 2 && Helpers.Rogue.mComboPoints > 0),
                 Helpers.Spells.Cast("Envenom", ret => Helpers.Aura.DeadlyPoison && Helpers.Aura.FuryoftheDestroyer && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish)
-                    && Helpers.Rogue.mCurrentEnergy < 85 && Helpers.Rogue.mCurrentEnergy > 45
                                     && Helpers.Aura.Rupture && Helpers.Aura.SliceandDice && Helpers.Movement.IsInSafeMeleeRange,
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(ret => Helpers.Aura.Vendetta ||
                                                                     Helpers.Aura.TimeVendetta > 0),
-                        Helpers.Spells.CastCooldown("Vendetta"),
-                        Helpers.Spells.CastSelf("Shadow Blades"),
+                        Helpers.Spells.CastCooldown("Vendetta", ret => Helpers.Rogue.mCurrentEnergy < 85 && Helpers.Rogue.mCurrentEnergy > 45),
+                        Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Rogue.mCurrentEnergy < 85 && Helpers.Rogue.mCurrentEnergy > 45),
 
                         new Decorator(ret => Helpers.Spells.CanCast("Vanish") && Helpers.Aura.TimeSliceandDice > 6
-                                             && Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 &&
-                                             Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange && !Helpers.Rogue.me.HasAura("Shadow Blades"),
+                                             && (Helpers.Rogue.mCurrentEnergy < 40 && Helpers.Spells.FindSpell(108209)
+                                             || Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 && !Helpers.Spells.FindSpell(108209))
+                                             && Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange && !Helpers.Rogue.me.HasAura("Shadow Blades"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),

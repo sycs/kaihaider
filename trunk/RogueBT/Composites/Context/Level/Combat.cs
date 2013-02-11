@@ -170,7 +170,7 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Movement.PullMoveToTarget(),
                 //Helpers.Movement.MoveToLos(),
                 Helpers.Spells.Cast("Fan of Knives", ret => Settings.Mode.mFoKPull && Helpers.Rogue.mTarget.Distance < 10),
-                Helpers.Spells.Cast("Throw", ret => System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2 && Helpers.Rogue.mTarget.InLineOfSpellSight
+                Helpers.Spells.Cast("Throw", ret => System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 2 && Helpers.Rogue.mTarget.InLineOfSpellSight && !Helpers.Rogue.me.IsCasting
                     && Helpers.Rogue.mTarget.Distance > 5 && Helpers.Rogue.mTarget.Distance < 30 && Helpers.Rogue.me.IsSafelyFacing(Helpers.Rogue.mTarget)
                     && Helpers.Movement.IsAboveTheGround(Helpers.Rogue.mTarget) ),
                 new Decorator(ret => !Settings.Mode.mNeverStealth && !Helpers.Aura.Stealth && !Helpers.Aura.FaerieFire

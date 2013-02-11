@@ -57,15 +57,15 @@ namespace RogueBT.Composites.Context.Raid
                 new Decorator(ret => Helpers.Rogue.IsCooldownsUsable() && Helpers.Aura.SliceandDice
                                      && (Helpers.Aura.ModerateInsight || Helpers.Aura.DeepInsight)
                                      && !(Helpers.Aura.Stealth || Helpers.Aura.Vanish)
-                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)
-                                     && Helpers.Rogue.mCurrentEnergy <= 30,
+                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement),
                     new PrioritySelector(
                         Helpers.Specials.UseSpecialAbilities(),
-                        Helpers.Spells.CastSelf("Adrenaline Rush"),
-                        Helpers.Spells.CastSelf("Shadow Blades"),
-                        new Decorator(ret => Helpers.Spells.CanCast("Vanish") && ! Helpers.Aura.AdrenalineRush
-                                             && Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 // check shadow focus adjust
-                                             && Helpers.Rogue.mComboPoints != 5 && Helpers.Movement.IsInSafeMeleeRange,
+                        Helpers.Spells.CastSelf("Adrenaline Rush", ret => Helpers.Rogue.mCurrentEnergy < 30),
+                        Helpers.Spells.CastSelf("Shadow Blades", ret => Helpers.Rogue.mCurrentEnergy < 30),
+                        new Decorator(ret => Helpers.Spells.CanCast("Vanish") && !Helpers.Aura.AdrenalineRush
+                                             && (Helpers.Rogue.mCurrentEnergy < 40 && Helpers.Spells.FindSpell(108209)
+                                             || Helpers.Rogue.mCurrentEnergy >= 60 && Helpers.Rogue.mCurrentEnergy <= 100 && !Helpers.Spells.FindSpell(108209))
+                                             && Helpers.Rogue.mComboPoints != 5 && !Helpers.Rogue.me.HasAura("Shadow Blades"),
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),
