@@ -47,7 +47,7 @@ namespace RogueBT.Composites.Context.Level
                                     && (Helpers.Movement.IsInSafeMeleeRange || !Settings.Mode.mUseMovement)),
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 95 && Helpers.Aura.TimeRecuperate < 3), 
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),
-                new Decorator(ret => Helpers.Rogue.mHP <= 10 && Helpers.Spells.CanCast("Vanish"),
+                new Decorator(ret => Settings.Mode.mVanish && Helpers.Rogue.mHP <= 10 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
                         Helpers.Spells.CastSelf("Vanish"),
                         new WaitContinue(2, ret => false, new ActionAlwaysSucceed())

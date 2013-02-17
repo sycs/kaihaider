@@ -50,37 +50,42 @@ namespace RogueBT.Helpers
                     mRacialName = "Arcane Torrent";
                     break;
 
-                //case WoWRace.Pandaren:
-                //    mRacialName = "Quaking Palm";
-                //    break;
+                case WoWRace.Pandaren:
+                    mRacialName = "";//= "Quaking Palm";
+                    break;
 
-                //case WoWRace.Goblin:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.Goblin:
+                    mRacialName = "";//= "";
+                    break;
 
-                //case WoWRace.Undead:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.Undead:
+                    mRacialName = "";//= "";
+                    break;
 
-                //case WoWRace.Human:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.Human:
+                    mRacialName = "";//= "";
+                    break;
 
-                //case WoWRace.Dwarf:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.Dwarf:
+                    mRacialName = "";//= "";
+                    break;
 
-                //case WoWRace.NightElf:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.NightElf:
+                    mRacialName = "";//= "";
+                    break;
 
-                //case WoWRace.Gnome:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.Gnome:
+                    mRacialName = "";//= "";
+                    break;
 
-                //case WoWRace.Worgen:
-                //    mRacialName = "";
-                //    break;
+                case WoWRace.Worgen:
+                    mRacialName = "";//
+                   break;
+
+                default:
+                   mRacialName = "";//
+                   break;
+
             }
         }
 
@@ -144,10 +149,10 @@ namespace RogueBT.Helpers
                 UseItem(ret => mGloves, ret => cond(ret) && mGlovesUsable),
 
                 new Decorator(ret => mRacialName != null && Helpers.Rogue.mCurrentEnergy < 65 && mRacialName.Equals("Arcane Torrent"),
-                    Spells.Cast(mRacialName)),
+                    Spells.CastSelf(mRacialName)),
 
-                new Decorator(ret => mRacialName != null && !mRacialName.Equals("Arcane Torrent"),
-                    Spells.Cast(mRacialName))
+                new Decorator(ret => mRacialName != null && mRacialName.Length > 3 && !mRacialName.Equals("Arcane Torrent"),
+                    Spells.CastSelf(mRacialName))
             );
         }
 

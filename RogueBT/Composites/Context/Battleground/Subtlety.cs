@@ -46,6 +46,15 @@ namespace RogueBT.Composites.Context.Battleground
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 80 && Helpers.Aura.TimeRecuperate < 3),
+
+                new Decorator(ret => Settings.Mode.mVanish && Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mHP < 15,
+                            new Sequence(
+                                Helpers.Spells.CastSelf("Vanish"),
+                                Helpers.Rogue.CreateWaitForLagDuration(),
+                                Helpers.Movement.MoveToTarget(),
+                                Helpers.Spells.Cast("Cheap Shot", ret => Helpers.Movement.IsInSafeMeleeRange)
+                                )
+                            ),
                 new Decorator(ret => Helpers.Rogue.mHP < 75,
                     new PrioritySelector(
                         Helpers.Spells.CastCooldown("Kidney Shot", ret => !(Helpers.Aura.IsTargetInvulnerable || Helpers.Aura.Stealth || Helpers.Aura.Vanish)
@@ -114,7 +123,7 @@ namespace RogueBT.Composites.Context.Battleground
 
                         new Decorator(ret => !Helpers.Aura.ShadowDance && !Helpers.Aura.IsTargetInvulnerable &&
                                              Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
-                                             Helpers.Spells.CanCast("Vanish") && !Helpers.Rogue.IsAoeUsable() &&
+                                             Helpers.Spells.CanCast("Vanish") &&
                                              Helpers.Aura.KidneyTime > 4,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish", ret => true),

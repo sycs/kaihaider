@@ -45,8 +45,8 @@ namespace RogueBT.Composites.Context.Level
                 Helpers.Rogue.TryToInterrupt(ret => Helpers.Aura.IsTargetCasting != 0 && Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && 
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),
-                Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 80 && Helpers.Aura.TimeRecuperate < 3), 
-                new Decorator(ret => Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
+                Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 80 && Helpers.Aura.TimeRecuperate < 3),
+                new Decorator(ret => Settings.Mode.mVanish && Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
                     new Sequence(
                         Helpers.Spells.CastSelf("Vanish"),
                         new WaitContinue(2, ret => false, new ActionAlwaysSucceed())

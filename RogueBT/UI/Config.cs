@@ -104,6 +104,8 @@ namespace RogueBT.UI
             Settings.Mode.mSWPick = swPick.Checked;
             Settings.Mode.mFeint = feint.Checked;
             Settings.Mode.mFoKPull = FoKPull.Checked;
+            Settings.Mode.mDistract = distract.Checked;
+            Settings.Mode.mVanish = vanish.Checked;
 
 
             Close();
@@ -111,6 +113,9 @@ namespace RogueBT.UI
         private void Config_Load(object sender, EventArgs e)
         {
 
+
+            distract.Checked = Settings.Mode.mDistract;
+            vanish.Checked = Settings.Mode.mVanish;
             targeting.Checked = Settings.Mode.mTargeting;
             movement.Checked = Settings.Mode.mUseMovement;
             moveBehind.Checked = Settings.Mode.mMoveBehind;

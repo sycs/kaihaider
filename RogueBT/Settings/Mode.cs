@@ -37,6 +37,8 @@ namespace RogueBT.Settings
         static public bool mSWPick { get; set; }
         static public bool mFeint { get; set; }
         static public bool mFoKPull { get; set; }
+        public static bool mDistract { get; set; }
+        public static bool mVanish { get; set; }
 
         static Mode()
         {
@@ -87,6 +89,8 @@ namespace RogueBT.Settings
             mCrowdControl = true;
             mPickPocket = true;
             mFoKPull = false;
+            mVanish = true;
+            mDistract = true;
         }
     }
 }

@@ -41,7 +41,7 @@ namespace RogueBT.Composites.Context.Battleground
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 85 &&
                                 Helpers.Aura.TimeRecuperate < 3),
-                new Decorator(ret => Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mHP < 15,
+                new Decorator(ret => Settings.Mode.mVanish && Helpers.Spells.CanCast("Vanish") && Helpers.Rogue.mHP < 15,
                             new Sequence(
                                 Helpers.Spells.CastSelf("Vanish"),
                                 Helpers.Rogue.CreateWaitForLagDuration(),

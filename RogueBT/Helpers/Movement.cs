@@ -282,15 +282,15 @@ namespace RogueBT.Helpers
                                           ret => !IsInSafeMeleeRange && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) <= -4,
                                           new Action(ret =>
                                           {
-                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Ascending!");
-                                              WoWMovement.Move(WoWMovement.MovementDirection.JumpAscend);
+                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Descending!");
+                                              WoWMovement.Move(WoWMovement.MovementDirection.Descend);
                                           })),
                                       new DecoratorContinue(
                                           ret => !IsInSafeMeleeRange && System.Math.Abs(Helpers.Rogue.me.Z - Helpers.Rogue.mTarget.Z) >= 4,
                                           new Action(ret =>
                                           {
-                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Descending!");
-                                              WoWMovement.Move(WoWMovement.MovementDirection.Descend);
+                                              Styx.Common.Logging.Write(Styx.Common.LogLevel.Normal, "Ascending!");
+                                              WoWMovement.Move(WoWMovement.MovementDirection.JumpAscend);
                                           })),
                                       new DecoratorContinue(
                                           ret => !IsInSafeMeleeRange && !Helpers.Rogue.me.MovementInfo.MovingForward,

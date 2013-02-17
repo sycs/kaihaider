@@ -43,6 +43,13 @@ namespace RogueBT.Composites.Context.Level
                     Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds <= 0.6 && Helpers.Rogue.mTarget.CurrentCastTimeLeft.TotalSeconds >= 0.2),
                 Helpers.Spells.CastCooldown("Feint", ret => !Helpers.Aura.Feint && !Helpers.Aura.Stealth && Settings.Mode.mFeint),
                 Helpers.Spells.CastSelf("Recuperate", ret => Helpers.Rogue.mComboPoints > 2 && Helpers.Rogue.mHP < 80 && Helpers.Aura.TimeRecuperate < 3),
+
+                new Decorator(ret => Settings.Mode.mVanish && Helpers.Rogue.mHP <= 15 && Helpers.Spells.CanCast("Vanish"),
+                    new Sequence(
+                        Helpers.Spells.CastSelf("Vanish"),
+                        new WaitContinue(2, ret => false, new ActionAlwaysSucceed())
+                    )
+                ),
                     //kick on  tranquility, penance(needs testing), divine hymn, evocation, polymorph, fear
                 //Helpers.Rogue.TryToInterrupt(ret => Helpers.Rogue.mTarget.CanInterruptCurrentSpellCast && !Helpers.Aura.IsTargetInvulnerable &&
                 //    ((
@@ -117,7 +124,8 @@ namespace RogueBT.Composites.Context.Level
                             )
                         ),
 
-                        new Decorator(ret => !Helpers.Aura.ShadowDance &&
+                        new Decorator(ret => 
+                                            !Helpers.Aura.ShadowDance &&
                                              Helpers.Spells.GetSpellCooldown("Shadow Dance") > 0 &&
                                              Helpers.Spells.CanCast("Vanish") && !Helpers.Rogue.IsAoeUsable() &&
                                              Helpers.Aura.KidneyTime > 4,
