@@ -105,6 +105,8 @@ namespace RogueBT.UI
             this.swPick = new System.Windows.Forms.CheckBox();
             this.FoKPull = new System.Windows.Forms.CheckBox();
             this.neverStealth = new System.Windows.Forms.CheckBox();
+            this.distract = new System.Windows.Forms.CheckBox();
+            this.vanish = new System.Windows.Forms.CheckBox();
             this.panelCooldowns.SuspendLayout();
             this.radioButtonHolderPanel.SuspendLayout();
             this.panelRaidPoison.SuspendLayout();
@@ -773,11 +775,33 @@ namespace RogueBT.UI
             this.neverStealth.Text = "Never Stealth";
             this.neverStealth.UseVisualStyleBackColor = true;
             // 
+            // distract
+            // 
+            this.distract.AutoSize = true;
+            this.distract.Location = new System.Drawing.Point(403, 201);
+            this.distract.Name = "distract";
+            this.distract.Size = new System.Drawing.Size(93, 43);
+            this.distract.TabIndex = 37;
+            this.distract.Text = "Distract after\r\n20 ticks\r\nwithout pulling";
+            this.distract.UseVisualStyleBackColor = true;
+            // 
+            // vanish
+            // 
+            this.vanish.AutoSize = true;
+            this.vanish.Location = new System.Drawing.Point(403, 248);
+            this.vanish.Name = "vanish";
+            this.vanish.Size = new System.Drawing.Size(76, 30);
+            this.vanish.TabIndex = 38;
+            this.vanish.Text = "Vanish on \r\nLow Life";
+            this.vanish.UseVisualStyleBackColor = true;
+            // 
             // Config
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(502, 403);
+            this.Controls.Add(this.vanish);
+            this.Controls.Add(this.distract);
             this.Controls.Add(this.neverStealth);
             this.Controls.Add(this.FoKPull);
             this.Controls.Add(this.swPick);
@@ -906,5 +930,7 @@ namespace RogueBT.UI
         private System.Windows.Forms.CheckBox swPick;
         private System.Windows.Forms.CheckBox FoKPull;
         private System.Windows.Forms.CheckBox neverStealth;
+        private System.Windows.Forms.CheckBox distract;
+        private System.Windows.Forms.CheckBox vanish;
     }
 }

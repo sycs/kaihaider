@@ -342,9 +342,6 @@ namespace RogueBT.Helpers
                                Logging.Write(LogLevel.Diagnostic, "Setting sap target");
                             }),
                         new PrioritySelector(
-                            Helpers.Spells.Cast("Shadowstep", ret => SapCCUnit != null
-                                    && SapCCUnit.Distance > System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + SapCCUnit.CombatReach)
-                                    && SapCCUnit.InLineOfSpellSight, ret => SapCCUnit),
                             new Decorator(ret => SapCCUnit != null && Helpers.Rogue.me.IsFacing(Helpers.Rogue.mTarget)
                                     && Helpers.Rogue.mTarget.Distance < System.Math.Max(3.5f, Helpers.Rogue.me.CombatReach - 0.1333334f + Helpers.Rogue.mTarget.CombatReach),
                                 new Sequence(
